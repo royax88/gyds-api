@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import {DynamoDBDataService} from '../data-service/election-page-data-service';
 import {EventDemandNoSQLParams} from './nosqlparams';
-import logging = require('common-logging');
 
 export class ElectionPageBusinessService {
 

@@ -1,7 +1,6 @@
 
 import {ElectionPageService, getElectionPages } from './services';
 var fs = require("fs");
-import logging = require('common-logging');
 import {VerifyToken} from '../../../common/token-validation/token-validation';
 
 var versionlog = JSON.parse(fs.readFileSync('version.json', 'utf8'));
@@ -10,7 +9,6 @@ let check: any;
 
 
 export function handler(event: any, context: any, callback: any) {
-     logging.loggingInfo("event:", event);
      function responseCallback(err, data) {
             callback(err, data);
      }

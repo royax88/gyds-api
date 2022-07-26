@@ -1,7 +1,6 @@
 var nosql = require("aws-sdk");
 var docClient = new nosql.DynamoDB.DocumentClient({ region: process.env['region'] });  
 import { Observable } from 'rxjs/Observable';
-import logging = require('common-logging');
 
 export class DynamoDBDataService {
 
@@ -9,11 +8,9 @@ export class DynamoDBDataService {
     }
  
     public executequeryDataService = function (params: any): Observable<any> {
-        logging.loggingInfo("execute executequeryDataService");
         return Observable.create((observer) => {
             this.executequery(params, function (err, data) {
                 if (err) {
-                    logging.errorLog("executequeryDataService",null,params,err,"system");
                     observer.error(err);
                 }
                 else {
@@ -37,14 +34,30 @@ export class DynamoDBDataService {
         });
 
     }
-    public executescan = function (nosqlparam: any, callback) {
-        docClient.scan(nosqlparam, function (err, data) {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, data);
-            }
+    // public executescan = function (nosqlparam: any, callback) {
+    //     docClient.scan(nosqlparam, function (err, data) {
+    //         if (err) {
+    //             callback(err, null);
+    //         } else {
+    //             callback(null, data);
+    //         }
+    //     })
+    // }
+
+    public executescan = function (params: any): Observable<any> {
+        return Observable.create((observer) => {
+
+            docClient.scan(params, function (err, data) {
+                if (err) {
+                    observer.error(err);
+                } else {
+                    observer.next(data);
+                    observer.complete();
+                }
+            })
+
         })
+        
     }
 
 

@@ -4,6 +4,7 @@ deploymentBucket: deploymentbucket
 region: us-east-2
 lambdaIamRole: arn:aws:iam::093584548873:role/lambda_dynamo
 environment_tag: "dev"
+apikey: "testapikey"
 disabledInfoLogging: "true"
 restApiId: ylv4zuzgvj
 restApiRootResourceId: rdxzac

@@ -17,6 +17,7 @@ provider:
     localenv: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):localenv}
     region: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):region}
     weburl: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):weburl}
+    apikey:  ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):apikey}
   stackTags:
     AIRID: ${file(./common/config/serverless.app.config.yml):AIRID}
     Environment: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):environment_tag}
@@ -36,37 +37,10 @@ functions:
     tags:
       AIRID: ${self:custom.appConfigFile.AIRID}
       Environment: ${self:custom.configFile.environment_tag}
-    handler: main-source/home-page/src/index.handler
+    handler: main-source/security/src/index.handler
     events:
     - http:
-        path: home
-        method: post
-        integration: lambda
-        cors: true
-        request:
-            passThrough: WHEN_NO_MATCH
-            template:
-                application/json: ${file(serverless-request-template.txt)}
-        response:
-          headers:
-              Content-Security-Policy: "'Include default-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; connect-src 'self'; font-src 'self' report-uri; form-action 'self''"
-              Strict-Transport-Security: "'max-age=31536000; includeSubDomains'"
-              X-Content-Type-Options: "'nosniff'"
-              X-XSS-Protection: "'1'"
-              X-Frame-Options: "'SAMEORIGIN'"
-              Cache-Control: "'no-store'"
-  
-  electionPageAPI:
-    name: ${self:custom.appConfigFile.FunctionName}_SPF_${opt:stage, self:custom.defaultStage}
-    role: ${self:custom.configFile.lambdaIamRole}
-    description: 
-    tags:
-      AIRID: ${self:custom.appConfigFile.AIRID}
-      Environment: ${self:custom.configFile.environment_tag}
-    handler: main-source/election-page/src/index.handler
-    events:
-    - http:
-        path: election
+        path: login
         method: post
         integration: lambda
         cors: true

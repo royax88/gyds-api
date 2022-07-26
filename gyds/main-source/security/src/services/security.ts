@@ -1,8 +1,6 @@
 
-import logging = require('common-logging');
 
 export const getSecurity = (event, service, callback: any) => {
-    logging.loggingInfo("execute getSecurity");
     service.executeActions(event).subscribe(
         data => { 
             let response: any;

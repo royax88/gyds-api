@@ -1,5 +1,4 @@
 
-import logging = require('common-logging');
 
 export const getHomePages = (event, service, callback: any) => {
     logging.loggingInfo("execute getHomePages");

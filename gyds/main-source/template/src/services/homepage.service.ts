@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { HomePageModel } from '../models/HomePageModel';
 import { HomePageBusinessService} from '../business-service/home-page-business-service';
-import logging = require('common-logging');
 
 export class HomePageService {
 

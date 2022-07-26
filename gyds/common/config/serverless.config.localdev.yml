@@ -1,10 +1,11 @@
 localenv: "true"
 envvalue: kmsenryp  
 deploymentBucket: deploymentbucket
-region: us-east-2
+region: ap-southeast-1
 weburl: "https://cbh-featured-photo-stg.s3.amazonaws.com/"
 lambdaIamRole: arn:aws:iam::093584548873:role/lambda_dynamo
 environment_tag: "dev"
+apikey: "testapikey"
 disabledInfoLogging: "false"
 restApiId: ylv4zuzgvj
 restApiRootResourceId: rdxzac

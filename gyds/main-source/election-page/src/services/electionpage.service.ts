@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { ElectionPageModel } from '../models/ElectionPageModel';
 import { ElectionPageBusinessService} from '../business-service/election-page-business-service';
-import logging = require('common-logging');
 
 export class ElectionPageService {
 

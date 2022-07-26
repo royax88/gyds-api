@@ -1,4 +1,3 @@
-import logging = require('common-logging');
 var dateFormat = require('dateformat');
 
 export class EventDemandNoSQLParams {

@@ -1,8 +1,6 @@
 
-import logging = require('common-logging');
 
 export const getElectionPages = (event, decodedData, service, callback: any) => {
-    logging.loggingInfo("execute");
     service.executeActions(event, decodedData).subscribe(
         data => { 
             let response: any;
