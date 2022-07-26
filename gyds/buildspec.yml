@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  install:
+      commands:
+        - ls
+        - npm install -g serverless
+  build:
+    commands:
+        - npm install --only=dev
+  post_build:
+    commands:
+        - serverless deploy --stage $APP_DEPLOYMENT_ENVIRONMENT --package 3514-PESH-SPF-sls-pkg-$APP_DEPLOYMENT_ENVIRONMENT

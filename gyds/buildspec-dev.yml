@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+      commands:
+        - ls
+        - npm install -g serverless
+        - npm install request --save
+  build:
+    commands:
+        - npm install --only=dev
+  post_build:
+    commands:
+        - serverless deploy --stage dev --package serverless --force

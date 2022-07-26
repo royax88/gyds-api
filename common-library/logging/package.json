@@ -1,0 +1,15 @@
+{
+    "name": "common-logging",
+    "version": "0.0.1",
+    "description": "Common Logging for PESH Lambda",
+    "main": "logging.ts",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "tsc"
+    },
+    "author": "roy.leonardoo.o.siroy",
+    "license": "ISC",
+    "dependencies": {
+      "jsonwebtoken": "^8.1.0"
+    }
+}
