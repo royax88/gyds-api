@@ -29,7 +29,6 @@ export class SecurityService {
             this.username = JSON.parse(event.body).username;
             this.password = JSON.parse(event.body).password;
         }
-        console.log("events", event)
         if(this.actioncd=='getsecurityobject')
         {
             return this.securityBusinessService.checkUserInfo(this.username, this.password);
