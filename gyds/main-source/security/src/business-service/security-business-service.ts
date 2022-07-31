@@ -51,6 +51,7 @@ export class SecurityBusinessService {
                                             systemRole: data.Items[0].systemRole,
                                             module: data.Items[0].module,
                                             lmsRole: lmsroledata.Items[0].lmsrole,
+                                            username: data.Items[0].username,
                                             apikey: process.env["apikey"],
                                             message: "validuser"
                                         }

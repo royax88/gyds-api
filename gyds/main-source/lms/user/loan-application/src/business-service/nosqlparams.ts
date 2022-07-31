@@ -56,10 +56,28 @@ export class LoanApplicationNoSQLParams {
             'createdDate': day,
             'updatedDate': day,
             'createdBy' : obj.data.createdBy,
-            'updatedBy' : obj.data.createdBy
+            'updatedBy' : obj.data.createdBy,
+            'username' : obj.data.username
         }
         };
         return finalParams;
+    }
+
+    public viewLoanRequest(username: any) {
+    
+        let params = {
+        TableName: this.loanTbl,
+        IndexName: 'username-index',
+        KeyConditionExpression: '#username =:username',
+            ExpressionAttributeNames: {
+                '#username' : 'username'
+            },
+            ExpressionAttributeValues: {
+                ':username': username
+            },
+        ScanIndexForward: false 
+     }
+     return params;
     }
 
     private setNoSqlTables() {

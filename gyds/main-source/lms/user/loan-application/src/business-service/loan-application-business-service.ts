@@ -13,38 +13,36 @@ export class LoanApplicationBusinessService {
 
     }
 
-    // public getConfigValules(name: any) : Observable<any> {
+    public getLoanRequest(username: any) : Observable<any> {
        
-    //     let queryParams = this.manageConfigNoSQLParams.getConfig(name);
-    //     return Observable.create((observer) => {
+        let queryParams = this.loanApplicationNoSQLParams.viewLoanRequest(username);
+        return Observable.create((observer) => {
 
-    //         this.manageConfigDataService.executescanDS(queryParams).subscribe(
-    //             (data) => {
-    //                 let objData = []
-    //                 console.log("data", data)
-    //                 if(data.Count > 0)
-    //                 {
-    //                     for(let item in data.Items)
-    //                     {
-    //                         let newVal = {
-    //                             code: data.Items[item].code,
-    //                             value: data.Items[item].value,
-    //                         }
-    //                         objData.push(newVal);
-    //                     }
-    //                 }
-                   
-    //                 observer.next(objData)
-    //                 observer.complete();
+            this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                    let objData = []
+                    for(let item in data.Items)
+                    {
+                        let loanRequests = {
+                            id: data.Items[item].loankey,
+                            applicantName: data.Items[item].applicantFirstNm.toUpperCase() + " " + data.Items[item].applicantLastNm.toUpperCase(),
+                            status: data.Items[item].status,
+                            applicationDate: data.Items[item].applicationDate
+                        }
+                        
+                        objData.push(loanRequests)
+                    }
+                    observer.next(objData)
+                    observer.complete();
                     
-    //             },
-    //             (error) => {
-    //                 console.log("errr", error)
-    //                 observer.error(error);
-    //             });
-    //     })
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
 
-    // }
+    }
 
 
     public insertIntoLoanTable(obj: any) : Observable<any> {

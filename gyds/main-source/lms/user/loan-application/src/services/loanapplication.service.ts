@@ -41,6 +41,21 @@ export class LoanApplicationService {
             }
             return this.loanApplicationBusinessService.insertIntoLoanTable(this.objData);
         }
+
+        else if(this.actioncd=='getLoanRequest')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.username = event.body.username;
+            }
+            else
+            {
+                this.username = JSON.parse(event.body).username;
+            
+            }
+            console.log("username", this.username)
+            return this.loanApplicationBusinessService.getLoanRequest(this.username);
+        }
     }
 
 }
