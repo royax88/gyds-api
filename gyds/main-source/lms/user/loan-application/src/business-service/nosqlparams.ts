@@ -80,6 +80,22 @@ export class LoanApplicationNoSQLParams {
      return params;
     }
 
+    public viewLoanRequestById(loankey: any) {
+    
+        let params = {
+        TableName: this.loanTbl,
+        KeyConditionExpression: '#loankey =:loankey',
+            ExpressionAttributeNames: {
+                '#loankey' : 'loankey'
+            },
+            ExpressionAttributeValues: {
+                ':loankey': loankey
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
     private setNoSqlTables() {
 
         this.loanTbl = "gyds-lms-loan-application-" + process.env['environment_tag'];

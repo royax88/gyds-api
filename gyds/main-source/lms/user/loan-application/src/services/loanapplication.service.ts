@@ -56,6 +56,21 @@ export class LoanApplicationService {
             console.log("username", this.username)
             return this.loanApplicationBusinessService.getLoanRequest(this.username);
         }
+
+        else if(this.actioncd=='getLoanRequestById')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.username = event.body.loankey;
+            }
+            else
+            {
+                this.username = JSON.parse(event.body).loankey;
+            
+            }
+            console.log("username", this.username)
+            return this.loanApplicationBusinessService.getLoanRequest(this.username);
+        }
     }
 
 }
