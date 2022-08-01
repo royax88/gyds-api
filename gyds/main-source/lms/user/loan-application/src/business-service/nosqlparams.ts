@@ -30,6 +30,7 @@ export class LoanApplicationNoSQLParams {
             'comakerMiddleNm': obj.data.firstcoMakerMiddleName,
             'comakerCivilstatus': obj.data.firstcoMakerCivilStatus,
             'addtlCompany': obj.data.firstcompanySelect.code,
+            'addtlCollectionGroup': obj.data.firstcollectionSelect.code == undefined ? "" : obj.data.firstcollectionSelect.code,
             'addtlCollectionAgent': obj.data.firstcollectionAgentSelect.code == undefined ? "" : obj.data.firstcollectionAgentSelect.code ,
             'applicationDate': obj.data.firstapplicationDate.year + "-" + obj.data.firstapplicationDate.month + "-" + obj.data.firstapplicationDate.day,
             'affidavitUTAmount' : obj.data.secondAmount,
@@ -57,7 +58,10 @@ export class LoanApplicationNoSQLParams {
             'updatedDate': day,
             'createdBy' : obj.data.createdBy,
             'updatedBy' : obj.data.createdBy,
-            'username' : obj.data.username
+            'username' : obj.data.username,
+            'secondTabCheckbox' : obj.data.secondTabCheckbox,
+            'thirdTabCheckbox' : obj.data.thirdTabCheckbox,
+            'fourthTabCheckbox' : obj.data.fourthTabCheckbox
         }
         };
         return finalParams;

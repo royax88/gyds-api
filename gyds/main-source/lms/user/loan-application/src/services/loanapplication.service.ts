@@ -9,6 +9,7 @@ export class LoanApplicationService {
     username: any;
     objData: any;
     name: any;
+    loankey: any;
     private loanApplicationBusinessService = new LoanApplicationBusinessService();
 
     constructor() {
@@ -61,15 +62,15 @@ export class LoanApplicationService {
         {
             if(process.env['localenv']==="true")
             {
-                this.username = event.body.loankey;
+                this.loankey = event.body.loankey;
             }
             else
             {
-                this.username = JSON.parse(event.body).loankey;
+                this.loankey = JSON.parse(event.body).loankey;
             
             }
-            console.log("username", this.username)
-            return this.loanApplicationBusinessService.getLoanRequest(this.username);
+            console.log("loankey", this.loankey)
+            return this.loanApplicationBusinessService.getLoanRequestById(this.loankey);
         }
     }
 

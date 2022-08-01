@@ -16,7 +16,6 @@ export class SecurityService {
 
     public executeActions(event: any): Observable<any> {
         let object: any;
-        
         if(process.env['localenv']==="true")
         {
             this.actioncd = event.body.actioncd;
@@ -29,8 +28,10 @@ export class SecurityService {
             this.username = JSON.parse(event.body).username;
             this.password = JSON.parse(event.body).password;
         }
+
         if(this.actioncd=='getsecurityobject')
         {
+            console.log("i am here", this.actioncd)
             return this.securityBusinessService.checkUserInfo(this.username, this.password);
         }
 

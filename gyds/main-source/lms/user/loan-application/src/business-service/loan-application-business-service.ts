@@ -63,7 +63,7 @@ export class LoanApplicationBusinessService {
                         
                     //     objData.push(loanRequests)
                     // }
-                    observer.next(objData)
+                    observer.next(data.Items)
                     observer.complete();
                     
                 },
