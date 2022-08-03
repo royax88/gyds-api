@@ -1,4 +1,5 @@
 var dateFormat = require('dateformat');
+import {v4 as uuidv4} from 'uuid';
 
 export class ManageConfigNoSQLParams {
 
@@ -7,6 +8,7 @@ export class ManageConfigNoSQLParams {
     public collectionGroup: string;
     public collectionAgent: string;
     public configurationTbl: string;
+    public manageConfigTbl: string;
 
     constructor() {
         this.setNoSqlTables();
@@ -36,7 +38,8 @@ export class ManageConfigNoSQLParams {
     public getConfigByName(name:any) {
     
         let params = {
-        TableName: this.configurationTbl,
+        TableName: this.manageConfigTbl,
+        IndexName: 'name-index',
         KeyConditionExpression: '#name =:name',
             ExpressionAttributeNames: {
                 '#name' : 'name'
@@ -49,31 +52,29 @@ export class ManageConfigNoSQLParams {
      return params;
     }
 
-    // public insertIntoUserTable(obj:any)
-    // {
-    //     console.log("obj", obj)
-    //     let modVal = []
-    //     modVal.push(obj.data.moduleNm)
-    //     var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
-    //     let finalParams: any = {
-    //     TableName: this.userInfoTbl,
-    //     Item: {
-    //         'username' : obj.data.username,
-    //         'password' : obj.data.password,
-    //         'firstNm' : obj.data.firstnm,
-    //         'lastNm' : obj.data.lastname,
-    //         'middleNm' : obj.data.middlename,
-    //         'module' : modVal,
-    //         'status' : 'active',
-    //         'systemRole': obj.data.userrole,
-    //         'createdBy' : obj.data.createdBy,
-    //         'createdDate' : day,
-    //         'validFrom' : obj.data.validFrom,
-    //         'validTo' : obj.data.validTo
-    //     }
-    //     };
-    //     return finalParams;
-    // }
+    public insertCountryTbl(obj:any)
+    {
+        console.log("obj", obj)
+
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Item: {
+            'id': uuidv4(),
+            'name' : obj.data.name,
+            'code' : obj.data.countryCd,
+            'value' : obj.data.countryNm,
+            'description' : obj.data.description,
+            'detail1' : obj.data.isoNumber,
+            'status' : 'active',
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
 
     private setNoSqlTables() {
 
@@ -81,6 +82,7 @@ export class ManageConfigNoSQLParams {
         this.collectionGroup = "gyds-lms-config-collection-group-" + process.env['environment_tag'];
         this.collectionAgent = "gyds-lms-config-collection-agent-" + process.env['environment_tag'];
         this.configurationTbl = "gyds-lms-configuration-"+ process.env['environment_tag'];
+        this.manageConfigTbl = "gyds-lms-manage-config-"+ process.env['environment_tag'];
     }
     
 }

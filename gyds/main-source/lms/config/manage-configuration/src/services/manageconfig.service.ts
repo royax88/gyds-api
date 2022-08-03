@@ -54,6 +54,32 @@ export class ManageConfigService {
             }
             return this.manageConfigBusinessService.getConfigByName(this.name);
         }
+        else if(this.actioncd=='insertIntoConfigTbl')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body)
+            
+            }
+            return this.manageConfigBusinessService.insertConfig(this.objData, this.objData.data.name);
+        }
+        else if(this.actioncd=='getAllConfigurationByName')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.name = event.body.name;
+            }
+            else
+            {
+                this.name = JSON.parse(event.body).name;
+            
+            }
+            return this.manageConfigBusinessService.getAllConfigurationByName(this.name);
+        }
     }
 
 }

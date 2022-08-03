@@ -77,82 +77,57 @@ export class ManageConfigBusinessService {
 
     }
 
-    // public insertIntoUser(obj: any) : Observable<any> {
-    //     let queryParams = this.addUserNoSQLParams.checkExistingUsername(obj.data.username);
-        
-    //     return Observable.create((observer) => {
+    public insertConfig(obj: any,name: any) : Observable<any> {
 
-    //         this.addUserDataService.executequeryDataService(queryParams).subscribe(
-    //             (data) => {
-    //                 if(data.Count > 0)
-    //                 {
-    //                     let msg = {
-    //                         message: "ExistingUser"
-    //                     }
-    //                     observer.next(msg);
-    //                     observer.complete();
-    //                 }
-    //                 else 
-    //                 {
-    //                     let insertParams = this.addUserNoSQLParams.insertIntoUserTable(obj);
-    //                     this.addUserDataService.InsertData(insertParams).subscribe(
-    //                         (data) => {
-
-    //                             let msg = {
-    //                                 message: "NewUser"
-    //                             }
-    //                             observer.next(msg);
-    //                             observer.complete();
- 
-    //                         },
-    //                         (error) => {
-    //                             console.log("errr", error)
-    //                             observer.error(error);
-    //                         });
-                      
-    //                 }
+        let queryParams = this.getParams(obj, name);
+        console.log("")
+        return Observable.create((observer) => {
+            this.manageConfigDataService.InsertData(queryParams).subscribe(
+                (data) => {
                     
-    //             },
-    //             (error) => {
-    //                 console.log("errr", error)
-    //                 observer.error(error);
-    //             });
-    //     })
+                    let msg = {
+                        message: "createdCountry"
+                    }
+                    observer.next(msg);
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
 
-    // }
+    }
 
-    // public checkUsername(username: any) : Observable<any> {
+    public getParams( obj: any, name: any)
+    {
+        let queryParams : any;
+        if(name == "country")
+        {
+            queryParams = this.manageConfigNoSQLParams.insertCountryTbl(obj);
+        }
        
-    //     let queryParams = this.addUserNoSQLParams.checkExistingUsername(username);
-        
-    //     return Observable.create((observer) => {
+        return queryParams
+    }
 
-    //         this.addUserDataService.executequeryDataService(queryParams).subscribe(
-    //             (data) => {
-    //                 if(data.Count > 0)
-    //                 {
-    //                     let msg = {
-    //                         message: "ExistingUser"
-    //                     }
-    //                     observer.next(msg);
-    //                     observer.complete();
-    //                 }
-    //                 else 
-    //                 {
-    //                     let msg = {
-    //                         message: "NewUser"
-    //                     }
-    //                     observer.next(msg);
-    //                     observer.complete();
-    //                 }
+    public getAllConfigurationByName(name: any) : Observable<any> {
+       
+        let queryParams = this.manageConfigNoSQLParams.getConfigByName(name);
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                    observer.next(data)
+                    observer.complete();
                     
-    //             },
-    //             (error) => {
-    //                 console.log("errr", error)
-    //                 observer.error(error);
-    //             });
-    //     })
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
 
-    // }
+    }
 
 }
