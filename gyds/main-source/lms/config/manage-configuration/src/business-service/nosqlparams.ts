@@ -39,13 +39,13 @@ export class ManageConfigNoSQLParams {
     
         let params = {
         TableName: this.manageConfigTbl,
-        IndexName: 'name-index',
-        KeyConditionExpression: '#name =:name',
+        IndexName: 'nameVal-index',
+        KeyConditionExpression: '#nameVal =:nameVal',
             ExpressionAttributeNames: {
-                '#name' : 'name'
+                '#nameVal' : 'nameVal'
             },
             ExpressionAttributeValues: {
-                ':name': name
+                ':nameVal': name
             },
         ScanIndexForward: false 
      }
@@ -61,17 +61,38 @@ export class ManageConfigNoSQLParams {
         TableName: this.manageConfigTbl,
         Item: {
             'id': uuidv4(),
-            'name' : obj.data.name,
-            'code' : obj.data.countryCd,
-            'value' : obj.data.countryNm,
+            'nameVal' : obj.data.name,
+            'codeVal' : obj.data.countryCd,
+            'valueVal' : obj.data.countryNm,
             'description' : obj.data.description,
             'detail1' : obj.data.isoNumber,
-            'status' : 'active',
+            'statusVal' : 'active',
             'createdBy' : obj.data.createdBy,
             'createdDate' : day,
             'updatedBy' : obj.data.createdBy,
             'updatedDate' : day,
         }
+        };
+        return finalParams;
+    }
+
+    public updateCountryTbl(obj:any)
+    {
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set valueVal = :valueVal, detail1 = :detail1, updatedBy = :updatedBy, updatedDate = :updatedDate, statusVal = :statusVal",
+            ExpressionAttributeValues:{
+                ":valueVal" : obj.data.countryNm,
+                ":detail1" : obj.data.isoNumber,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day,
+                ":statusVal" : obj.data.status,
+            },
+            ReturnValues:"UPDATED_NEW"
         };
         return finalParams;
     }

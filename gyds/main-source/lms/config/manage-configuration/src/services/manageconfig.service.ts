@@ -67,6 +67,19 @@ export class ManageConfigService {
             }
             return this.manageConfigBusinessService.insertConfig(this.objData, this.objData.data.name);
         }
+        else if(this.actioncd=='updateConfigTbl')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body)
+            
+            }
+            return this.manageConfigBusinessService.updateConfig(this.objData, this.objData.data.name);
+        }
         else if(this.actioncd=='getAllConfigurationByName')
         {
             if(process.env['localenv']==="true")

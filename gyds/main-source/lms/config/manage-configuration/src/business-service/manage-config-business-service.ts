@@ -57,8 +57,8 @@ export class ManageConfigBusinessService {
                         for(let item in data.Items)
                         {
                             let newVal = {
-                                code: data.Items[item].code,
-                                value: data.Items[item].value,
+                                code: data.Items[item].codeVal,
+                                value: data.Items[item].valueVal,
                                 description: data.Items[item].description
                             }
                             objData.push(newVal);
@@ -100,12 +100,39 @@ export class ManageConfigBusinessService {
 
     }
 
+    public updateConfig(obj: any,name: any) : Observable<any> {
+
+        let queryParams = this.getParams(obj, name);
+        console.log("")
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+                    
+                    let msg = {
+                        message: "updatedCountry"
+                    }
+                    observer.next(msg);
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
     public getParams( obj: any, name: any)
     {
         let queryParams : any;
         if(name == "country")
         {
             queryParams = this.manageConfigNoSQLParams.insertCountryTbl(obj);
+        }
+        else if(name == "countryUpdate")
+        {
+            queryParams = this.manageConfigNoSQLParams.updateCountryTbl(obj);
         }
        
         return queryParams

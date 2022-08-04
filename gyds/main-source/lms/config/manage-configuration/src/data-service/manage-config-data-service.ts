@@ -81,18 +81,23 @@ export class ManageConfigDataService {
 
     }
     
-    
 
 
-    public executeupdate = function (nosqlparam: any, callback) {
+    public executeupdate = function (nosqlparam: any) : Observable<any> {
+
+        return Observable.create((observer)=> {
+            
         docClient.update(nosqlparam, function (err, data) {
             if (err) {
-                callback(err, null);
+                observer.error(err)
             }
             else {
-                callback(null, data);
+                observer.next(data);
+                observer.complete();
             }
         });
+        })
+
     }
 
 
