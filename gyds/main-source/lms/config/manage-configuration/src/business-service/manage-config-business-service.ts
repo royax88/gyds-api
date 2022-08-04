@@ -1,11 +1,13 @@
 import { Observable } from 'rxjs/Observable';
 import {ManageConfigDataService} from '../data-service/manage-config-data-service';
 import {ManageConfigNoSQLParams} from './nosqlparams';
+import {ProvinceNoSQLParams} from './provinceNosqlparams';
 
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
     private manageConfigNoSQLParams = new ManageConfigNoSQLParams();
+    private provinceNoSQLParams = new ProvinceNoSQLParams();
 
     constructor() {
 
@@ -56,12 +58,15 @@ export class ManageConfigBusinessService {
                     {
                         for(let item in data.Items)
                         {
-                            let newVal = {
-                                code: data.Items[item].codeVal,
-                                value: data.Items[item].valueVal,
-                                description: data.Items[item].description
+                            if(data.Items[item].statusVal=="active")
+                            {
+                                let newVal = {
+                                    code: data.Items[item].codeVal,
+                                    value: data.Items[item].valueVal,
+                                    description: data.Items[item].description
+                                }
+                                objData.push(newVal);
                             }
-                            objData.push(newVal);
                         }
                     }
                    
@@ -86,7 +91,7 @@ export class ManageConfigBusinessService {
                 (data) => {
                     
                     let msg = {
-                        message: "createdCountry"
+                        message: "createdConfig"
                     }
                     observer.next(msg);
                     observer.complete();
@@ -109,7 +114,7 @@ export class ManageConfigBusinessService {
                 (data) => {
                     
                     let msg = {
-                        message: "updatedCountry"
+                        message: "updatedConfig"
                     }
                     observer.next(msg);
                     observer.complete();
@@ -133,6 +138,16 @@ export class ManageConfigBusinessService {
         else if(name == "countryUpdate")
         {
             queryParams = this.manageConfigNoSQLParams.updateCountryTbl(obj);
+        }
+
+        else if(name == "province")
+        {
+            queryParams = this.provinceNoSQLParams.insertCountryTbl(obj);
+        }
+
+        else if(name == "provinceUpdate")
+        {
+            queryParams = this.provinceNoSQLParams.updateProvinceTbl(obj);
         }
        
         return queryParams
