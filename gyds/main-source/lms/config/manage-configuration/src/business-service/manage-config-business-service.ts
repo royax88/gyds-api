@@ -2,13 +2,13 @@ import { Observable } from 'rxjs/Observable';
 import {ManageConfigDataService} from '../data-service/manage-config-data-service';
 import {ManageConfigNoSQLParams} from './nosqlparams';
 import {ProvinceNoSQLParams} from './provinceNosqlparams';
-
+import {CurrencyNoSQLParams} from './currencyNosqlparams';
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
     private manageConfigNoSQLParams = new ManageConfigNoSQLParams();
     private provinceNoSQLParams = new ProvinceNoSQLParams();
-
+    private currencyNoSQLPrams = new CurrencyNoSQLParams();
     constructor() {
 
     }
@@ -148,6 +148,16 @@ export class ManageConfigBusinessService {
         else if(name == "provinceUpdate")
         {
             queryParams = this.provinceNoSQLParams.updateProvinceTbl(obj);
+        }
+
+        else if(name == "currency")
+        {
+            queryParams = this.currencyNoSQLPrams.insertCurrencyTbl(obj);
+        }
+
+        else if(name == "currencyUpdate")
+        {
+            queryParams = this.currencyNoSQLPrams.updateCurrencyTbl(obj);
         }
        
         return queryParams
