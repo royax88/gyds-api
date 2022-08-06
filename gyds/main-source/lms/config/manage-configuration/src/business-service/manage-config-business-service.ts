@@ -3,12 +3,14 @@ import {ManageConfigDataService} from '../data-service/manage-config-data-servic
 import {ManageConfigNoSQLParams} from './nosqlparams';
 import {ProvinceNoSQLParams} from './provinceNosqlparams';
 import {CurrencyNoSQLParams} from './currencyNosqlparams';
+import {CompanyNoSQLParams} from './companyNosqlparams';
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
     private manageConfigNoSQLParams = new ManageConfigNoSQLParams();
     private provinceNoSQLParams = new ProvinceNoSQLParams();
     private currencyNoSQLPrams = new CurrencyNoSQLParams();
+    private companyParams = new CompanyNoSQLParams();
     constructor() {
 
     }
@@ -21,20 +23,38 @@ export class ManageConfigBusinessService {
             this.manageConfigDataService.executescanDS(queryParams).subscribe(
                 (data) => {
                     let objData = []
-                    console.log("data", data)
                     if(data.Count > 0)
                     {
                         for(let item in data.Items)
                         {
                             let newVal = {
                                 code: data.Items[item].code,
-                                value: data.Items[item].value,
+                                value: data.Items[item].valueVal,
                             }
                             objData.push(newVal);
                         }
                     }
                    
                     observer.next(objData)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getAllData(name: any) : Observable<any> {
+       
+        let queryParams = this.manageConfigNoSQLParams.getConfig(name);
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {             
+                    observer.next(data)
                     observer.complete();
                     
                 },
@@ -63,7 +83,8 @@ export class ManageConfigBusinessService {
                                 let newVal = {
                                     code: data.Items[item].codeVal,
                                     value: data.Items[item].valueVal,
-                                    description: data.Items[item].description
+                                    description: data.Items[item].description,
+                                    detail1: data.Items[item].detail1
                                 }
                                 objData.push(newVal);
                             }
@@ -159,11 +180,23 @@ export class ManageConfigBusinessService {
         {
             queryParams = this.currencyNoSQLPrams.updateCurrencyTbl(obj);
         }
+
+        else if(name == "company")
+        {
+            queryParams = this.companyParams.insertCompanyTbl(obj);
+        }
+
+        else if(name == "companyUpdate")
+        {
+            queryParams = this.companyParams.updateCompanyTbl(obj);
+        }
+       
        
         return queryParams
     }
 
     public getAllConfigurationByName(name: any) : Observable<any> {
+
        
         let queryParams = this.manageConfigNoSQLParams.getConfigByName(name);
         return Observable.create((observer) => {

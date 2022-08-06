@@ -93,6 +93,20 @@ export class ManageConfigService {
             }
             return this.manageConfigBusinessService.getAllConfigurationByName(this.name);
         }
+
+        else if(this.actioncd=='getAllDataViaScan')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.name = event.body.name;
+            }
+            else
+            {
+                this.name = JSON.parse(event.body).name;
+            
+            }
+            return this.manageConfigBusinessService.getAllData(this.name);
+        }
     }
 
 }
