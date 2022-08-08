@@ -5,6 +5,7 @@ import {ProvinceNoSQLParams} from './provinceNosqlparams';
 import {CurrencyNoSQLParams} from './currencyNosqlparams';
 import {CompanyNoSQLParams} from './companyNosqlparams';
 import {BranchNoSQLParams} from './branchNosqlparams';
+import {BusinessPartnerNoSQLParams} from './businesspartnerNosqlparams';
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
@@ -13,6 +14,7 @@ export class ManageConfigBusinessService {
     private currencyNoSQLPrams = new CurrencyNoSQLParams();
     private companyParams = new CompanyNoSQLParams();
     private branchNoSQLParams = new BranchNoSQLParams();
+    private bpNoSQLParams = new BusinessPartnerNoSQLParams();
     constructor() {
 
     }
@@ -221,6 +223,36 @@ export class ManageConfigBusinessService {
         else if(name == "collectiongroupUpdate")
         {
             queryParams = this.manageConfigNoSQLParams.updateCollectionGroupTbl(obj);
+        }
+
+        else if(name == "businesspartnerclass")
+        {
+            queryParams = this.bpNoSQLParams.insertBPclassTbl(obj);
+        }
+
+        else if(name == "businesspartnerclassUpdate")
+        {
+            queryParams = this.bpNoSQLParams.updateBPclassTbl(obj);
+        }
+
+        else if(name == "businesspartnertype")
+        {
+            queryParams = this.bpNoSQLParams.insertBPtypeTbl(obj);
+        }
+
+        else if(name == "businesspartnertypeUpdate")
+        {
+            queryParams = this.bpNoSQLParams.updateBPtypeTbl(obj);
+        }
+
+        else if(name == "businesspartnerrelationship")
+        {
+            queryParams = this.bpNoSQLParams.insertBPRelationshipTbl(obj);
+        }
+
+        else if(name == "businesspartnerrelationshipUpdate")
+        {
+            queryParams = this.bpNoSQLParams.updateBPRelationshipTbl(obj);
         }
        
        
