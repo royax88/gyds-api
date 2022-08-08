@@ -4,6 +4,7 @@ import {ManageConfigNoSQLParams} from './nosqlparams';
 import {ProvinceNoSQLParams} from './provinceNosqlparams';
 import {CurrencyNoSQLParams} from './currencyNosqlparams';
 import {CompanyNoSQLParams} from './companyNosqlparams';
+import {BranchNoSQLParams} from './branchNosqlparams';
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
@@ -11,6 +12,7 @@ export class ManageConfigBusinessService {
     private provinceNoSQLParams = new ProvinceNoSQLParams();
     private currencyNoSQLPrams = new CurrencyNoSQLParams();
     private companyParams = new CompanyNoSQLParams();
+    private branchNoSQLParams = new BranchNoSQLParams();
     constructor() {
 
     }
@@ -189,6 +191,36 @@ export class ManageConfigBusinessService {
         else if(name == "companyUpdate")
         {
             queryParams = this.companyParams.updateCompanyTbl(obj);
+        }
+
+        else if(name == "branch")
+        {
+            queryParams = this.branchNoSQLParams.insertBranchTbl(obj);
+        }
+
+        else if(name == "branchUpdate")
+        {
+            queryParams = this.branchNoSQLParams.updateBranchTbl(obj);
+        }
+
+        else if(name == "collectionagent")
+        {
+            queryParams = this.manageConfigNoSQLParams.insertCollectionAgent(obj);
+        }
+
+        else if(name == "collectionagentUpdate")
+        {
+            queryParams = this.manageConfigNoSQLParams.updateCollectionAgentTbl(obj);
+        }
+
+        else if(name == "collectiongroup")
+        {
+            queryParams = this.manageConfigNoSQLParams.insertCollectionGroup(obj);
+        }
+
+        else if(name == "collectiongroupUpdate")
+        {
+            queryParams = this.manageConfigNoSQLParams.updateCollectionGroupTbl(obj);
         }
        
        

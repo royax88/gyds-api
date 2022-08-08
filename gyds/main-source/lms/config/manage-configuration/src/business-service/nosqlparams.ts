@@ -97,6 +97,91 @@ export class ManageConfigNoSQLParams {
         return finalParams;
     }
 
+    public insertCollectionAgent(obj:any)
+    {
+        console.log("obj", obj)
+
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Item: {
+            'id': uuidv4(),
+            'nameVal' : obj.data.name,
+            'codeVal' : obj.data.collectionAgentCd,
+            'valueVal' : obj.data.collectionAgentNm,
+            'description' : "",
+            'statusVal' : 'active',
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
+    public updateCollectionAgentTbl(obj:any)
+    {
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set valueVal = :valueVal, updatedBy = :updatedBy, updatedDate = :updatedDate, statusVal = :statusVal",
+            ExpressionAttributeValues:{
+                ":valueVal" : obj.data.collectionAgentNm,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day,
+                ":statusVal" : obj.data.status,
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
+    public insertCollectionGroup(obj:any)
+    {
+
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Item: {
+            'id': uuidv4(),
+            'nameVal' : obj.data.name,
+            'codeVal' : obj.data.collectionGroupCd,
+            'valueVal' : obj.data.collectionGroupNm,
+            'description' : "",
+            'statusVal' : 'active',
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
+    public updateCollectionGroupTbl(obj:any)
+    {
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set valueVal = :valueVal, updatedBy = :updatedBy, updatedDate = :updatedDate, statusVal = :statusVal",
+            ExpressionAttributeValues:{
+                ":valueVal" : obj.data.collectionGroupNm,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day,
+                ":statusVal" : obj.data.status,
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
     private setNoSqlTables() {
 
         this.manageCompany = "gyds-lms-config-company-" + process.env['environment_tag'];
