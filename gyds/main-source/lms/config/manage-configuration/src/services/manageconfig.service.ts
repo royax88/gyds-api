@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { HomePageModel } from '../models/HomePageModel';
 import { ManageConfigBusinessService} from '../business-service/manage-config-business-service';
-
+import {BusinssPartnerBusinessService} from '../business-service/businesspartner.service';
 export class ManageConfigService {
 
     private model;
@@ -10,7 +10,7 @@ export class ManageConfigService {
     objData: any;
     name: any;
     private manageConfigBusinessService = new ManageConfigBusinessService();
-
+    private businssPartnerBusinessService= new BusinssPartnerBusinessService();
     constructor() {
         
     }
@@ -106,6 +106,25 @@ export class ManageConfigService {
             
             }
             return this.manageConfigBusinessService.getAllData(this.name);
+
+        }
+        else if(this.actioncd=='insertIntoBusinessPartner')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.businssPartnerBusinessService.insertBusinessPartner(this.objData);
+        }
+
+        else if(this.actioncd=='getAllBusinessPartner')
+        {
+            return this.businssPartnerBusinessService.getAllBusinessPartner();
         }
     }
 
