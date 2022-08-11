@@ -1,5 +1,6 @@
 var dateFormat = require('dateformat');
 import {v4 as uuidv4} from 'uuid';
+import {v1 as uuid1} from 'uuid'
 
 export class BusinessPartnerNoSQLParams {
 
@@ -140,11 +141,22 @@ export class BusinessPartnerNoSQLParams {
     public insertIntoBusinessPartnerTbl(obj:any)
     {
 
-        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        var CUSTOMEPOCH = 13000; // artificial epoch
+        function generateRowId(shardId /* range 0-64 for shard/slot */) {
+        var ts = new Date().getTime() - CUSTOMEPOCH; // limit to recent
+        var randid = Math.floor(Math.random() * 64);
+        ts = (ts * 4);   // bit-shift << 6
+        ts = ts + shardId;
+        return (ts * 64) + randid;
+        }
+        var newPrimaryHashKey = "bpcode-" + generateRowId(1);
+
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
         let finalParams: any = {
         TableName: this.businessPartnerTbl,
         Item: {
             'id': uuidv4(),
+            'bpCode': newPrimaryHashKey,
             'bpName' : obj.data.bpName,
             'bpCivilStatus' : obj.data.bpCivilStatus,
             'bpCompanyCd' : obj.data.bpCompany  == "" ? "" : obj.data.bpCompany.code,
