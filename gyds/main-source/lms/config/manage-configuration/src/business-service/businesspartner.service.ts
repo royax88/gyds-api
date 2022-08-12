@@ -31,6 +31,29 @@ export class BusinssPartnerBusinessService {
 
     }
 
+    public updateBusinessPartner(obj: any) : Observable<any> {
+
+        let queryParams = this.noparams.updateIntoBusinessPartnerTbl(obj);
+        console.log("")
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+                    
+                    let msg = {
+                        message: "updateBusinessPartner"
+                    }
+                    observer.next(msg);
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
 
     public getAllBusinessPartner() : Observable<any> {
 

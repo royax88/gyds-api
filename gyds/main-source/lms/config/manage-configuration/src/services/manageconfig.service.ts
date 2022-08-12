@@ -122,6 +122,20 @@ export class ManageConfigService {
             return this.businssPartnerBusinessService.insertBusinessPartner(this.objData);
         }
 
+        else if(this.actioncd=='updateIntoBusinessPartner')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.businssPartnerBusinessService.updateBusinessPartner(this.objData);
+        }
+
         else if(this.actioncd=='getAllBusinessPartner')
         {
             return this.businssPartnerBusinessService.getAllBusinessPartner();

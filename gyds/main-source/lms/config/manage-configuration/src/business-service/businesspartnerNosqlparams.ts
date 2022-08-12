@@ -190,6 +190,49 @@ export class BusinessPartnerNoSQLParams {
         return finalParams;
     }
 
+    public updateIntoBusinessPartnerTbl(obj:any)
+    {
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.businessPartnerTbl,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set bpName = :bpName, bpCivilStatus = :bpCivilStatus, bpCompanyCd = :bpCompanyCd, bpCompanyNm = :bpCompanyNm , bpClassCd = :bpClassCd, bpClassNm = :bpClassNm , bpTypeCd = :bpTypeCd , bpTypeNm = :bpTypeNm," + 
+                          "bpRelationshipCd = :bpRelationshipCd, bpRelationshipNm = :bpRelationshipNm, bpTaxRegistrationNo = :bpTaxRegistrationNo, bpTaxInfo = :bpTaxInfo, bpCountryCd = :bpCountryCd, bpCountryNm = :bpCountryNm," +
+                          "bpProvinceCd = :bpProvinceCd, bpProvinceNm = :bpProvinceNm, bpCity = :bpCity, bpPostalCode = :bpPostalCode, bpAddressDetail = :bpAddressDetail, bpBankName = :bpBankName, bpBankBranch = :bpBankBranch, bpBanAccountNumber = :bpBanAccountNumber, bpBankDetail = :bpBankDetail,updatedBy = :updatedBy,updatedDate = :updatedDate",
+            ExpressionAttributeValues:{
+                ":bpName" : obj.data.bpName,
+                ":bpCivilStatus" : obj.data.bpCivilStatus,
+                ":bpCompanyCd" : obj.data.bpCompanyCd == undefined ? "" : obj.data.bpCompanyCd,
+                ":bpCompanyNm" : obj.data.bpCompanyNm == undefined ? "" : obj.data.bpCompanyNm,
+                ":bpClassCd" : obj.data.bpClassCd == undefined ? "" : obj.data.bpClassCd,
+                ":bpClassNm" : obj.data.bpClassNm == undefined ? "" : obj.data.bpClassNm,
+                ":bpTypeCd" : obj.data.bpTypeCd == undefined ? "" : obj.data.bpTypeCd,
+                ":bpTypeNm" : obj.data.bpTypeNm == undefined ? "" : obj.data.bpTypeNm,
+                ":bpRelationshipCd" : obj.data.bpRelationshipCd == undefined ? "" : obj.data.bpRelationshipCd,
+                ":bpRelationshipNm" : obj.data.bpRelationshipNm == undefined ? "" : obj.data.bpRelationshipNm,
+                ":bpTaxRegistrationNo" : obj.data.bpTaxRegistrationNo,
+                ":bpTaxInfo" : obj.data.bpTaxInfo,
+                ":bpCountryCd" : obj.data.bpCountryCd == undefined ? "" : obj.data.bpCountryCd,
+                ":bpCountryNm" : obj.data.bpCountryNm == undefined ? "" : obj.data.bpCountryNm,
+                ":bpProvinceCd" : obj.data.bpProvinceCd == undefined ? "" : obj.data.bpProvinceCd,
+                ":bpProvinceNm" : obj.data.bpProvinceNm == undefined ? "" : obj.data.bpProvinceNm,
+                ":bpCity" : obj.data.bpCity,
+                ":bpPostalCode" : obj.data.bpPostalCode,
+                ":bpAddressDetail" : obj.data.bpAddressDetail,
+                ":bpBankName" : obj.data.bpBankName,
+                ":bpBankBranch" : obj.data.bpBankBranch,
+                ":bpBanAccountNumber" : obj.data.bpBanAccountNumber,
+                ":bpBankDetail" : obj.data.bpBankDetail,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
     public getAllBusinessPartner() {
 
         let params = {
