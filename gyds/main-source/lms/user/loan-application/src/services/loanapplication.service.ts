@@ -69,7 +69,6 @@ export class LoanApplicationService {
                 this.username = JSON.parse(event.body).username;
             
             }
-            console.log("username", this.username)
             return this.loanApplicationBusinessService.getLoanByMatrix(this.username);
         }
 
