@@ -3,13 +3,14 @@ import {LoanApplicationDataService} from '../data-service/loan-application-data-
 import {LoanApplicationNoSQLParams} from './nosqlparams';
 import {AuditBusinessService} from '../../../../../../common/audit/audit.business.service'
 import {MatrixNoSQLParams} from '../../../../config/manage-configuration/src/business-service/matrixNosqlparams';
+import {APICheckerBusinessService} from '../../../../../../common/api-check/api-checker.business.service';
 export class LoanApplicationBusinessService {
 
     private loanApplicationDataService = new LoanApplicationDataService();
     private loanApplicationNoSQLParams = new LoanApplicationNoSQLParams();
     private matrixParams = new MatrixNoSQLParams();
     private auditSvc = new AuditBusinessService();
-
+    private apiChecker = new APICheckerBusinessService();
     constructor() {
 
     }
@@ -46,51 +47,73 @@ export class LoanApplicationBusinessService {
     }
 
     public getLoanByMatrix(username: any) : Observable<any> {
+
        
         let matrixParams = this.matrixParams.getMatrixByProcessor(username);
         return Observable.create((observer) => {
 
-            this.loanApplicationDataService.executequeryDataService(matrixParams).subscribe(
-                (matrixData) => {
-                    let count = 0; 
-                    let objData = []
-                    for(let matrixItem in matrixData.Items)
+            this.apiChecker.isValidUserPerModule(username, "processor").subscribe(
+                (data) => {
+                    
+                    if(data.message == "authorized")
                     {
-                        let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(matrixData.Items[matrixItem].bpcode);
-                       
-                        this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
-                            (loanData) => {
-                                count = count + 1;
-                                for(let item in loanData.Items)
+                        this.loanApplicationDataService.executequeryDataService(matrixParams).subscribe(
+                            (matrixData) => {
+                                let count = 0; 
+                                let objData = []
+                                if(matrixData.Count == 0)
                                 {
-                                    let loanRequests = {
-                                        id: loanData.Items[item].loankey,
-                                        applicantName: loanData.Items[item].applicantLastNm,
-                                        status: loanData.Items[item].status,
-                                        applicationDate: loanData.Items[item].applicationDate
-                                    }  
-                                    objData.push(loanRequests)
-                                }   
-
-                                if(count == matrixData.Count)
-                                {
-                                    observer.next(objData)
+                                    observer.next(data);
                                     observer.complete();
                                 }
-    
+                                for(let matrixItem in matrixData.Items)
+                                {
+                                    let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(matrixData.Items[matrixItem].bpcode);
+                                   
+                                    this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                                        (loanData) => {
+                                            count = count + 1;
+                                            for(let item in loanData.Items)
+                                            {
+                                                let loanRequests = {
+                                                    id: loanData.Items[item].loankey,
+                                                    applicantName: loanData.Items[item].applicantLastNm,
+                                                    status: loanData.Items[item].status,
+                                                    applicationDate: loanData.Items[item].applicationDate
+                                                }  
+                                                objData.push(loanRequests)
+                                            }   
+            
+                                            if(count == matrixData.Count)
+                                            {
+                                                observer.next(objData)
+                                                observer.complete();
+                                            }
+                
+                                        },
+                                        (error) => {
+                                            console.log("errr", error)
+                                            observer.error(error);
+                                        }
+                                    ) 
+                                }
+                                
                             },
                             (error) => {
                                 console.log("errr", error)
                                 observer.error(error);
-                            }
-                        ) 
+                            });
                     }
-                    
+                    else {
+                        observer.next(data)
+                        observer.complete();
+                    }
                 },
                 (error) => {
-                    console.log("errr", error)
-                    observer.error(error);
-                });
+    
+                }
+            )
+
         })
 
     }

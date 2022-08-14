@@ -113,7 +113,7 @@ export class ApprovalMatrixPartnerBusinessService {
                                         code: data.Items[item].username,
                                         value: data.Items[item].fullNm
                                     }
-                                    reviewerObj.push(tempObj)
+                                    approverObj.push(tempObj)
                                 }
 
                                 if(data.Items[item].lmsrole[val]=="reviewer")
@@ -122,7 +122,7 @@ export class ApprovalMatrixPartnerBusinessService {
                                         code: data.Items[item].username,
                                         value: data.Items[item].fullNm
                                     }
-                                    approverObj.push(tempObj)
+                                    reviewerObj.push(tempObj)
                                 }
 
                                 if(data.Items[item].lmsrole[val]=="releaseOfficer")
