@@ -58,6 +58,21 @@ export class LoanApplicationService {
             return this.loanApplicationBusinessService.getLoanRequest(this.username);
         }
 
+        else if(this.actioncd=='getLoanRequestByMatrix')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.username = event.body.username;
+            }
+            else
+            {
+                this.username = JSON.parse(event.body).username;
+            
+            }
+            console.log("username", this.username)
+            return this.loanApplicationBusinessService.getLoanByMatrix(this.username);
+        }
+
         else if(this.actioncd=='getLoanRequestById')
         {
             if(process.env['localenv']==="true")

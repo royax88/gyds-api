@@ -3,6 +3,7 @@ var dateFormat = require('dateformat');
 export class AddUserNoSQLParams {
 
     public userInfoTbl: string;
+    public userRoleTbl: string;
 
     constructor() {
         this.setNoSqlTables();
@@ -13,6 +14,30 @@ export class AddUserNoSQLParams {
         let params = {
         TableName: this.userInfoTbl     }
      return params;
+    }
+
+    public getAllLMSRole() {
+    
+        let params = {
+        TableName: this.userRoleTbl     }
+     return params;
+    }
+
+
+    public getALlUserByModule(moduleNm:any) {
+    
+        let params = {
+        TableName: this.userInfoTbl,
+        FilterExpression: "contains(#module, :module)",
+        ExpressionAttributeNames: {
+            "#module": "module",
+        },
+        ExpressionAttributeValues: {
+            ":module": moduleNm,
+        }    
+     }
+     return params;
+
     }
 
     public checkExistingUsername(username: any) {
@@ -57,9 +82,63 @@ export class AddUserNoSQLParams {
         return finalParams;
     }
 
+    public getUserRole(username: any) {
+    
+        let params = {
+        TableName: this.userRoleTbl,
+        KeyConditionExpression: '#username =:username',
+            ExpressionAttributeNames: {
+                '#username' : 'username'
+            },
+            ExpressionAttributeValues: {
+                ':username': username
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
+    public updateLMSRole(obj:any)
+    {
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.userRoleTbl,
+        Key: {
+            username: obj.data.username
+        },
+        UpdateExpression: "set lmsrole = :lmsrole, updatedBy = :updatedBy, updatedDate = :updatedDate",
+            ExpressionAttributeValues:{
+                ":lmsrole" : obj.data.lmsrole,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
+    public insertIntoUserRoleTbl(obj:any)
+    {
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.userRoleTbl,
+        Item: {
+            'username' : obj.data.username,
+            'fullNm' : obj.data.fullNm,
+            'lmsrole' : obj.data.lmsrole,
+            'createdBy' : obj.data.user,
+            'createdDate' : day,
+            'updatedBy' : obj.data.user,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
     private setNoSqlTables() {
 
         this.userInfoTbl = "gyds-user-info-" + process.env['environment_tag'];
+        this.userRoleTbl = "gyds-lms-role-" + process.env['environment_tag'];
 
     }
 }

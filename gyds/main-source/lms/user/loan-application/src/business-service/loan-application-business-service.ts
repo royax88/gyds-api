@@ -2,11 +2,12 @@ import { Observable } from 'rxjs/Observable';
 import {LoanApplicationDataService} from '../data-service/loan-application-data-service';
 import {LoanApplicationNoSQLParams} from './nosqlparams';
 import {AuditBusinessService} from '../../../../../../common/audit/audit.business.service'
-
+import {MatrixNoSQLParams} from '../../../../config/manage-configuration/src/business-service/matrixNosqlparams';
 export class LoanApplicationBusinessService {
 
     private loanApplicationDataService = new LoanApplicationDataService();
     private loanApplicationNoSQLParams = new LoanApplicationNoSQLParams();
+    private matrixParams = new MatrixNoSQLParams();
     private auditSvc = new AuditBusinessService();
 
     constructor() {
@@ -34,6 +35,56 @@ export class LoanApplicationBusinessService {
                     }
                     observer.next(objData)
                     observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getLoanByMatrix(username: any) : Observable<any> {
+       
+        let matrixParams = this.matrixParams.getMatrixByProcessor(username);
+        return Observable.create((observer) => {
+
+            this.loanApplicationDataService.executequeryDataService(matrixParams).subscribe(
+                (matrixData) => {
+                    let count = 0; 
+                    let objData = []
+                    for(let matrixItem in matrixData.Items)
+                    {
+                        let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(matrixData.Items[matrixItem].bpcode);
+                       
+                        this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                            (loanData) => {
+                                count = count + 1;
+                                for(let item in loanData.Items)
+                                {
+                                    let loanRequests = {
+                                        id: loanData.Items[item].loankey,
+                                        applicantName: loanData.Items[item].applicantLastNm,
+                                        status: loanData.Items[item].status,
+                                        applicationDate: loanData.Items[item].applicationDate
+                                    }  
+                                    objData.push(loanRequests)
+                                }   
+
+                                if(count == matrixData.Count)
+                                {
+                                    observer.next(objData)
+                                    observer.complete();
+                                }
+    
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            }
+                        ) 
+                    }
                     
                 },
                 (error) => {
@@ -77,11 +128,10 @@ export class LoanApplicationBusinessService {
 
 
     public insertIntoLoanTable(obj: any) : Observable<any> {
-
         let queryParams = this.loanApplicationNoSQLParams.insertIntoUserTable(obj);
-        
+        let matrixParms = this.matrixParams.insertMatrixTbl(queryParams.Item.loankey, obj.data.createdBy, obj.data.username);
+
         return Observable.create((observer) => {
-            console.log("queryParams", queryParams.Item.loankey)
             this.loanApplicationDataService.InsertData(queryParams).subscribe(
                 (data) => {
                     
@@ -94,11 +144,20 @@ export class LoanApplicationBusinessService {
                         queryParams.Item.createdDate
                         ).subscribe(
                             (data) => {
-                                let msg = {
-                                    message: "CreatedNewLoan"
-                            }
-                            observer.next(msg);
-                            observer.complete();
+
+                                this.loanApplicationDataService.InsertData(matrixParms).subscribe(
+                                    (data) => {
+                                        let msg = {
+                                            message: "CreatedNewLoan"
+                                        }
+                                        observer.next(msg);
+                                        observer.complete();
+                                    },
+                                    (error) => {
+                                        observer.error(error);
+                                    }
+                                )                 
+                            
                             }   
                         )
                     

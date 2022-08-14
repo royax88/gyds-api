@@ -2,6 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { HomePageModel } from '../models/HomePageModel';
 import { ManageConfigBusinessService} from '../business-service/manage-config-business-service';
 import {BusinssPartnerBusinessService} from '../business-service/businesspartner.service';
+import {ApprovalMatrixPartnerBusinessService} from '../business-service/approvalmatrix.service';
 export class ManageConfigService {
 
     private model;
@@ -11,6 +12,7 @@ export class ManageConfigService {
     name: any;
     private manageConfigBusinessService = new ManageConfigBusinessService();
     private businssPartnerBusinessService= new BusinssPartnerBusinessService();
+    private approvalMatrixBusinessService = new ApprovalMatrixPartnerBusinessService();
     constructor() {
         
     }
@@ -139,6 +141,29 @@ export class ManageConfigService {
         else if(this.actioncd=='getAllBusinessPartner')
         {
             return this.businssPartnerBusinessService.getAllBusinessPartner();
+        }
+
+        else if(this.actioncd =="getAllApprovalMatrix")
+        {
+            return this.approvalMatrixBusinessService.getAllMatrix();
+        }
+
+        else if(this.actioncd =="getAllMatrixByAccess")
+        {
+            return this.approvalMatrixBusinessService.getAllMatrixByAccess();
+        }
+        else if(this.actioncd == "updateMatrixTbl")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.approvalMatrixBusinessService.updateMatrixTbl(this.objData);
         }
     }
 

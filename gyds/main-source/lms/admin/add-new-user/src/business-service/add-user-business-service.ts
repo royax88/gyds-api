@@ -43,6 +43,35 @@ export class AddUserBusinessService {
 
     }
 
+    public getUsersByModule(moduleNm: any) : Observable<any> {
+       
+        let queryParams = this.addUserNoSQLParams.getALlUserByModule(moduleNm);
+        return Observable.create((observer) => {
+
+            this.addUserDataService.executescanDS(queryParams).subscribe(
+                (data) => {
+                    let objData = []
+                    for(let item in data.Items)
+                    {
+                        let newItem = {
+                            fullName: data.Items[item].firstNm.toUpperCase() + " " + data.Items[item].lastNm.toUpperCase(),
+                            username: data.Items[item].username
+                        }
+                        
+                        objData.push(newItem)
+                    }
+                    observer.next(objData)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
     public insertIntoUser(obj: any) : Observable<any> {
         let queryParams = this.addUserNoSQLParams.checkExistingUsername(obj.data.username);
         
@@ -117,6 +146,77 @@ export class AddUserBusinessService {
                     console.log("errr", error)
                     observer.error(error);
                 });
+        })
+
+    }
+
+    public getUserRole(username: any) : Observable<any> {
+       
+        let queryParams = this.addUserNoSQLParams.getUserRole(username);
+        
+        return Observable.create((observer) => {
+
+            this.addUserDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                        observer.next(data);
+                        observer.complete();
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public updateLMSRole(obj: any) : Observable<any> {
+
+        let checkExistingRole = this.addUserNoSQLParams.getUserRole(obj.data.username);
+        let queryParams = this.addUserNoSQLParams.updateLMSRole(obj);
+        let insertParams = this.addUserNoSQLParams.insertIntoUserRoleTbl(obj);
+        return Observable.create((observer) => {
+
+            this.addUserDataService.executequeryDataService(checkExistingRole).subscribe(
+                (data) => {
+                       if(data.Count > 0)
+                       {
+                            this.addUserDataService.executeupdate(queryParams).subscribe(
+                                (data) => {
+                                    
+                                    let msg = {
+                                        message: "updateLMSRole"
+                                    }
+                                    observer.next(msg);
+                                    observer.complete();
+                                    
+                                },
+                                (error) => {
+                                    console.log("errr", error)
+                                    observer.error(error);
+                                });
+                       }
+                       else {
+                        this.addUserDataService.InsertData(insertParams).subscribe(
+                            (data) => {
+                                let msg = {
+                                    message: "insertedLMSRole"
+                                }
+                                observer.next(msg);
+                                observer.complete();
+                                
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+                       }
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+
+          
         })
 
     }

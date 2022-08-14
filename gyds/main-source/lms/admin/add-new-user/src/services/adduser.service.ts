@@ -34,9 +34,22 @@ export class AddUserService {
             console.log("user")
             return this.addUserBusinessService.checkUserInfo();
         }
-        if(this.actioncd=='insertNewUser')
+        else if(this.actioncd=='insertNewUser')
         {
             return this.addUserBusinessService.insertIntoUser(this.objData);
+        }
+
+        else if(this.actioncd=='getAllUserByModule')
+        {
+            return this.addUserBusinessService.getUsersByModule(this.objData.moduleNm);
+        }
+        else if(this.actioncd=="getUserRoleByUsername")
+        {
+            return this.addUserBusinessService.getUserRole(this.objData.username);
+        }
+        else if(this.actioncd=="updateLMSRole")
+        {
+            return this.addUserBusinessService.updateLMSRole(this.objData);
         }
     }
 

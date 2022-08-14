@@ -83,16 +83,21 @@ export class AddUserDataService {
     
     
 
+    public executeupdate = function (nosqlparam: any) : Observable<any> {
 
-    public executeupdate = function (nosqlparam: any, callback) {
+        return Observable.create((observer)=> {
+            
         docClient.update(nosqlparam, function (err, data) {
             if (err) {
-                callback(err, null);
+                observer.error(err)
             }
             else {
-                callback(null, data);
+                observer.next(data);
+                observer.complete();
             }
         });
+        })
+
     }
 
 
