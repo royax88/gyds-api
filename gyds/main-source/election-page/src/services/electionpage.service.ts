@@ -28,8 +28,6 @@ export class ElectionPageService {
             this.id = JSON.parse(event.body).id;
             object = JSON.parse(event.body);
         }
-        console.log("action", this.actioncd)
-        console.log("id", this.id)
         if(this.actioncd=='checkExistingElecRecord')
         {
 

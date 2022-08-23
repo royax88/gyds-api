@@ -69,7 +69,8 @@ export class LoanApplicationNoSQLParams {
             'username' : obj.data.username,
             'secondTabCheckbox' : obj.data.secondTabCheckbox,
             'thirdTabCheckbox' : obj.data.thirdTabCheckbox,
-            'fourthTabCheckbox' : obj.data.fourthTabCheckbox
+            'fourthTabCheckbox' : obj.data.fourthTabCheckbox,
+            'selectedForm': obj.data.selectedForm
         }
         };
         return finalParams;
