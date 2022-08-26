@@ -10,23 +10,48 @@ export class BusinssPartnerBusinessService {
     }
 
     public insertBusinessPartner(obj: any) : Observable<any> {
+        
+
+        
+
 
         let queryParams = this.noparams.insertIntoBusinessPartnerTbl(obj);
+        let existingCodeParams = this.noparams.checkExistingCode(obj.data.bpCode.toLowerCase());
         return Observable.create((observer) => {
-            this.manageConfigDataService.InsertData(queryParams).subscribe(
-                (data) => {
-                    
-                    let msg = {
-                        message: "createdBusinessPartner"
+
+
+            this.manageConfigDataService.executequeryDataService(existingCodeParams).subscribe(
+                (existingBpCode) => {
+                    if(existingBpCode.Count > 0)
+                    {
+                        let msg = {
+                            message: "existingCode"
+                        }
+                        observer.next(msg);
+                        observer.complete();
                     }
-                    observer.next(msg);
-                    observer.complete();
-                    
+                    else {
+                        this.manageConfigDataService.InsertData(queryParams).subscribe(
+                            (data) => {
+                                
+                                let msg = {
+                                    message: "createdBusinessPartner"
+                                }
+                                observer.next(msg);
+                                observer.complete();
+                                
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+                    }
                 },
                 (error) => {
-                    console.log("errr", error)
                     observer.error(error);
-                });
+                }
+                )
+            
         })
 
     }

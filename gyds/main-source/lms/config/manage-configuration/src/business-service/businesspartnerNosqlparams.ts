@@ -156,7 +156,7 @@ export class BusinessPartnerNoSQLParams {
         TableName: this.businessPartnerTbl,
         Item: {
             'id': uuidv4(),
-            'bpCode': newPrimaryHashKey,
+            'bpCode': obj.data.bpCode.toLowerCase(),
             'bpName' : obj.data.bpName,
             'bpCivilStatus' : obj.data.bpCivilStatus,
             'bpCompanyCd' : obj.data.bpCompany  == "" ? "" : obj.data.bpCompany.code,
@@ -241,6 +241,23 @@ export class BusinessPartnerNoSQLParams {
 
      return params;
      
+    }
+
+    public checkExistingCode(bpcode:any) {
+    
+        let params = {
+        TableName: this.businessPartnerTbl,
+        IndexName: 'bpCode-index',
+        KeyConditionExpression: '#bpCode =:bpCode',
+            ExpressionAttributeNames: {
+                '#bpCode' : 'bpCode'
+            },
+            ExpressionAttributeValues: {
+                ':bpCode': bpcode
+            },
+        ScanIndexForward: false 
+     }
+     return params;
     }
 
     private setNoSqlTables() {
