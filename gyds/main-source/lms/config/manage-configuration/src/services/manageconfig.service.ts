@@ -3,6 +3,7 @@ import { HomePageModel } from '../models/HomePageModel';
 import { ManageConfigBusinessService} from '../business-service/manage-config-business-service';
 import {BusinssPartnerBusinessService} from '../business-service/businesspartner.service';
 import {ApprovalMatrixPartnerBusinessService} from '../business-service/approvalmatrix.service';
+import {RoleBusinessService} from '../business-service/role.service';
 export class ManageConfigService {
 
     private model;
@@ -13,6 +14,7 @@ export class ManageConfigService {
     private manageConfigBusinessService = new ManageConfigBusinessService();
     private businssPartnerBusinessService= new BusinssPartnerBusinessService();
     private approvalMatrixBusinessService = new ApprovalMatrixPartnerBusinessService();
+    private roleBusinessService = new RoleBusinessService();
     constructor() {
         
     }
@@ -164,6 +166,24 @@ export class ManageConfigService {
             
             }
             return this.approvalMatrixBusinessService.updateMatrixTbl(this.objData);
+        }
+        else if(this.actioncd =="insertRoleTbl")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.roleBusinessService.insertRoleTbl(this.objData);
+        }
+
+        else if(this.actioncd =="getAllRole")
+        {
+            return this.roleBusinessService.getAllRole();
         }
     }
 

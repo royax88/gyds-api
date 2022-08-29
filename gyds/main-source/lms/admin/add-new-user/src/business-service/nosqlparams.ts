@@ -106,9 +106,10 @@ export class AddUserNoSQLParams {
         Key: {
             username: obj.data.username
         },
-        UpdateExpression: "set lmsrole = :lmsrole, updatedBy = :updatedBy, updatedDate = :updatedDate",
+        UpdateExpression: "set lmsrole = :lmsrole, updatedBy = :updatedBy, updatedDate = :updatedDate, lmsroleNm = :lmsroleNm",
             ExpressionAttributeValues:{
                 ":lmsrole" : obj.data.lmsrole,
+                ":lmsroleNm" : obj.data.roleNm,
                 ":updatedBy" : obj.data.user,
                 ":updatedDate" : day
             },
@@ -126,6 +127,7 @@ export class AddUserNoSQLParams {
             'username' : obj.data.username,
             'fullNm' : obj.data.fullNm,
             'lmsrole' : obj.data.lmsrole,
+            'lmsroleNm': obj.data.roleNm,
             'createdBy' : obj.data.user,
             'createdDate' : day,
             'updatedBy' : obj.data.user,
