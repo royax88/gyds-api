@@ -34,6 +34,32 @@ export class DocumentNoSQLParams {
         return finalParams;
     }
 
+    public insertDocumentRange(obj:any)
+    {
+
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Item: {
+            'id': uuidv4(),
+            'nameVal' : obj.data.name,
+            'codeVal' : obj.data.formtransaction,
+            'valueVal' : "",
+            'description' : "",
+            'detail1' : obj.data.fyStart,
+            'detail2' : obj.data.NoSchemeCode,
+            'detail3' : obj.data.fromNumberRange,
+            'detail4' : obj.data.toNumberRange,
+            'statusVal' : 'active',
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
     public updateDocumentScheme(obj:any)
     {
         var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
@@ -50,6 +76,28 @@ export class DocumentNoSQLParams {
                 ":updatedBy" : obj.data.user,
                 ":updatedDate" : day,
                 ":statusVal" : obj.data.status,
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
+    public updateDocumentRange(obj:any)
+    {
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set detail1 = :detail1, detail2 = :detail2,detail3 = :detail3,detail4 = :detail4, updatedBy = :updatedBy, updatedDate = :updatedDate",
+            ExpressionAttributeValues:{
+                ":detail1" : obj.data.fyStart,
+                ":detail2" : obj.data.NoSchemeCode,
+                ":detail3" : obj.data.fromNumberRange,
+                ":detail4" : obj.data.toNumberRange,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day
             },
             ReturnValues:"UPDATED_NEW"
         };

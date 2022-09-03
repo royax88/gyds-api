@@ -267,6 +267,16 @@ export class ManageConfigBusinessService {
         {
             queryParams = this.docNoSqlParams.updateDocumentScheme(obj);
         }
+
+        else if(name =="documentrange")
+        {
+            queryParams = this.docNoSqlParams.insertDocumentRange(obj);
+        }
+
+        else if(name =="documentrangeupdate")
+        {
+            queryParams = this.docNoSqlParams.updateDocumentRange(obj);
+        }
        
        
         return queryParams
