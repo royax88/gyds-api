@@ -2,11 +2,13 @@ import { Observable } from 'rxjs/Observable';
 import {ManageConfigDataService} from '../data-service/manage-config-data-service';
 import {MatrixNoSQLParams} from './matrixNosqlparams';
 import {AddUserNoSQLParams} from '../../../../admin/add-new-user/src/business-service/nosqlparams'
+import {RoleNoSQLParams} from '../business-service/roleNosqlparams';
 export class ApprovalMatrixPartnerBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
     private noparams = new MatrixNoSQLParams();
     private addUserParams = new AddUserNoSQLParams();
+    private roleParams = new RoleNoSQLParams();
     constructor() {
 
     }
@@ -81,10 +83,11 @@ export class ApprovalMatrixPartnerBusinessService {
     public getAllMatrixByAccess() : Observable<any> {
 
         let queryParams = this.addUserParams.getAllLMSRole();
+        let allRoleparams = this.roleParams.getAllRole();
        
         return Observable.create((observer) => {
 
-            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+            this.manageConfigDataService.executescanDS(allRoleparams).subscribe(
                 (data) => {       
                     let processorObj = [];
                     let reviewerObj = [];
@@ -93,49 +96,85 @@ export class ApprovalMatrixPartnerBusinessService {
                     
                     if(data.Count > 0)
                     {
+                        // for(let item in data.Items)
+                        // {
+                        //     console.log("item", data.Items[item])
+                        //     for(let val in data.Items[item].lmsrole)
+                        //     {
+                        //         if(data.Items[item].lmsrole[val]=="processor")
+                        //         {
+                        //             let tempObj = {
+                        //                 code: data.Items[item].lmsroleNm,
+                        //                 value: data.Items[item].lmsroleNm
+                        //             }
+                        //             processorObj.push(tempObj)
+                        //         }
+
+                        //         if(data.Items[item].lmsrole[val]=="approver")
+                        //         {
+                        //             let tempObj = {
+                        //                 code: data.Items[item].lmsroleNm,
+                        //                 value: data.Items[item].lmsroleNm
+                        //             }
+                        //             approverObj.push(tempObj)
+                        //         }
+
+                        //         if(data.Items[item].lmsrole[val]=="reviewer")
+                        //         {
+                        //             let tempObj = {
+                        //                 code: data.Items[item].username,
+                        //                 value: data.Items[item].fullNm
+                        //             }
+                        //             reviewerObj.push(tempObj)
+                        //         }
+
+                        //         if(data.Items[item].lmsrole[val]=="releaseOfficer")
+                        //         {
+                        //             let tempObj = {
+                        //                 code: data.Items[item].username,
+                        //                 value: data.Items[item].fullNm
+                        //             }
+                        //             releaseObj.push(tempObj)
+                        //         }
+                                
+                        //     }
+                        // }
                         for(let item in data.Items)
                         {
-                            console.log("item", data.Items[item])
-                            for(let val in data.Items[item].lmsrole)
+                            if(data.Items[item].roleAccess == "approver")
                             {
-                                if(data.Items[item].lmsrole[val]=="processor")
-                                {
-                                    let tempObj = {
-                                        code: data.Items[item].username,
-                                        value: data.Items[item].fullNm
-                                    }
-                                    processorObj.push(tempObj)
+                                let tempObj = {
+                                    code: data.Items[item].roleCd,
+                                    value: data.Items[item].roleNm
                                 }
-
-                                if(data.Items[item].lmsrole[val]=="approver")
-                                {
-                                    let tempObj = {
-                                        code: data.Items[item].username,
-                                        value: data.Items[item].fullNm
-                                    }
-                                    approverObj.push(tempObj)
+                                approverObj.push(tempObj)
+                            }
+                            else if(data.Items[item].roleAccess == "processor")
+                            {
+                                let tempObj = {
+                                    code: data.Items[item].roleCd,
+                                    value: data.Items[item].roleNm
                                 }
-
-                                if(data.Items[item].lmsrole[val]=="reviewer")
-                                {
-                                    let tempObj = {
-                                        code: data.Items[item].username,
-                                        value: data.Items[item].fullNm
-                                    }
-                                    reviewerObj.push(tempObj)
+                                processorObj.push(tempObj)
+                            }
+                            else if(data.Items[item].roleAccess == "reviewer")
+                            {
+                                let tempObj = {
+                                    code: data.Items[item].roleCd,
+                                    value: data.Items[item].roleNm
                                 }
-
-                                if(data.Items[item].lmsrole[val]=="releaseOfficer")
-                                {
-                                    let tempObj = {
-                                        code: data.Items[item].username,
-                                        value: data.Items[item].fullNm
-                                    }
-                                    releaseObj.push(tempObj)
+                                reviewerObj.push(tempObj)
+                            }
+                            else if(data.Items[item].roleAccess == "releaseOfficer")
+                            {
+                                let tempObj = {
+                                    code: data.Items[item].roleCd,
+                                    value: data.Items[item].roleNm
                                 }
-                                
+                                releaseObj.push(tempObj)
                             }
                         }
+
                         let newObj = {
                             processorObj : processorObj,
                             reviewerObj : reviewerObj,

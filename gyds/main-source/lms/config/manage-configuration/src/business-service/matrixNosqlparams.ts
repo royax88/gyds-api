@@ -68,17 +68,36 @@ export class MatrixNoSQLParams {
         return finalParams;
     }
 
-    public getMatrixByProcessor(processorUsername:any) {
+    public getMatrixByProcessor(processor:any) {
     
         let params = {
         TableName: this.matrixTbl,
-        IndexName: 'processorUsernm-index',
-        KeyConditionExpression: '#processorUsernm =:processorUsernm',
+        IndexName: 'processor-index',
+        KeyConditionExpression: '#processor =:processor',
             ExpressionAttributeNames: {
-                '#processorUsernm' : 'processorUsernm'
+                '#processor' : 'processor'
             },
             ExpressionAttributeValues: {
-                ':processorUsernm': processorUsername
+                ':processor': processor
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
+    public checkUserByLoanKeyProcessor(bpcode: any, processor: any) {
+    
+        let params = {
+        TableName: this.matrixTbl,
+        IndexName: 'bpcode-processor-index',
+        KeyConditionExpression: '#bpcode =:bpcode and #processor =:processor',
+            ExpressionAttributeNames: {
+                '#bpcode' : 'bpcode',
+                '#processor' : 'processor'
+            },
+            ExpressionAttributeValues: {
+                ':bpcode': bpcode,
+                ':processor': processor
             },
         ScanIndexForward: false 
      }

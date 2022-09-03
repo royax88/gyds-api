@@ -98,6 +98,7 @@ export class AddUserNoSQLParams {
      return params;
     }
 
+
     public updateLMSRole(obj:any)
     {
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");

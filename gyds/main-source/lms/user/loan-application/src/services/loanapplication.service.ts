@@ -69,7 +69,7 @@ export class LoanApplicationService {
                 this.username = JSON.parse(event.body).username;
             
             }
-            return this.loanApplicationBusinessService.getLoanByMatrix(this.username);
+            return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username);
         }
 
         else if(this.actioncd=='getLoanRequestById')
@@ -77,14 +77,16 @@ export class LoanApplicationService {
             if(process.env['localenv']==="true")
             {
                 this.loankey = event.body.loankey;
+                this.username = event.body.usernm;
             }
             else
             {
                 this.loankey = JSON.parse(event.body).loankey;
+                this.username = JSON.parse(event.body).usernm;
             
             }
             console.log("loankey", this.loankey)
-            return this.loanApplicationBusinessService.getLoanRequestById(this.loankey);
+            return this.loanApplicationBusinessService.getLoanRequestById(this.loankey, this.username);
         }
     }
 

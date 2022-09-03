@@ -3,6 +3,7 @@ import {APICheckNoSqlParams} from './api-checker.nosqlparams';
 import {AddUserNoSQLParams} from '../../main-source/lms/admin/add-new-user/src/business-service/nosqlparams';
 import {AddUserDataService} from '../../main-source/lms/admin/add-new-user/src/data-service/add-user-data-service';
 import {MatrixNoSQLParams} from '../../main-source/lms/config/manage-configuration/src/business-service/matrixNosqlparams';
+import { CompanyNoSQLParams } from '../../main-source/lms/config/manage-configuration/src/business-service/companyNosqlparams';
 var dateFormat = require('dateformat');
 
 export class APICheckerBusinessService {
@@ -87,6 +88,46 @@ export class APICheckerBusinessService {
                         observer.next(msg);
                         observer.complete();
                     }
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public validatePerLoanKey(username, moduleNm, loankey) : Observable<any> {
+        let count = 0;
+        let queryParams = this.addUserNoSQLParams.getUserRole(username);
+        return Observable.create((observer) => {
+            this.addUserDataService.executequeryDataService(queryParams).subscribe(
+                (queryParamsResults) => {
+                    if(queryParamsResults.Count > 0)
+                    {
+                        for(let item in queryParamsResults.Items[0].lmsroleNm)
+                        { 
+                            let checkParams = this.matrixNoSQLParams.checkUserByLoanKeyProcessor(loankey,queryParamsResults.Items[0].lmsroleNm[item])
+                            this.addUserDataService.executequeryDataService(checkParams).subscribe(
+                                (checkParamsResults) => {
+                                    count = count + 1;
+                                    if(checkParamsResults.Count > 0)
+                                    {
+                                        let msg = {
+                                            message: "authorized"
+                                        }
+                                        observer.next(msg);
+                                        observer.complete();
+                                    }
+
+                                }
+                            )
+                        }
+
+                        
+                    }
+                    
                     
                 },
                 (error) => {

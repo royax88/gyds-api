@@ -11,10 +11,6 @@ export class BusinssPartnerBusinessService {
 
     public insertBusinessPartner(obj: any) : Observable<any> {
         
-
-        
-
-
         let queryParams = this.noparams.insertIntoBusinessPartnerTbl(obj);
         let existingCodeParams = this.noparams.checkExistingCode(obj.data.bpCode.toLowerCase());
         return Observable.create((observer) => {

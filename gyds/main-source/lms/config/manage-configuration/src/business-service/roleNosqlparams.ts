@@ -72,6 +72,25 @@ export class RoleNoSQLParams {
      return params;
     }
 
+    public getRoleMatrix(roleAccess: any, roleNm:any) {
+    
+        let params = {
+        TableName: this.roleTbl,
+        IndexName: 'roleAccess-roleNm-index',
+        KeyConditionExpression: '#roleAccess =:roleAccess and #roleNm =:roleNm',
+            ExpressionAttributeNames: {
+                '#roleAccess' : 'roleAccess',
+                '#roleNm' : 'roleNm'
+            },
+            ExpressionAttributeValues: {
+                ':roleAccess': roleAccess,
+                ':roleNm': roleNm
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
 
     private setNoSqlTables() {
 

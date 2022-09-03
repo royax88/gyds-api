@@ -6,6 +6,7 @@ import {CurrencyNoSQLParams} from './currencyNosqlparams';
 import {CompanyNoSQLParams} from './companyNosqlparams';
 import {BranchNoSQLParams} from './branchNosqlparams';
 import {BusinessPartnerNoSQLParams} from './businesspartnerNosqlparams';
+import {DocumentNoSQLParams} from './documentNosqlparams';
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
@@ -15,6 +16,8 @@ export class ManageConfigBusinessService {
     private companyParams = new CompanyNoSQLParams();
     private branchNoSQLParams = new BranchNoSQLParams();
     private bpNoSQLParams = new BusinessPartnerNoSQLParams();
+    private docNoSqlParams = new DocumentNoSQLParams();
+    
     constructor() {
 
     }
@@ -253,6 +256,16 @@ export class ManageConfigBusinessService {
         else if(name == "businesspartnerrelationshipUpdate")
         {
             queryParams = this.bpNoSQLParams.updateBPRelationshipTbl(obj);
+        }
+
+        else if(name =="documentscheme")
+        {
+            queryParams = this.docNoSqlParams.insertDocumentScheme(obj);
+        }
+
+        else if(name =="Updatedocumentscheme")
+        {
+            queryParams = this.docNoSqlParams.updateDocumentScheme(obj);
         }
        
        
