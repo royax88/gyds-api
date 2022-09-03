@@ -185,6 +185,20 @@ export class ManageConfigService {
         {
             return this.roleBusinessService.getAllRole();
         }
+
+        else if(this.actioncd =="getCodeValByName")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.name = event.body.name;
+            }
+            else
+            {
+                this.name = JSON.parse(event.body).name;
+            
+            }
+            return this.manageConfigBusinessService.getCodeValByName(this.name);
+        }
     }
 
 }

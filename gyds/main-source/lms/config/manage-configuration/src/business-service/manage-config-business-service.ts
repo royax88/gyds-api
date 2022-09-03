@@ -292,4 +292,36 @@ export class ManageConfigBusinessService {
 
     }
 
+    public getCodeValByName(name: any) : Observable<any> {
+
+       
+        let queryParams = this.manageConfigNoSQLParams.getConfigByName(name);
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                    let objData = [];
+                    if(data.Count > 0)
+                    {
+                        for(let item in data.Items)
+                        {
+                            let newVal = {
+                                id: data.Items[item].codeVal,
+                                name: data.Items[item].codeVal
+                            }
+                            objData.push(newVal);
+                        }
+                    }
+                    observer.next(objData)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
 }

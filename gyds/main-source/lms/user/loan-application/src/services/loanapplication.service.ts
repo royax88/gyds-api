@@ -88,6 +88,13 @@ export class LoanApplicationService {
             console.log("loankey", this.loankey)
             return this.loanApplicationBusinessService.getLoanRequestById(this.loankey, this.username);
         }
+
+        else if(this.actioncd=='getAllLoanTransaction')
+        {
+            return this.loanApplicationBusinessService.getAllForms();
+        }
     }
+    
+    
 
 }

@@ -109,6 +109,14 @@ export class LoanApplicationNoSQLParams {
      return params;
     }
 
+    public getLoanTransactionByStatus() {
+    
+        let params = {
+        TableName: this.loanTbl
+     }
+     return params;
+    }
+
     private setNoSqlTables() {
 
         this.loanTbl = "gyds-lms-loan-application-" + process.env['environment_tag'];

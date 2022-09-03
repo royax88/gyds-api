@@ -300,5 +300,35 @@ export class LoanApplicationBusinessService {
 
     }
 
+    public getAllForms() : Observable<any> {
+
+       
+        let queryParams = this.loanApplicationNoSQLParams.getLoanTransactionByStatus();
+       
+        return Observable.create((observer) => {
+
+            this.loanApplicationDataService.executescanDS(queryParams).subscribe(
+                (data) => {            
+                    let obj =[];
+                    for(let item in data.Items)
+                    {
+                        let newVal = {
+                            id: data.Items[item].loankey,
+                            name: data.Items[item].loankey
+                        }
+                        obj.push(newVal)
+                    } 
+                    observer.next(obj)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
 
 }

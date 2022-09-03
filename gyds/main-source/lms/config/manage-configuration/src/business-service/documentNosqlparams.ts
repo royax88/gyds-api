@@ -56,6 +56,23 @@ export class DocumentNoSQLParams {
         return finalParams;
     }
 
+    public getAllDocumentScheme()
+    {
+        let params = {
+            TableName: this.manageConfigTbl,
+            IndexName: 'nameVal-index',
+            KeyConditionExpression: '#nameVal =:nameVal',
+                ExpressionAttributeNames: {
+                    '#nameVal' : 'nameVal'
+                },
+                ExpressionAttributeValues: {
+                    ':nameVal': "documentscheme"
+                },
+            ScanIndexForward: false 
+         }
+         return params;
+    }
+
     private setNoSqlTables() {
 
         this.manageConfigTbl = "gyds-lms-manage-config-"+ process.env['environment_tag'];
