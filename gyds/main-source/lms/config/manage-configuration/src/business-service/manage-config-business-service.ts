@@ -7,6 +7,7 @@ import {CompanyNoSQLParams} from './companyNosqlparams';
 import {BranchNoSQLParams} from './branchNosqlparams';
 import {BusinessPartnerNoSQLParams} from './businesspartnerNosqlparams';
 import {DocumentNoSQLParams} from './documentNosqlparams';
+import {PaymentInterestNoSQLParams} from './paymentinterestNosqlparams'
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
@@ -17,6 +18,7 @@ export class ManageConfigBusinessService {
     private branchNoSQLParams = new BranchNoSQLParams();
     private bpNoSQLParams = new BusinessPartnerNoSQLParams();
     private docNoSqlParams = new DocumentNoSQLParams();
+    private paymentParams = new PaymentInterestNoSQLParams();
     
     constructor() {
 
@@ -277,8 +279,17 @@ export class ManageConfigBusinessService {
         {
             queryParams = this.docNoSqlParams.updateDocumentRange(obj);
         }
-       
-       
+
+        else if(name =="paymentterms")
+        {
+            queryParams = this.paymentParams.insertConfigPayment(obj);
+        } 
+
+        else if(name =="paymenttermupdate")
+        {
+            queryParams = this.paymentParams.updateConfigPayment(obj);
+        } 
+     
         return queryParams
     }
 
