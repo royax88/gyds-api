@@ -289,6 +289,16 @@ export class ManageConfigBusinessService {
         {
             queryParams = this.paymentParams.updateConfigPayment(obj);
         } 
+
+        else if(name =="interestscheme")
+        {
+            queryParams = this.paymentParams.insertConfigInterest(obj);
+        } 
+
+        else if(name =="interestschemeupdate")
+        {
+            queryParams = this.paymentParams.updateConfigInterest(obj);
+        } 
      
         return queryParams
     }
