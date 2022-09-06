@@ -299,6 +299,16 @@ export class ManageConfigBusinessService {
         {
             queryParams = this.paymentParams.updateConfigInterest(obj);
         } 
+
+        else if(name =="typesofcollateral")
+        {
+            queryParams = this.manageConfigNoSQLParams.insertCollateralType(obj);
+        } 
+
+        else if(name =="collateralupdate")
+        {
+            queryParams = this.manageConfigNoSQLParams.updateCollateralType(obj);
+        }
      
         return queryParams
     }

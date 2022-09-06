@@ -182,6 +182,48 @@ export class ManageConfigNoSQLParams {
         return finalParams;
     }
 
+    public insertCollateralType(obj:any)
+    {
+
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Item: {
+            'id': uuidv4(),
+            'nameVal' : obj.data.name,
+            'codeVal' : obj.data.collateralCd,
+            'valueVal' : obj.data.collateralDescr,
+            'description' : obj.data.collateralDescr,
+            'statusVal' : 'active',
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
+    public updateCollateralType(obj:any)
+    {
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.manageConfigTbl,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set valueVal = :valueVal, updatedBy = :updatedBy, updatedDate = :updatedDate, statusVal = :statusVal",
+            ExpressionAttributeValues:{
+                ":valueVal" : obj.data.collateralDescr,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day,
+                ":statusVal" : obj.data.status,
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
     private setNoSqlTables() {
 
         this.manageCompany = "gyds-lms-config-company-" + process.env['environment_tag'];
