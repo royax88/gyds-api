@@ -121,6 +121,23 @@ export class DocumentNoSQLParams {
          return params;
     }
 
+    public getSchemeByCode(val: any)
+    {
+        let params = {
+            TableName: this.manageConfigTbl,
+            IndexName: 'codeVal-index',
+            KeyConditionExpression: '#codeVal =:codeVal',
+                ExpressionAttributeNames: {
+                    '#codeVal' : 'codeVal'
+                },
+                ExpressionAttributeValues: {
+                    ':codeVal': val 
+                },
+            ScanIndexForward: false 
+         }
+         return params;
+    }
+
     private setNoSqlTables() {
 
         this.manageConfigTbl = "gyds-lms-manage-config-"+ process.env['environment_tag'];

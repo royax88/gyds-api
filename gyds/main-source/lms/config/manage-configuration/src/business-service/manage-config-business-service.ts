@@ -7,7 +7,8 @@ import {CompanyNoSQLParams} from './companyNosqlparams';
 import {BranchNoSQLParams} from './branchNosqlparams';
 import {BusinessPartnerNoSQLParams} from './businesspartnerNosqlparams';
 import {DocumentNoSQLParams} from './documentNosqlparams';
-import {PaymentInterestNoSQLParams} from './paymentinterestNosqlparams'
+import {PaymentInterestNoSQLParams} from './paymentinterestNosqlparams';
+import {FormNoSQLParams} from './formNmNosqlparams'
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
@@ -19,6 +20,7 @@ export class ManageConfigBusinessService {
     private bpNoSQLParams = new BusinessPartnerNoSQLParams();
     private docNoSqlParams = new DocumentNoSQLParams();
     private paymentParams = new PaymentInterestNoSQLParams();
+    private formParams = new FormNoSQLParams();
     
     constructor() {
 
@@ -348,12 +350,118 @@ export class ManageConfigBusinessService {
                         {
                             let newVal = {
                                 id: data.Items[item].codeVal,
-                                name: data.Items[item].codeVal
+                                name: data.Items[item].codeVal,
+                                main: data.Items[item].id
                             }
                             objData.push(newVal);
                         }
                     }
                     observer.next(objData)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public insertIntoFormTbl(obj: any) : Observable<any> {
+        let queryParams = this.formParams.checkExistingRecord(obj.data.formId);
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                    if(data.Count > 0)
+                    {
+                        let msg = {
+                            message: "existingRecord"
+                        }
+                        observer.next(msg)
+                        observer.complete();
+                    }
+                    else {
+                        let insertParams = this.formParams.insertInfoFormTbl(obj);
+                        this.manageConfigDataService.InsertData(insertParams).subscribe(
+                            (data) => {
+                                
+                                let msg = {
+                                    message: "insertedForm"
+                                }
+                                observer.next(msg);
+                                observer.complete();
+                                
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+                    }
+                    
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getAllFormData() : Observable<any> {
+       
+        let queryParams = this.formParams.getAllformIds();
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {             
+                    observer.next(data)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public updateFormTbl(obj: any) : Observable<any> {
+
+        let queryParams = this.formParams.updateDocumentRange(obj);
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+                    
+                    let msg = {
+                        message: "updatedConfig"
+                    }
+                    observer.next(msg);
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public updateFormMatrixTbl(obj: any) : Observable<any> {
+        
+        let queryParams = this.formParams.updateApprovalMatrix(obj);
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+                    
+                    let msg = {
+                        message: "updatedConfig"
+                    }
+                    observer.next(msg);
                     observer.complete();
                     
                 },

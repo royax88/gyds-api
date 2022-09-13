@@ -199,6 +199,53 @@ export class ManageConfigService {
             }
             return this.manageConfigBusinessService.getCodeValByName(this.name);
         }
+
+        else if(this.actioncd =="insertFormTbl")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.insertIntoFormTbl(this.objData);
+        }
+
+        else if(this.actioncd =="getAllFormData")
+        {
+            return this.manageConfigBusinessService.getAllFormData();
+        }
+
+        else if(this.actioncd =="updateFormTbl")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.updateFormTbl(this.objData);
+        }
+
+        else if(this.actioncd =="updateFormMatrixTbl")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.updateFormMatrixTbl(this.objData);
+        }
     }
 
 }

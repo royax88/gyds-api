@@ -10,25 +10,16 @@ export class LoanApplicationNoSQLParams {
     }
 
 
-    public insertIntoUserTable(obj:any)
+    public insertIntoUserTable(obj:any, loankey: any, formid: any, incVal: any)
     {
-        var CUSTOMEPOCH = 13000; // artificial epoch
-        function generateRowId(shardId /* range 0-64 for shard/slot */) {
-        var ts = new Date().getTime() - CUSTOMEPOCH; // limit to recent
-        var randid = Math.floor(Math.random() * 24);
-        ts = (ts * 2);   // bit-shift << 6
-        ts = ts + shardId;
-        return (ts * 6) + randid;
-        }
-        var newPrimaryHashKey = "formno-" + generateRowId(1);
 
-        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
 
         let finalParams: any = {
         TableName: this.loanTbl,
         Item: {
-            'loankey' : newPrimaryHashKey,
-            'status' : 'processed',
+            'loankey' : loankey,
+            'status' : 'forreview',
             'applicantLastNm': obj.data.firstAppLastName,
             'applicantFirstNm': obj.data.firstAppFirstName,
             'applicantMiddleNm': obj.data.firstAppMiddleName,
@@ -70,7 +61,8 @@ export class LoanApplicationNoSQLParams {
             'secondTabCheckbox' : obj.data.secondTabCheckbox,
             'thirdTabCheckbox' : obj.data.thirdTabCheckbox,
             'fourthTabCheckbox' : obj.data.fourthTabCheckbox,
-            'selectedForm': obj.data.selectedForm
+            'formid': formid,
+            'incrementValue': incVal
         }
         };
         return finalParams;
@@ -107,6 +99,23 @@ export class LoanApplicationNoSQLParams {
         ScanIndexForward: false 
      }
      return params;
+    }
+
+    public getFormId(val: any)
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'formid-index',
+            KeyConditionExpression: '#formid =:formid',
+                ExpressionAttributeNames: {
+                    '#formid' : 'formid'
+                },
+                ExpressionAttributeValues: {
+                    ':formid': val 
+                },
+            ScanIndexForward: false 
+         }
+         return params;
     }
 
     public getLoanTransactionByStatus() {
