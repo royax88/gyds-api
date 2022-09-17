@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { HomePageModel } from '../models/HomePageModel';
 import { LoanApplicationBusinessService} from '../business-service/loan-application-business-service';
+import { resolve } from 'url';
 
 export class LoanApplicationService {
 
@@ -85,7 +86,6 @@ export class LoanApplicationService {
                 this.username = JSON.parse(event.body).usernm;
             
             }
-            console.log("loankey", this.loankey)
             return this.loanApplicationBusinessService.getLoanRequestById(this.loankey, this.username);
         }
 
@@ -94,7 +94,6 @@ export class LoanApplicationService {
             return this.loanApplicationBusinessService.getAllForms();
         }
     }
-    
     
 
 }

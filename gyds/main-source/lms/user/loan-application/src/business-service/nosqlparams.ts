@@ -62,7 +62,8 @@ export class LoanApplicationNoSQLParams {
             'thirdTabCheckbox' : obj.data.thirdTabCheckbox,
             'fourthTabCheckbox' : obj.data.fourthTabCheckbox,
             'formid': formid,
-            'incrementValue': incVal
+            'incrementValue': incVal,
+            'formname' : obj.data.selectedForm
         }
         };
         return finalParams;

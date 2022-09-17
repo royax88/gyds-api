@@ -7,6 +7,7 @@ import {APICheckerBusinessService} from '../../../../../../common/api-check/api-
 import {AddUserNoSQLParams} from '../../../../../lms/admin/add-new-user/src/business-service/nosqlparams';
 import {RoleNoSQLParams} from '../../../../../lms/config/manage-configuration/src/business-service/roleNosqlparams';
 import {DocumentNoSQLParams} from '../../../../config/manage-configuration/src/business-service/documentNosqlparams';
+import {FormNoSQLParams} from '../../../../config/manage-configuration/src/business-service/formNmNosqlparams';
 import { max } from 'lodash';
 var dateFormat = require('dateformat');
 
@@ -20,6 +21,7 @@ export class LoanApplicationBusinessService {
     private lmsRole = new AddUserNoSQLParams();
     private roleMatrix = new RoleNoSQLParams();
     private schemeCd = new DocumentNoSQLParams();
+    private formParams = new FormNoSQLParams();
     constructor() {
 
     }
@@ -56,45 +58,46 @@ export class LoanApplicationBusinessService {
     }
 
     public getLoanByMatrixByProcessorV2(username: any) : Observable<any> {
-
-       
-        
+ 
         let roleParams = this.lmsRole.getUserRole(username);
-        return Observable.create((observer) => {
+        return Observable.create(async (observer) => {
 
-            this.apiChecker.isValidUserPerModule(username, "processor").subscribe(
-                (data) => {
+            await this.apiChecker.isValidUserPerModule(username, "processor").subscribe(
+                async (data) => {
                     
                     if(data.message == "authorized")
                     {
-                        this.loanApplicationDataService.executequeryDataService(roleParams).subscribe(
-                            (roleParamsResults) => {
+                        await this.loanApplicationDataService.executequeryDataServicePromise(roleParams).then(
+                           async (roleParamsResults) => {
                                 let count = 0; 
+                                
                                 if(roleParamsResults.Items[0].lmsroleNm.length > 0)
                                 {
+                                    
                                     let holderObj = [];
                                     for(let item in roleParamsResults.Items[0].lmsroleNm)
                                     {
                                         
-                                        let checkVal = this.roleMatrix.getRoleMatrix("processor", roleParamsResults.Items[0].lmsroleNm[item])
-
-                                        this.loanApplicationDataService.executequeryDataService(checkVal).subscribe(
-                                            (checkValResults)=> {
+                                        let checkVal = this.roleMatrix.getRoleMatrix("processor", roleParamsResults.Items[0].lmsroleNm[item]);
+                                        
+                                        await this.loanApplicationDataService.executequeryDataServicePromise(checkVal).then(
+                                            async (checkValResults)=> {
+                                                
                                                 if(checkValResults.Count > 0)
                                                 { 
-                                                   let matrixParams = this.matrixParams.getMatrixByProcessor(roleParamsResults.Items[0].lmsroleNm[item]);
-                                                   this.loanApplicationDataService.executequeryDataService(matrixParams).subscribe(
-                                                    (matrixParamsResults) => {
+                                                   let matrixParams = this.formParams.getFormProcessor(checkValResults.Items[0].roleNm);
+                                                   await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                    async (matrixParamsResults) => {
                                                         if(matrixParamsResults.Count > 0)
                                                         {
                                                             for(let res in matrixParamsResults.Items)
                                                             {
                                                                 
-                                                                let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(matrixParamsResults.Items[res].bpcode);
+                                                                let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formid);
                                                                 
-                                                                this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                                                                await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
                                                                     (loanData) => {
-                                                                        count = count + 1;
+                                                                        
                                                                         for(let item in loanData.Items)
                                                                             {
                                                                                 let loanRequests = {
@@ -105,12 +108,6 @@ export class LoanApplicationBusinessService {
                                                                                 }  
                                                                                 holderObj.push(loanRequests)
                                                                             }   
-
-                                                                            if(count == matrixParamsResults.Count)
-                                                                            {
-                                                                                observer.next(holderObj);
-                                                                                observer.complete();
-                                                                            }
                                                                     }
                                                                 )
                                                              
@@ -130,7 +127,8 @@ export class LoanApplicationBusinessService {
                                             }
                                         )
                                     } 
-
+                                    observer.next(holderObj);
+                                    observer.complete();
                                 }
                                 else {
                                     let msg = {
@@ -157,87 +155,18 @@ export class LoanApplicationBusinessService {
 
     }
 
-    // public getLoanByMatrix(username: any) : Observable<any> {
 
-       
-    //     let matrixParams = this.matrixParams.getMatrixByProcessor(username);
-    //     return Observable.create((observer) => {
-
-    //         this.apiChecker.isValidUserPerModule(username, "processor").subscribe(
-    //             (data) => {
-                    
-    //                 if(data.message == "authorized")
-    //                 {
-    //                     this.loanApplicationDataService.executequeryDataService(matrixParams).subscribe(
-    //                         (matrixData) => {
-    //                             let count = 0; 
-    //                             let objData = []
-    //                             if(matrixData.Count == 0)
-    //                             {
-    //                                 observer.next(data);
-    //                                 observer.complete();
-    //                             }
-    //                             for(let matrixItem in matrixData.Items)
-    //                             {
-    //                                 let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(matrixData.Items[matrixItem].bpcode);
-                                   
-    //                                 this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
-    //                                     (loanData) => {
-    //                                         count = count + 1;
-    //                                         for(let item in loanData.Items)
-    //                                         {
-    //                                             let loanRequests = {
-    //                                                 id: loanData.Items[item].loankey,
-    //                                                 applicantName: loanData.Items[item].applicantLastNm,
-    //                                                 status: loanData.Items[item].status,
-    //                                                 applicationDate: loanData.Items[item].applicationDate
-    //                                             }  
-    //                                             objData.push(loanRequests)
-    //                                         }   
-            
-    //                                         if(count == matrixData.Count)
-    //                                         {
-    //                                             observer.next(objData)
-    //                                             observer.complete();
-    //                                         }
-                
-    //                                     },
-    //                                     (error) => {
-    //                                         console.log("errr", error)
-    //                                         observer.error(error);
-    //                                     }
-    //                                 ) 
-    //                             }
-                                
-    //                         },
-    //                         (error) => {
-    //                             console.log("errr", error)
-    //                             observer.error(error);
-    //                         });
-    //                 }
-    //                 else {
-    //                     observer.next(data)
-    //                     observer.complete();
-    //                 }
-    //             },
-    //             (error) => {
-    
-    //             }
-    //         )
-
-    //     })
-
-    // }
 
     public getLoanRequestById(loankey: any, username: any) : Observable<any> {
        
         let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(loankey);
         return Observable.create((observer) => {
-
-            this.apiChecker.validatePerLoanKey(username,"processor",loankey).subscribe(
-                (data) => {
-                    if(data.message == "authorized")
-                    {
+            console.log("loankey", loankey)
+            // this.apiChecker.validatePerLoanKey(username,"processor",loankey).subscribe(
+            //     (data) => {
+            //         console.log("data", data)
+                    // if(data.message == "authorized")
+                    // {
                         this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
                             (data) => {
                                 let objData = []
@@ -249,15 +178,15 @@ export class LoanApplicationBusinessService {
                                 console.log("errr", error)
                                 observer.error(error);
                             });
-                    }
-                    else {
-                        observer.next(data);
-                        observer.complete();
-                    }
-                }
-            )
+                    // }
+                    // else {
+                    //     observer.next(data);
+                    //     observer.complete();
+                    // }
+                //}
+        //     )
           
-        })
+         })
 
     }
 

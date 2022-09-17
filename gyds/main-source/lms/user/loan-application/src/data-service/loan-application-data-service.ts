@@ -21,6 +21,22 @@ export class LoanApplicationDataService {
         });
     }
 
+    public executequeryDataServicePromise(params: any): Promise<any>
+    {
+        return new Promise(
+        (resolve, reject) => {
+            docClient.query(params, function (err, data) {
+                if (err) {
+                }
+                else {
+                    resolve(data)
+                }
+            });
+        }
+            
+        )
+    }
+
     public executequery = function (nosqlparam: any, callback) {
 
         docClient.query(nosqlparam, function (err, data) {
@@ -32,6 +48,29 @@ export class LoanApplicationDataService {
                 callback(null, data);
             }
         });
+
+    }
+
+    public executequeryAsync = async function (nosqlparam: any) {
+
+        const promise = new Promise(resolve => 
+            docClient.query(nosqlparam, function (err, data) {
+                resolve(data);
+            })
+            );
+
+        const result = await promise;
+        return result;
+
+    }
+
+    public executequeryPromise = function  (nosqlparam: any) {
+
+        return new Promise<any>(resolve => {
+             docClient.query(nosqlparam, function (err, data) {
+              resolve(data);
+            });
+        })
 
     }
 
