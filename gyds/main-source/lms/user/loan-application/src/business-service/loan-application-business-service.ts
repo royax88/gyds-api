@@ -85,7 +85,9 @@ export class LoanApplicationBusinessService {
                                                 
                                                 if(checkValResults.Count > 0)
                                                 { 
+                                                    console.log("checkValResults.Items[0].roleNm", checkValResults.Items[0].roleNm)
                                                    let matrixParams = this.formParams.getFormProcessor(checkValResults.Items[0].roleNm);
+                                                   console.log("matrixParams", matrixParams)
                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
                                                     async (matrixParamsResults) => {
                                                         if(matrixParamsResults.Count > 0)

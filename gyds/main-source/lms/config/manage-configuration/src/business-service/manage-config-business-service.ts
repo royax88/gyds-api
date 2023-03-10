@@ -371,9 +371,9 @@ export class ManageConfigBusinessService {
     public insertIntoFormTbl(obj: any) : Observable<any> {
         let queryParams = this.formParams.checkExistingRecord(obj.data.formId);
         return Observable.create((observer) => {
-
             this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
                 (data) => {
+                    console.log("data", data)
                     if(data.Count > 0)
                     {
                         let msg = {
@@ -384,6 +384,8 @@ export class ManageConfigBusinessService {
                     }
                     else {
                         let insertParams = this.formParams.insertInfoFormTbl(obj);
+                        console.log("insertParams", insertParams)
+
                         this.manageConfigDataService.InsertData(insertParams).subscribe(
                             (data) => {
                                 

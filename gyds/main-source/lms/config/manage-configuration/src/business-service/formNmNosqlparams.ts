@@ -25,7 +25,7 @@ export class FormNoSQLParams {
             'detail3' : '',
             'detail4' : '',
             'detail5' : '',
-            'detail6' : '',
+            'detail6' : 'temp',
             'detail7' : '',
             'detail8' : '',
             'createdBy' : obj.data.createdBy,
