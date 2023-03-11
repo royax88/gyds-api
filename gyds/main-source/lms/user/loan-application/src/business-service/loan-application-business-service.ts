@@ -256,7 +256,7 @@ export class LoanApplicationBusinessService {
                                                 //insert into audit table
                                                 this.auditSvc.insertIntoAuditTbl(
                                                     loankey, 
-                                                    "forreview",
+                                                    "Processed",
                                                     "Create New Loan Application",
                                                     obj.data.createdBy,
                                                     currentDate
@@ -308,7 +308,7 @@ export class LoanApplicationBusinessService {
                                                     //insert into audit table
                                                     this.auditSvc.insertIntoAuditTbl(
                                                         loankey, 
-                                                        "forreview",
+                                                        "Processed",
                                                         "Create New Loan Application",
                                                         obj.data.createdBy,
                                                         currentDate
