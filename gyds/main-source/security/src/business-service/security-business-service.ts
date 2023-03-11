@@ -50,7 +50,7 @@ export class SecurityBusinessService {
                                             fullName: data.Items[0].firstNm + " " + data.Items[0].lastNm,
                                             systemRole: data.Items[0].systemRole,
                                             module: data.Items[0].module,
-                                            lmsRole: lmsroledata.Items[0].lmsrole,
+                                            lmsRole: lmsroledata.Items[0].lmsrole.filter((item, i, ar) => ar.indexOf(item) === i),
                                             username: data.Items[0].username,
                                             apikey: process.env["apikey"],
                                             message: "validuser"
@@ -71,6 +71,7 @@ export class SecurityBusinessService {
                                             apikey: process.env["apikey"],
                                             message: "validuser"
                                         }
+                                        console.log("info 2", info)
                                         observer.next(info);
                                         observer.complete();
                                     }

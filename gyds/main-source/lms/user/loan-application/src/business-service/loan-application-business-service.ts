@@ -9,6 +9,7 @@ import {RoleNoSQLParams} from '../../../../../lms/config/manage-configuration/sr
 import {DocumentNoSQLParams} from '../../../../config/manage-configuration/src/business-service/documentNosqlparams';
 import {FormNoSQLParams} from '../../../../config/manage-configuration/src/business-service/formNmNosqlparams';
 import { max } from 'lodash';
+import { ConsoleReporter } from 'jasmine';
 var dateFormat = require('dateformat');
 
 export class LoanApplicationBusinessService {
@@ -58,7 +59,7 @@ export class LoanApplicationBusinessService {
     }
 
     public getLoanByMatrixByProcessorV2(username: any) : Observable<any> {
- 
+        console.log("getLoanByMatrixByProcessorV2")
         let roleParams = this.lmsRole.getUserRole(username);
         return Observable.create(async (observer) => {
 
@@ -67,29 +68,31 @@ export class LoanApplicationBusinessService {
                     
                     if(data.message == "authorized")
                     {
+                        console.log("authorized processor")
                         await this.loanApplicationDataService.executequeryDataServicePromise(roleParams).then(
                            async (roleParamsResults) => {
                                 let count = 0; 
-                                
+                                console.log("length", roleParamsResults.Items[0].lmsroleNm.length)
                                 if(roleParamsResults.Items[0].lmsroleNm.length > 0)
                                 {
                                     
                                     let holderObj = [];
-                                    for(let item in roleParamsResults.Items[0].lmsroleNm)
+                                    let uniqueRole = roleParamsResults.Items[0].lmsroleNm.filter((item, i, ar) => ar.indexOf(item) === i)
+                                    for(let item in uniqueRole)
                                     {
                                         
                                         let checkVal = this.roleMatrix.getRoleMatrix("processor", roleParamsResults.Items[0].lmsroleNm[item]);
-                                        
                                         await this.loanApplicationDataService.executequeryDataServicePromise(checkVal).then(
                                             async (checkValResults)=> {
                                                 
                                                 if(checkValResults.Count > 0)
                                                 { 
-                                                    console.log("checkValResults.Items[0].roleNm", checkValResults.Items[0].roleNm)
+                                                   
                                                    let matrixParams = this.formParams.getFormProcessor(checkValResults.Items[0].roleNm);
-                                                   console.log("matrixParams", matrixParams)
+
                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
                                                     async (matrixParamsResults) => {
+                                                        console.log("matrixParamsResults", matrixParamsResults)
                                                         if(matrixParamsResults.Count > 0)
                                                         {
                                                             for(let res in matrixParamsResults.Items)
@@ -99,7 +102,6 @@ export class LoanApplicationBusinessService {
                                                                 
                                                                 await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
                                                                     (loanData) => {
-                                                                        
                                                                         for(let item in loanData.Items)
                                                                             {
                                                                                 let loanRequests = {
@@ -114,14 +116,15 @@ export class LoanApplicationBusinessService {
                                                                 )
                                                              
                                                             }
+                                                            
                                                         } 
-                                                        else {
-                                                            let msg = {
-                                                                message: "NoRecords"
-                                                            }
-                                                            observer.next(msg);
-                                                            observer.complete();
-                                                        }
+                                                        // else {
+                                                        //     let msg = {
+                                                        //         message: "NoRecords"
+                                                        //     }
+                                                        //     observer.next(msg);
+                                                        //     observer.complete();
+                                                        // }
                                                     }
                                                    )
                                                 }
