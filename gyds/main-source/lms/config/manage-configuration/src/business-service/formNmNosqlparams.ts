@@ -5,7 +5,8 @@ export class FormNoSQLParams {
 
     public  tblNmL: string;
     public formTbl: string;
-
+    public formListTbl: string;
+    public numberRangeTbl: string;
     constructor() {
         this.setNoSqlTables();
     }
@@ -17,7 +18,8 @@ export class FormNoSQLParams {
         let finalParams: any = {
         TableName: this.formTbl,
         Item: {
-            'formid' : obj.data.formId,
+            'primaryid':  obj.data.formId,
+            'formid' : uuidv4(),
             'formname' : obj.data.formNm,
             'statusVal' : '',
             'detail1' : '',
@@ -37,10 +39,63 @@ export class FormNoSQLParams {
         return finalParams;
     }
 
+    public insertInfoFormListTbl(obj:any)
+    {
+
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.formListTbl,
+        Item: {
+            'formid' : obj.data.formId,
+            'formname' : obj.data.formNm,
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
+    public insertIntoNumberRangeTbl(obj:any)
+    {
+
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.numberRangeTbl,
+        Item: {
+            'formid' : obj.data.id,
+            'detail1' : obj.data.fyStart.year + "-" + obj.data.fyStart.month + "-" + obj.data.fyStart.day,
+            'detail2' : obj.data.NoSchemeCode,
+            'detail3' : obj.data.fromNumberRange,
+            'detail4' : obj.data.toNumberRange,
+            'createdBy' : obj.data.user,
+            'createdDate' : day
+        }
+        };
+        return finalParams;
+    }
+
     public checkExistingRecord(formid: any)
     {
         let params = {
-            TableName: this.formTbl,
+            TableName: this.formListTbl,
+            KeyConditionExpression: '#formid =:formid',
+                ExpressionAttributeNames: {
+                    '#formid' : 'formid'
+                },
+                ExpressionAttributeValues: {
+                    ':formid': formid
+                },
+            ScanIndexForward: false 
+         }
+         return params;
+    }
+
+    public getDocumentRangeById(formid: any)
+    {
+        let params = {
+            TableName: this.numberRangeTbl,
             KeyConditionExpression: '#formid =:formid',
                 ExpressionAttributeNames: {
                     '#formid' : 'formid'
@@ -60,6 +115,24 @@ export class FormNoSQLParams {
          }
          return params;
     }
+
+    public getAllformListIds()
+    {
+        let params = {
+            TableName: this.formListTbl
+         }
+         return params;
+    }
+
+    public getAllNumberRangeTbl()
+    {
+        let params = {
+            TableName: this.numberRangeTbl
+         }
+         return params;
+    }
+
+
 
     public updateDocumentRange(obj:any)
     {
@@ -105,6 +178,27 @@ export class FormNoSQLParams {
         return finalParams;
     }
 
+    public insertApprovalMatrix(obj:any)
+    {
+
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.formTbl,
+        Item: {
+            'formid' : uuidv4(),
+            'formidval' : obj.data.id,
+            'detail5' : obj.data.thresholdAmount,
+            'detail6' : obj.data.processor,
+            'detail7' : obj.data.reviewer,
+            'detail8' : obj.data.approver,
+            'detail9' : obj.data.currency,
+            'createdBy' : obj.data.user,
+            'createdDate' : day
+        }
+        };
+        return finalParams;
+    }
+
     public getFormProcessor(val: any) {
     
         let params = {
@@ -126,6 +220,8 @@ export class FormNoSQLParams {
     private setNoSqlTables() {
 
         this.formTbl = "gyds-lms-config-form-"+ process.env['environment_tag'];
+        this.formListTbl = "gyds-lms-config-form-list-"+ process.env['environment_tag'];
+        this.numberRangeTbl = "gyds-lms-config-number-range-" + process.env['environment_tag'];
     }
     
 }

@@ -383,7 +383,7 @@ export class ManageConfigBusinessService {
                         observer.complete();
                     }
                     else {
-                        let insertParams = this.formParams.insertInfoFormTbl(obj);
+                        let insertParams = this.formParams.insertInfoFormListTbl(obj);
                         console.log("insertParams", insertParams)
 
                         this.manageConfigDataService.InsertData(insertParams).subscribe(
@@ -415,6 +415,44 @@ export class ManageConfigBusinessService {
     public getAllFormData() : Observable<any> {
        
         let queryParams = this.formParams.getAllformIds();
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {             
+                    observer.next(data)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getAllFormListData() : Observable<any> {
+       
+        let queryParams = this.formParams.getAllformListIds();
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {             
+                    observer.next(data)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getAllNumberRange() : Observable<any> {
+       
+        let queryParams = this.formParams.getAllNumberRangeTbl();
         return Observable.create((observer) => {
 
             this.manageConfigDataService.executescanDS(queryParams).subscribe(
@@ -464,6 +502,69 @@ export class ManageConfigBusinessService {
                         message: "updatedConfig"
                     }
                     observer.next(msg);
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public insertApprovalMatrix(obj: any) : Observable<any> {
+        console.log("insertApprovalMatrix", obj)
+        return Observable.create((observer) => {
+                        let insertParams = this.formParams.insertApprovalMatrix(obj);
+
+                        this.manageConfigDataService.InsertData(insertParams).subscribe(
+                            (data) => {
+                                
+                                let msg = {
+                                    message: "insertedForm"
+                                }
+                                observer.next(msg);
+                                observer.complete();
+                                
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+                    
+        })
+    }
+
+    public insertIntoNumberRngTbl(obj: any) : Observable<any> {
+        console.log("insertIntoNumberRngTbl", obj)
+        return Observable.create((observer) => {
+                        let insertParams = this.formParams.insertIntoNumberRangeTbl(obj);
+
+                        this.manageConfigDataService.InsertData(insertParams).subscribe(
+                            (data) => {
+                                
+                                let msg = {
+                                    message: "insertedForm"
+                                }
+                                observer.next(msg);
+                                observer.complete();
+                                
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+                    
+        })
+    }
+
+    public getDocumentRangeByid(obj: any) : Observable<any> {
+        let queryParams = this.formParams.getDocumentRangeById(obj.data.formId);
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                    observer.next(data)
                     observer.complete();
                     
                 },

@@ -77,14 +77,12 @@ export class RoleNoSQLParams {
         let params = {
         TableName: this.roleTbl,
         IndexName: 'roleAccess-roleNm-index',
-        KeyConditionExpression: '#roleAccess =:roleAccess and #roleNm =:roleNm',
+        KeyConditionExpression: '#roleAccess =:roleAccess',
             ExpressionAttributeNames: {
-                '#roleAccess' : 'roleAccess',
-                '#roleNm' : 'roleNm'
+                '#roleAccess' : 'roleAccess'
             },
             ExpressionAttributeValues: {
-                ':roleAccess': roleAccess,
-                ':roleNm': roleNm
+                ':roleAccess': roleAccess
             },
         ScanIndexForward: false 
      }

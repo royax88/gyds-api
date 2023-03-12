@@ -8,8 +8,6 @@ import {AddUserNoSQLParams} from '../../../../../lms/admin/add-new-user/src/busi
 import {RoleNoSQLParams} from '../../../../../lms/config/manage-configuration/src/business-service/roleNosqlparams';
 import {DocumentNoSQLParams} from '../../../../config/manage-configuration/src/business-service/documentNosqlparams';
 import {FormNoSQLParams} from '../../../../config/manage-configuration/src/business-service/formNmNosqlparams';
-import { max } from 'lodash';
-import { ConsoleReporter } from 'jasmine';
 var dateFormat = require('dateformat');
 
 export class LoanApplicationBusinessService {
@@ -72,45 +70,104 @@ export class LoanApplicationBusinessService {
                         await this.loanApplicationDataService.executequeryDataServicePromise(roleParams).then(
                            async (roleParamsResults) => {
                                 let count = 0; 
-                                console.log("length", roleParamsResults.Items[0].lmsroleNm.length)
+                               
                                 if(roleParamsResults.Items[0].lmsroleNm.length > 0)
                                 {
                                     
                                     let holderObj = [];
                                     let uniqueRole = roleParamsResults.Items[0].lmsroleNm.filter((item, i, ar) => ar.indexOf(item) === i)
-                                    for(let item in uniqueRole)
-                                    {
+                                    // for(let item in uniqueRole)
+                                    // {
                                         
-                                        let checkVal = this.roleMatrix.getRoleMatrix("processor", roleParamsResults.Items[0].lmsroleNm[item]);
+                                        let checkVal = this.roleMatrix.getRoleMatrix("processor", "");
                                         await this.loanApplicationDataService.executequeryDataServicePromise(checkVal).then(
                                             async (checkValResults)=> {
                                                 
                                                 if(checkValResults.Count > 0)
                                                 { 
-                                                   
-                                                   let matrixParams = this.formParams.getFormProcessor(checkValResults.Items[0].roleNm);
+                                                   let filterRole = [];
+                                                   for (let item in uniqueRole)
+                                                   {
+                                                        for(let valR in checkValResults.Items)
+                                                        {
+                                                    
+                                                            if(uniqueRole[item]==checkValResults.Items[valR].roleNm)
+                                                            {
+                                                                filterRole.push(uniqueRole[item])
+                                                            }
+                                                        }
+                                                   }
+                                                
+                                                let filterRoleLength = filterRole.length;
 
-                                                   await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                if(filterRoleLength == 0)
+                                                {
+                                                     let msg = {
+                                                                message: "NoRecords"
+                                                            }
+                                                            observer.next(msg);
+                                                            observer.complete();
+                                                }
+                                                else {
+                                                    for(let role in filterRole)
+                                                    {
+                                                    let matrixParams = this.formParams.getFormProcessor(filterRole[role]);
+                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
                                                     async (matrixParamsResults) => {
-                                                        console.log("matrixParamsResults", matrixParamsResults)
                                                         if(matrixParamsResults.Count > 0)
                                                         {
                                                             for(let res in matrixParamsResults.Items)
                                                             {
                                                                 
-                                                                let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formid);
+                                                                let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formidval);
+                                                                
                                                                 
                                                                 await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
                                                                     (loanData) => {
                                                                         for(let item in loanData.Items)
                                                                             {
-                                                                                let loanRequests = {
-                                                                                    id: loanData.Items[item].loankey,
-                                                                                    applicantName: loanData.Items[item].applicantLastNm,
-                                                                                    status: loanData.Items[item].status,
-                                                                                    applicationDate: loanData.Items[item].applicationDate
-                                                                                }  
-                                                                                holderObj.push(loanRequests)
+                                                                                if(loanData.Items[item].formname = "Affidavit of Undertaking"
+                                                                                && loanData.Items[item].affidavitUTCurrency == matrixParamsResults.Items[res].detail9
+                                                                                && Number(loanData.Items[item].affidavitUTAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                                                {
+                                                                                    let loanRequests = {
+                                                                                        id: loanData.Items[item].loankey,
+                                                                                        applicantName: loanData.Items[item].applicantLastNm,
+                                                                                        status: loanData.Items[item].status,
+                                                                                        applicationDate: loanData.Items[item].applicationDate,
+                                                                                        docNumber: loanData.Items[item].docNumber
+                                                                                    }  
+                                                                                    holderObj.push(loanRequests)
+                                                                                }
+
+                                                                                else if(loanData.Items[item].formname = "Affidavit of Co-maker"
+                                                                                && loanData.Items[item].affivaditCMCurrency == matrixParamsResults.Items[res].detail9
+                                                                                && Number(loanData.Items[item].affidavitCMAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                                                {
+                                                                                    let loanRequests = {
+                                                                                        id: loanData.Items[item].loankey,
+                                                                                        applicantName: loanData.Items[item].applicantLastNm,
+                                                                                        status: loanData.Items[item].status,
+                                                                                        applicationDate: loanData.Items[item].applicationDate,
+                                                                                        docNumber: loanData.Items[item].docNumber
+                                                                                    }  
+                                                                                    holderObj.push(loanRequests)
+                                                                                }
+
+                                                                                else if(loanData.Items[item].formname = "Promissory Note"
+                                                                                && loanData.Items[item].promissoryCurrency == matrixParamsResults.Items[res].detail9
+                                                                                && Number(loanData.Items[item].promissoryAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                                                {
+                                                                                    let loanRequests = {
+                                                                                        id: loanData.Items[item].loankey,
+                                                                                        applicantName: loanData.Items[item].applicantLastNm,
+                                                                                        status: loanData.Items[item].status,
+                                                                                        applicationDate: loanData.Items[item].applicationDate,
+                                                                                        docNumber: loanData.Items[item].docNumber
+                                                                                    }  
+                                                                                    holderObj.push(loanRequests)
+                                                                                }
+
                                                                             }   
                                                                     }
                                                                 )
@@ -127,11 +184,17 @@ export class LoanApplicationBusinessService {
                                                         // }
                                                     }
                                                    )
+                                                    }
+                                                }
+                                                
+
+
                                                 }
                                                  
                                             }
                                         )
-                                    } 
+                                        
+                                    // } 
                                     observer.next(holderObj);
                                     observer.complete();
                                 }
@@ -254,21 +317,28 @@ export class LoanApplicationBusinessService {
                                         this.loanApplicationDataService.InsertData(insertParams).subscribe(
                                             (data) => {
                                                 //insert into audit table
-                                                this.auditSvc.insertIntoAuditTbl(
-                                                    loankey, 
-                                                    "Processed",
-                                                    "Create New Loan Application",
-                                                    obj.data.createdBy,
-                                                    currentDate
-                                                    ).subscribe(
-                                                        (data) => {            
-                                                            let msg = {
-                                                                message: "createdLoan"
-                                                            }
-                                                            observer.next(msg);
-                                                            observer.complete();
-                                                        }   
-                                                    )
+                                                // console.log("insert loan", data)
+                                                // this.auditSvc.insertIntoAuditTbl(
+                                                //     loankey, 
+                                                //     "Processed",
+                                                //     "Create New Loan Application",
+                                                //     obj.data.createdBy,
+                                                //     currentDate
+                                                //     ).subscribe(
+                                                //         (data) => {            
+                                                //             let msg = {
+                                                //                 message: "createdLoan"
+                                                //             }
+                                                //             observer.next(msg);
+                                                //             observer.complete();
+                                                //         }   
+                                                //     )
+
+                                                    let msg = {
+                                                        message: "createdLoan"
+                                                    }
+                                                    observer.next(msg);
+                                                    observer.complete();
                                                 
                                             },
                                             (error) => {
@@ -300,27 +370,33 @@ export class LoanApplicationBusinessService {
                                     observer.complete();
                                 }
                                 else {
-                                    let loankey = this.generateKey(obj.data.selectedRangeData.formid,obj.data.selectedRangeData.detail3, true)
+                                    let loankey = this.generateKey(obj.data.selectedRangeData.formid,Number(obj.data.selectedRangeData.detail3), true)
                                     let insertParams = this.loanApplicationNoSQLParams.insertIntoUserTable(obj,loankey,obj.data.selectedRangeData.formid, obj.data.selectedRangeData.detail3);
                                     
                                     this.loanApplicationDataService.InsertData(insertParams).subscribe(
                                                 (data) => {
                                                     //insert into audit table
-                                                    this.auditSvc.insertIntoAuditTbl(
-                                                        loankey, 
-                                                        "Processed",
-                                                        "Create New Loan Application",
-                                                        obj.data.createdBy,
-                                                        currentDate
-                                                        ).subscribe(
-                                                            (data) => {            
-                                                                let msg = {
-                                                                    message: "createdLoan"
-                                                                }
-                                                                observer.next(msg);
-                                                                observer.complete();
-                                                            }   
-                                                        )
+                                                    // console.log("insert loan", data)
+                                                    // this.auditSvc.insertIntoAuditTbl(
+                                                    //     loankey, 
+                                                    //     "Processed",
+                                                    //     "Create New Loan Application",
+                                                    //     obj.data.createdBy,
+                                                    //     currentDate
+                                                    //     ).subscribe(
+                                                    //         (data) => {            
+                                                    //             let msg = {
+                                                    //                 message: "createdLoan"
+                                                    //             }
+                                                    //             observer.next(msg);
+                                                    //             observer.complete();
+                                                    //         }   
+                                                    //     )
+                                                    let msg = {
+                                                        message: "createdLoan"
+                                                    }
+                                                    observer.next(msg);
+                                                    observer.complete();
                                                     
                                                 },
                                                 (error) => {

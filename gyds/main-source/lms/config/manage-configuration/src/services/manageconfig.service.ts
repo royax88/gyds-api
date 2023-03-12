@@ -219,6 +219,11 @@ export class ManageConfigService {
             return this.manageConfigBusinessService.getAllFormData();
         }
 
+        else if(this.actioncd =="getAllFormListData")
+        {
+            return this.manageConfigBusinessService.getAllFormListData();
+        }
+
         else if(this.actioncd =="updateFormTbl")
         {
             if(process.env['localenv']==="true")
@@ -245,6 +250,53 @@ export class ManageConfigService {
             
             }
             return this.manageConfigBusinessService.updateFormMatrixTbl(this.objData);
+        }
+
+        else if(this.actioncd =="insertMatrixTbl")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.insertApprovalMatrix(this.objData);
+        }
+
+        else if(this.actioncd =="insertIntoRangeTable")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.insertIntoNumberRngTbl(this.objData);
+        }
+
+        else if(this.actioncd =="getAllNumberRange")
+        {
+            return this.manageConfigBusinessService.getAllNumberRange();
+        }
+
+        else if(this.actioncd =="getDocumentRangeByid")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.getDocumentRangeByid(this.objData);
         }
     }
 

@@ -18,7 +18,7 @@ export class LoanApplicationNoSQLParams {
         let finalParams: any = {
         TableName: this.loanTbl,
         Item: {
-            'loankey' : loankey,
+            'loankey' : uuidv4(),
             'status' : 'Processed',
             'applicantLastNm': obj.data.firstAppLastName,
             'applicantFirstNm': obj.data.firstAppFirstName,
@@ -63,7 +63,8 @@ export class LoanApplicationNoSQLParams {
             'fourthTabCheckbox' : obj.data.fourthTabCheckbox,
             'formid': formid,
             'incrementValue': incVal,
-            'formname' : obj.data.selectedForm
+            'formname' : obj.data.selectedForm,
+            'docNumber' : loankey
         }
         };
         return finalParams;
