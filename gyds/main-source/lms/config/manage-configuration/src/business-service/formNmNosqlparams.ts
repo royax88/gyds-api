@@ -217,6 +217,24 @@ export class FormNoSQLParams {
      return params;
     }
 
+    public getFormReviewer(val: any) {
+    
+        let params = {
+        TableName: this.formTbl,
+        IndexName: 'detail7-index',
+        KeyConditionExpression: '#detail7 =:detail7',
+            ExpressionAttributeNames: {
+                '#detail7' : 'detail7'
+               
+            },
+            ExpressionAttributeValues: {
+                ':detail7': val
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
     private setNoSqlTables() {
 
         this.formTbl = "gyds-lms-config-form-"+ process.env['environment_tag'];

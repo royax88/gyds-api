@@ -38,7 +38,7 @@ export class LoanApplicationBusinessService {
                         let loanRequests = {
                             id: data.Items[item].loankey,
                             applicantName: data.Items[item].applicantFirstNm.toUpperCase() + " " + data.Items[item].applicantLastNm.toUpperCase(),
-                            status: data.Items[item].status,
+                            status: data.Items[item].statusVal,
                             applicationDate: data.Items[item].applicationDate
                         }
                         
@@ -133,7 +133,7 @@ export class LoanApplicationBusinessService {
                                                                                     let loanRequests = {
                                                                                         id: loanData.Items[item].loankey,
                                                                                         applicantName: loanData.Items[item].applicantLastNm,
-                                                                                        status: loanData.Items[item].status,
+                                                                                        status: loanData.Items[item].statusVal,
                                                                                         applicationDate: loanData.Items[item].applicationDate,
                                                                                         docNumber: loanData.Items[item].docNumber
                                                                                     }  
@@ -147,7 +147,7 @@ export class LoanApplicationBusinessService {
                                                                                     let loanRequests = {
                                                                                         id: loanData.Items[item].loankey,
                                                                                         applicantName: loanData.Items[item].applicantLastNm,
-                                                                                        status: loanData.Items[item].status,
+                                                                                        status: loanData.Items[item].statusVal,
                                                                                         applicationDate: loanData.Items[item].applicationDate,
                                                                                         docNumber: loanData.Items[item].docNumber
                                                                                     }  
@@ -161,7 +161,7 @@ export class LoanApplicationBusinessService {
                                                                                     let loanRequests = {
                                                                                         id: loanData.Items[item].loankey,
                                                                                         applicantName: loanData.Items[item].applicantLastNm,
-                                                                                        status: loanData.Items[item].status,
+                                                                                        status: loanData.Items[item].statusVal,
                                                                                         applicationDate: loanData.Items[item].applicationDate,
                                                                                         docNumber: loanData.Items[item].docNumber
                                                                                     }  
@@ -175,13 +175,6 @@ export class LoanApplicationBusinessService {
                                                             }
                                                             
                                                         } 
-                                                        // else {
-                                                        //     let msg = {
-                                                        //         message: "NoRecords"
-                                                        //     }
-                                                        //     observer.next(msg);
-                                                        //     observer.complete();
-                                                        // }
                                                     }
                                                    )
                                                     }
@@ -193,8 +186,165 @@ export class LoanApplicationBusinessService {
                                                  
                                             }
                                         )
-                                        
-                                    // } 
+                                    observer.next(holderObj);
+                                    observer.complete();
+                                }
+                                else {
+                                    let msg = {
+                                        message: "NoRecords"
+                                    }
+                                    observer.next(msg);
+                                    observer.complete();
+                                }
+                            }
+                        )
+
+                    }
+                    else {
+                        observer.next(data)
+                        observer.complete();
+                    }
+                },
+                (error) => {
+    
+                }
+            )
+
+        })
+
+    }
+
+    public getLoanByMatrixByReviewer(username: any) : Observable<any> {
+        console.log("getLoanByMatrixByReviewer")
+        let roleParams = this.lmsRole.getUserRole(username);
+        return Observable.create(async (observer) => {
+
+            await this.apiChecker.isValidUserPerModule(username, "reviewer").subscribe(
+                async (data) => {
+                    console.log("data.message", data.message)
+                    if(data.message == "authorized")
+                    {
+                        await this.loanApplicationDataService.executequeryDataServicePromise(roleParams).then(
+                           async (roleParamsResults) => {
+                                let count = 0; 
+                               
+                                if(roleParamsResults.Items[0].lmsroleNm.length > 0)
+                                {
+                                    
+                                    let holderObj = [];
+                                    let uniqueRole = roleParamsResults.Items[0].lmsroleNm.filter((item, i, ar) => ar.indexOf(item) === i)
+                                    // for(let item in uniqueRole)
+                                    // {
+                                       
+                                        let checkVal = this.roleMatrix.getRoleMatrix("reviewer", "");
+                                        await this.loanApplicationDataService.executequeryDataServicePromise(checkVal).then(
+                                            async (checkValResults)=> {
+                                                
+                                                if(checkValResults.Count > 0)
+                                                { 
+                                                   let filterRole = [];
+                                                   for (let item in uniqueRole)
+                                                   {
+                                                        for(let valR in checkValResults.Items)
+                                                        {
+                                                    
+                                                            if(uniqueRole[item]==checkValResults.Items[valR].roleNm)
+                                                            {
+                                                                filterRole.push(uniqueRole[item])
+                                                            }
+                                                        }
+                                                   }
+                                                
+                                                let filterRoleLength = filterRole.length;
+                                                
+
+                                                if(filterRoleLength == 0)
+                                                {
+                                                     let msg = {
+                                                                message: "NoRecords"
+                                                            }
+                                                            observer.next(msg);
+                                                            observer.complete();
+                                                }
+                                                else {
+                                                    for(let role in filterRole)
+                                                    {
+                                                    let matrixParams = this.formParams.getFormReviewer(filterRole[role]);
+                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                    async (matrixParamsResults) => {
+                                                        
+                                                        if(matrixParamsResults.Count > 0)
+                                                        {
+                                                            for(let res in matrixParamsResults.Items)
+                                                            {
+                                                                
+                                                                let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formidval);
+                                                                
+                                                                
+                                                                await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
+                                                                    (loanData) => {
+                                                                        for(let item in loanData.Items)
+                                                                            {
+                                                                                if(loanData.Items[item].formname = "Affidavit of Undertaking"
+                                                                                && loanData.Items[item].affidavitUTCurrency == matrixParamsResults.Items[res].detail9
+                                                                                && Number(loanData.Items[item].affidavitUTAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                                                {
+                                                                                    let loanRequests = {
+                                                                                        id: loanData.Items[item].loankey,
+                                                                                        applicantName: loanData.Items[item].applicantLastNm,
+                                                                                        status: loanData.Items[item].statusVal,
+                                                                                        applicationDate: loanData.Items[item].applicationDate,
+                                                                                        docNumber: loanData.Items[item].docNumber
+                                                                                    }  
+                                                                                    holderObj.push(loanRequests)
+                                                                                }
+
+                                                                                else if(loanData.Items[item].formname = "Affidavit of Co-maker"
+                                                                                && loanData.Items[item].affivaditCMCurrency == matrixParamsResults.Items[res].detail9
+                                                                                && Number(loanData.Items[item].affidavitCMAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                                                {
+                                                                                    let loanRequests = {
+                                                                                        id: loanData.Items[item].loankey,
+                                                                                        applicantName: loanData.Items[item].applicantLastNm,
+                                                                                        status: loanData.Items[item].statusVal,
+                                                                                        applicationDate: loanData.Items[item].applicationDate,
+                                                                                        docNumber: loanData.Items[item].docNumber
+                                                                                    }  
+                                                                                    holderObj.push(loanRequests)
+                                                                                }
+
+                                                                                else if(loanData.Items[item].formname = "Promissory Note"
+                                                                                && loanData.Items[item].promissoryCurrency == matrixParamsResults.Items[res].detail9
+                                                                                && Number(loanData.Items[item].promissoryAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                                                {
+                                                                                    let loanRequests = {
+                                                                                        id: loanData.Items[item].loankey,
+                                                                                        applicantName: loanData.Items[item].applicantLastNm,
+                                                                                        status: loanData.Items[item].statusVal,
+                                                                                        applicationDate: loanData.Items[item].applicationDate,
+                                                                                        docNumber: loanData.Items[item].docNumber
+                                                                                    }  
+                                                                                    holderObj.push(loanRequests)
+                                                                                }
+
+                                                                            }   
+                                                                    }
+                                                                )
+                                                             
+                                                            }
+                                                            
+                                                        } 
+                                                    }
+                                                   )
+                                                    }
+                                                }
+                                                
+
+
+                                                }
+                                                 
+                                            }
+                                        )
                                     observer.next(holderObj);
                                     observer.complete();
                                 }
@@ -225,7 +375,7 @@ export class LoanApplicationBusinessService {
 
 
 
-    public getLoanRequestById(loankey: any, username: any) : Observable<any> {
+    public getLoanRequestById(loankey: any, username: any, roleAccess? : any) : Observable<any> {
        
         let queryParams = this.loanApplicationNoSQLParams.viewLoanRequestById(loankey);
         return Observable.create((observer) => {
@@ -235,17 +385,27 @@ export class LoanApplicationBusinessService {
             //         console.log("data", data)
                     // if(data.message == "authorized")
                     // {
-                        this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+
+                        this.apiChecker.isValidUserPerModule(username, roleAccess).subscribe(
                             (data) => {
-                                let objData = []
-                                observer.next(data.Items)
-                                observer.complete();
-                                
-                            },
-                            (error) => {
-                                console.log("errr", error)
-                                observer.error(error);
-                            });
+                                if(data.message == "authorized")
+                                {
+                                    this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                                        (data) => {
+                                            let objData = []
+                                            observer.next(data.Items)
+                                            observer.complete();
+                                            
+                                        },
+                                        (error) => {
+                                            console.log("errr", error)
+                                            observer.error(error);
+                                        });
+                                }
+                            }
+                        )
+
+                       
                     // }
                     // else {
                     //     observer.next(data);
@@ -538,6 +698,96 @@ export class LoanApplicationBusinessService {
                     observer.error(error);
                 });
         })
+
+    }
+
+    public updateLoanTransaction(obj: any) : Observable<any> {
+
+        let queryParams = this.loanApplicationNoSQLParams.updateLoanTransaction(obj);
+        let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(obj);
+        return Observable.create((observer) => {
+            this.loanApplicationDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+
+                    this.loanApplicationDataService.InsertData(commentsParams).subscribe(
+                        (data) => {
+                            let msg = {
+                                message: "updateLoanTransaction"
+                            }
+                            observer.next(msg);
+                            observer.complete();
+                            
+                        },
+                        (error) => {
+                            console.log("errr", error)
+                            observer.error(error);
+                        });
+
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public updateLoantransByProcessor(obj: any) : Observable<any> {
+        
+        let queryParams = this.loanApplicationNoSQLParams.updateLoanTransByProcessor(obj);
+        console.log("queryParams", queryParams)
+        let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(obj);
+        return Observable.create((observer) => {
+            this.loanApplicationDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+
+                    this.loanApplicationDataService.InsertData(commentsParams).subscribe(
+                        (data) => {
+                            let msg = {
+                                message: "updateLoanTransaction"
+                            }
+                            observer.next(msg);
+                            observer.complete();
+                            
+                        },
+                        (error) => {
+                            console.log("errr", error)
+                            observer.error(error);
+                        });
+
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getCommentsHistory(loankey: any) : Observable<any> {
+       
+        let queryParams = this.loanApplicationNoSQLParams.getCommentsHistorybyId(loankey);
+        return Observable.create((observer) => {
+
+                                    this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                                        (data) => {
+                                            let objData = []
+                                            const sortedAsc = data.Items.sort(
+                                                (objA, objB) => Number(new Date(objA.audit)) - Number(new Date(objB.audit)),
+                                              );
+                                            // console.log("sortedAsc", sortedAsc)
+
+                                            observer.next(sortedAsc)
+                                            observer.complete();
+
+                                           
+                                        },
+                                        (error) => {
+                                            console.log("errr", error)
+                                            observer.error(error);
+                                        });
+          
+         })
 
     }
 
