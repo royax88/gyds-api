@@ -56,6 +56,7 @@ export class LoanApplicationService {
             else
             {
                 this.username = JSON.parse(event.body).username;
+               
             
             }
             console.log("username", this.username)
@@ -67,13 +68,14 @@ export class LoanApplicationService {
             if(process.env['localenv']==="true")
             {
                 this.username = event.body.username;
+                this.objData = event.body.data;
             }
             else
             {
                 this.username = JSON.parse(event.body).username;
-            
+                this.objData = JSON.parse(event.body).data;
             }
-            return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username);
+            return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username, this.objData);
         }
 
         else if(this.actioncd=='getRequestForReview')

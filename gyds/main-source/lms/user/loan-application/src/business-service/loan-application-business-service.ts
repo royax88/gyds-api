@@ -56,7 +56,7 @@ export class LoanApplicationBusinessService {
 
     }
 
-    public getLoanByMatrixByProcessorV2(username: any) : Observable<any> {
+    public getLoanByMatrixByProcessorV2(username: any, ojbData: any) : Observable<any> {
         console.log("getLoanByMatrixByProcessorV2")
         let roleParams = this.lmsRole.getUserRole(username);
         return Observable.create(async (observer) => {
@@ -70,7 +70,7 @@ export class LoanApplicationBusinessService {
                         await this.loanApplicationDataService.executequeryDataServicePromise(roleParams).then(
                            async (roleParamsResults) => {
                                 let count = 0; 
-                               
+                                
                                 if(roleParamsResults.Items[0].lmsroleNm.length > 0)
                                 {
                                     
@@ -99,7 +99,6 @@ export class LoanApplicationBusinessService {
                                                    }
                                                 
                                                 let filterRoleLength = filterRole.length;
-
                                                 if(filterRoleLength == 0)
                                                 {
                                                      let msg = {
@@ -109,76 +108,228 @@ export class LoanApplicationBusinessService {
                                                             observer.complete();
                                                 }
                                                 else {
-                                                    for(let role in filterRole)
-                                                    {
-                                                    let matrixParams = this.formParams.getFormProcessor(filterRole[role]);
-                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
-                                                    async (matrixParamsResults) => {
-                                                        if(matrixParamsResults.Count > 0)
+                                                        let docStatusParams : any;
+
+                                                        if(ojbData.statusVal != "" && ojbData.docNumVal != "")
                                                         {
-                                                            for(let res in matrixParamsResults.Items)
-                                                            {
-                                                                
-                                                                let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formidval);
-                                                                
-                                                                
-                                                                await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
-                                                                    (loanData) => {
-                                                                        for(let item in loanData.Items)
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTranByStatusDoc(ojbData.statusVal.value, ojbData.docNumVal)
+                                                        }
+                                                        else if(ojbData.statusVal != "" )  {
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTranByStatusFilter(ojbData.statusVal.value)
+                                                        }
+                                                        else if(ojbData.docNumVal != "")
+                                                        {
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTranByDocNumber(ojbData.docNumVal)
+                                                        }
+                                                        
+                                                            await this.loanApplicationDataService.executequeryDataServicePromise(docStatusParams).then(
+                                                                async (loanData) => {
+                                                                    let isLoan : any = false;
+                                                                    if(ojbData.statusVal != "" && ojbData.docNumVal != "")
+                                                                    {
+                                                                        
+                                                                        if(loanData.Count > 0)
+                                                                        {
+                                                                            for(let role in filterRole)
                                                                             {
-                                                                                
-                                                                                if(loanData.Items[item].formname = "Affidavit of Undertaking"
-                                                                                && loanData.Items[item].affidavitUTCurrency == matrixParamsResults.Items[res].detail9
-                                                                                && Number(loanData.Items[item].affidavitUTAmount) <= Number(matrixParamsResults.Items[res].detail5))
-                                                                                {
-                                                                                    let loanRequests = {
-                                                                                        id: loanData.Items[item].loankey,
-                                                                                        applicantName: loanData.Items[item].applicantLastNm,
-                                                                                        status: loanData.Items[item].statusVal,
-                                                                                        applicationDate: loanData.Items[item].applicationDate,
-                                                                                        docNumber: loanData.Items[item].docNumber
-                                                                                    }  
-                                                                                    holderObj.push(loanRequests)
-                                                                                }
+                                                                                let matrixParams = this.formParams.getFormByDetail6(loanData.Items[0].formid,filterRole[role]);
 
-                                                                                else if(loanData.Items[item].formname = "Affidavit of Co-maker"
-                                                                                && loanData.Items[item].affivaditCMCurrency == matrixParamsResults.Items[res].detail9
-                                                                                && Number(loanData.Items[item].affidavitCMAmount) <= Number(matrixParamsResults.Items[res].detail5))
-                                                                                {
-                                                                                    let loanRequests = {
-                                                                                        id: loanData.Items[item].loankey,
-                                                                                        applicantName: loanData.Items[item].applicantLastNm,
-                                                                                        status: loanData.Items[item].statusVal,
-                                                                                        applicationDate: loanData.Items[item].applicationDate,
-                                                                                        docNumber: loanData.Items[item].docNumber
-                                                                                    }  
-                                                                                    holderObj.push(loanRequests)
-                                                                                }
+                                                                                await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                                                    async (matrixParamsResults) => {
+                                                                                            if(matrixParamsResults.Count > 0)
+                                                                                            {
+                                                                                                for(let item in matrixParamsResults.Items)
+                                                                                                {
+                                                                                                
+                                                                                                    if(this.CheckCOMaker(loanData,matrixParamsResults.Items, item, 0))
+                                                                                                    {
+                                                                                                        let loanRequests = this.transformResponse(loanData.Items, 0)
+                                                                                                        holderObj.push(loanRequests)
+                                                                                                        isLoan = true;
+                                                                                                    }
+                                                                                                    else if(this.CheckPromissory(loanData,matrixParamsResults.Items, item, 0))
+                                                                                                    {
+                                                                                                        let loanRequests = this.transformResponse(loanData.Items, 0)
+                                                                                                        holderObj.push(loanRequests)
+                                                                                                        isLoan = true;
+                                                                                                    }
+                                                                                                    else if(this.CheckAffidavitUndertaking(loanData,matrixParamsResults.Items, item, 0))
+                                                                                                    {
+                                                                                                        let loanRequests = this.transformResponse(loanData.Items, 0)
+                                                                                                        holderObj.push(loanRequests)
+                                                                                                        isLoan = true;
+                                                                                                    }
+                                                                                                    if(isLoan) break;
+                                                                                                }
+                                                                                                
+                                                                                            }
+                                                                                    }
+                                                                                )
+                                                                            }
 
-                                                                                else if(loanData.Items[item].formname = "Promissory Note"
-                                                                                && loanData.Items[item].promissoryCurrency == matrixParamsResults.Items[res].detail9
-                                                                                && Number(loanData.Items[item].promissoryAmount) <= Number(matrixParamsResults.Items[res].detail5))
-                                                                                {
-                                                                                    let loanRequests = {
-                                                                                        id: loanData.Items[item].loankey,
-                                                                                        applicantName: loanData.Items[item].applicantLastNm,
-                                                                                        status: loanData.Items[item].statusVal,
-                                                                                        applicationDate: loanData.Items[item].applicationDate,
-                                                                                        docNumber: loanData.Items[item].docNumber
-                                                                                    }  
-                                                                                    holderObj.push(loanRequests)
-                                                                                }
 
-                                                                            }   
+                                                                        }
                                                                     }
-                                                                )
+                                                                    else if(ojbData.statusVal != "")
+                                                                    {
+                                                                        if(loanData.Count > 0)
+                                                                        {
+                                                                            
+                                                                            for(let role in filterRole)
+                                                                            {
+                                                                                for (let loanval in loanData.Items)
+                                                                                {
+                                                                                    let matrixParams = this.formParams.getFormByDetail6(loanData.Items[loanval].formid,filterRole[role]);
+                                                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                                                        async (matrixParamsResults) => {
+                                                                                                if(matrixParamsResults.Count > 0)
+                                                                                                {
+                                                                                                    for(let item in matrixParamsResults.Items)
+                                                                                                    {
+                                                                                                    
+                                                                                                        if(this.CheckCOMaker(loanData,matrixParamsResults.Items, item, loanval))
+                                                                                                        {
+                                                                                                            let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                                                            holderObj.push(loanRequests)
+                                                                                                        }
+                                                                                                        else if(this.CheckPromissory(loanData,matrixParamsResults.Items, item, loanval))
+                                                                                                        {
+                                                                                                            let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                                                            holderObj.push(loanRequests)
+                                                                                                        }
+                                                                                                        else if(this.CheckAffidavitUndertaking(loanData,matrixParamsResults.Items, item, loanval))
+                                                                                                        {
+                                                                                                            let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                                                            holderObj.push(loanRequests)
+                                                                                                        }
+                                                                                                    }
+                                                                                                    
+                                                                                                }
+                                                                                        }
+                                                                                    )
+                                                                                }
+                                                                                
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else if(ojbData.docNumVal != "")
+                                                                    {
+                                                                        
+                                                                        if(loanData.Count > 0)
+                                                                        {
+                                                                            for(let role in filterRole)
+                                                                            {
+                                                                                let matrixParams = this.formParams.getFormByDetail6(loanData.Items[0].formid,filterRole[role]);
+
+                                                                                await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                                                    async (matrixParamsResults) => {
+                                                                                            if(matrixParamsResults.Count > 0)
+                                                                                            {
+                                                                                                for(let item in matrixParamsResults.Items)
+                                                                                                {
+                                                                                                
+                                                                                                    if(this.CheckCOMaker(loanData,matrixParamsResults.Items, item, 0))
+                                                                                                    {
+                                                                                                        let loanRequests = this.transformResponse(loanData.Items, 0)
+                                                                                                        holderObj.push(loanRequests)
+                                                                                                        isLoan = true;
+                                                                                                    }
+                                                                                                    else if(this.CheckPromissory(loanData,matrixParamsResults.Items, item, 0))
+                                                                                                    {
+                                                                                                        let loanRequests = this.transformResponse(loanData.Items, 0)
+                                                                                                        holderObj.push(loanRequests)
+                                                                                                        isLoan = true;
+                                                                                                    }
+                                                                                                    else if(this.CheckAffidavitUndertaking(loanData,matrixParamsResults.Items, item, 0))
+                                                                                                    {
+                                                                                                        let loanRequests = this.transformResponse(loanData.Items, 0)
+                                                                                                        holderObj.push(loanRequests)
+                                                                                                        isLoan = true;
+                                                                                                    }
+                                                                                                    if(isLoan) break;
+                                                                                                }
+                                                                                                
+                                                                                            }
+                                                                                    }
+                                                                                )
+                                                                            }
+
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                        )
+                                                //     for(let role in filterRole)
+                                                //     {
+                                                //     let matrixParams = this.formParams.getFormProcessor(filterRole[role]);
+                                                //     await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                //     async (matrixParamsResults) => {
+                                                //         console.log("matrixParamsResults", matrixParamsResults)
+                                                //         if(matrixParamsResults.Count > 0)
+                                                //         {
+                                                //             for(let res in matrixParamsResults.Items)
+                                                //             {
+                                                                
+                                                //                 let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formidval);
+                                                                
+                                                                
+                                                //                 await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
+                                                //                     (loanData) => {
+                                                //                         for(let item in loanData.Items)
+                                                //                             {
+                                                                                
+                                                //                                 if(loanData.Items[item].formname = "Affidavit of Undertaking"
+                                                //                                 && loanData.Items[item].affidavitUTCurrency == matrixParamsResults.Items[res].detail9
+                                                //                                 && Number(loanData.Items[item].affidavitUTAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                //                                 {
+                                                //                                     let loanRequests = {
+                                                //                                         id: loanData.Items[item].loankey,
+                                                //                                         applicantName: loanData.Items[item].applicantLastNm,
+                                                //                                         status: loanData.Items[item].statusVal,
+                                                //                                         applicationDate: loanData.Items[item].applicationDate,
+                                                //                                         docNumber: loanData.Items[item].docNumber
+                                                //                                     }  
+                                                //                                     holderObj.push(loanRequests)
+                                                //                                 }
+
+                                                //                                 else if(loanData.Items[item].formname = "Affidavit of Co-maker"
+                                                //                                 && loanData.Items[item].affivaditCMCurrency == matrixParamsResults.Items[res].detail9
+                                                //                                 && Number(loanData.Items[item].affidavitCMAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                //                                 {
+                                                //                                     let loanRequests = {
+                                                //                                         id: loanData.Items[item].loankey,
+                                                //                                         applicantName: loanData.Items[item].applicantLastNm,
+                                                //                                         status: loanData.Items[item].statusVal,
+                                                //                                         applicationDate: loanData.Items[item].applicationDate,
+                                                //                                         docNumber: loanData.Items[item].docNumber
+                                                //                                     }  
+                                                //                                     holderObj.push(loanRequests)
+                                                //                                 }
+
+                                                //                                 else if(loanData.Items[item].formname = "Promissory Note"
+                                                //                                 && loanData.Items[item].promissoryCurrency == matrixParamsResults.Items[res].detail9
+                                                //                                 && Number(loanData.Items[item].promissoryAmount) <= Number(matrixParamsResults.Items[res].detail5))
+                                                //                                 {
+                                                //                                     let loanRequests = {
+                                                //                                         id: loanData.Items[item].loankey,
+                                                //                                         applicantName: loanData.Items[item].applicantLastNm,
+                                                //                                         status: loanData.Items[item].statusVal,
+                                                //                                         applicationDate: loanData.Items[item].applicationDate,
+                                                //                                         docNumber: loanData.Items[item].docNumber
+                                                //                                     }  
+                                                //                                     holderObj.push(loanRequests)
+                                                //                                 }
+
+                                                //                             }   
+                                                //                     }
+                                                //                 )
                                                              
-                                                            }
+                                                //             }
                                                             
-                                                        } 
-                                                    }
-                                                   )
-                                                    }
+                                                //         } 
+                                                //     }
+                                                //    )
+                                                //     }
                                                 }
                                                 
 
@@ -193,7 +344,7 @@ export class LoanApplicationBusinessService {
                                           t.id === value.id
                                         ))
                                       )
-                                    
+                                    console.log("here")
                                     observer.next(holderObj);
                                     observer.complete();
                                 }
@@ -209,6 +360,7 @@ export class LoanApplicationBusinessService {
 
                     }
                     else {
+                        
                         observer.next(data)
                         observer.complete();
                     }
@@ -220,6 +372,67 @@ export class LoanApplicationBusinessService {
 
         })
 
+    }
+
+    private transformResponse(loanData: any, loanitem)
+    {
+        let loanRequests = {
+            id: loanData[loanitem].loankey,
+            applicantName: loanData[loanitem].applicantLastNm,
+            status: loanData[loanitem].statusVal,
+            applicationDate: loanData[0].applicationDate,
+            docNumber: loanData[loanitem].docNumber
+        }  
+
+        return loanRequests;
+    }
+
+    private CheckCOMaker(loanData, matrixParamsResults, item, loanitem)
+    {
+        if(loanData.Items[loanitem].formname = "Affidavit of Co-maker"
+        && loanData.Items[loanitem].affivaditCMCurrency == matrixParamsResults[item].detail9
+        && Number(loanData.Items[loanitem].affidavitCMAmount) <= Number(matrixParamsResults[item].detail5))
+        {
+            return true;
+        }
+        else {
+            false;
+        }
+    }
+
+    private CheckAffidavitUndertaking(loanData, matrixParamsResults, item, loanitem)
+    {
+        if(loanData.Items[loanitem].formname = "Affidavit of Undertaking"
+        && loanData.Items[loanitem].affidavitUTCurrency == matrixParamsResults[item].detail9
+        && Number(loanData.Items[loanitem].affidavitUTAmount) <= Number(matrixParamsResults[item].detail5))
+        {
+            // console.log("1", loanData.Items[loanitem].affidavitUTCurrency)
+            // console.log("1", matrixParamsResults[item].detail9)
+            // console.log("1", loanData.Items[loanitem].affidavitUTAmount)
+            // console.log("1", matrixParamsResults[item].detail5)
+            return true;
+        }
+        else {
+            // console.log("2", loanData.Items[loanitem].affidavitUTCurrency)
+            // console.log("2", matrixParamsResults[item].detail9)
+            // console.log("2", loanData.Items[loanitem].affidavitUTAmount)
+            // console.log("2", matrixParamsResults[item].detail5)
+            false;
+        }
+    }
+
+    private CheckPromissory(loanData, matrixParamsResults, item, loanitem)
+    {
+        if(loanData.Items[loanitem].formname = "Promissory Note"
+        && loanData.Items[loanitem].promissoryCurrency == matrixParamsResults[item].detail9
+        && Number(loanData.Items[loanitem].promissoryAmount) <= Number(matrixParamsResults[item].detail5))
+        {
+           
+            return true;
+        }
+        else {
+            false;
+        }
     }
 
     public getLoanByMatrixByReviewer(username: any, identifier: any) : Observable<any> {

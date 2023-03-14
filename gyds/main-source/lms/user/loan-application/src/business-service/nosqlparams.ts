@@ -121,6 +121,59 @@ export class LoanApplicationNoSQLParams {
          return params;
     }
 
+    public getLoanTranByStatusDoc(statusVal: any, docVal: any)
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'docNumber-statusVal-index',
+            KeyConditionExpression: '#docNumber =:docNumber and #statusVal =:statusVal',
+            ExpressionAttributeNames: {
+                '#docNumber' : 'docNumber',
+                '#statusVal' : 'statusVal'
+            },
+            ExpressionAttributeValues: {
+                ':docNumber': docVal,
+                ':statusVal': statusVal
+            },
+             ScanIndexForward: false 
+         }
+         return params;
+    }
+
+    public getLoanTranByStatusFilter(statusVal: any)
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'statusVal-index',
+            KeyConditionExpression: '#statusVal =:statusVal',
+            ExpressionAttributeNames: {
+                '#statusVal' : 'statusVal'
+            },
+            ExpressionAttributeValues: {
+                ':statusVal': statusVal
+            },
+             ScanIndexForward: false 
+         }
+         return params;
+    }
+
+    public getLoanTranByDocNumber(docVal: any)
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'docNumber-index',
+            KeyConditionExpression: '#docNumber =:docNumber',
+            ExpressionAttributeNames: {
+                '#docNumber' : 'docNumber'
+            },
+            ExpressionAttributeValues: {
+                ':docNumber': docVal
+            },
+             ScanIndexForward: false 
+         }
+         return params;
+    }
+
     public getLoanTransactionByStatus() {
     
         let params = {

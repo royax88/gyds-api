@@ -217,6 +217,25 @@ export class FormNoSQLParams {
      return params;
     }
 
+    public getFormByDetail6(formid: any, detail6val: any)
+    {
+        let params = {
+            TableName: this.formTbl,
+            IndexName: 'formidval-detail6-index',
+            KeyConditionExpression: '#formidval =:formidval and #detail6 =:detail6',
+            ExpressionAttributeNames: {
+                '#formidval' : 'formidval',
+                '#detail6' : 'detail6'
+            },
+            ExpressionAttributeValues: {
+                ':formidval': formid,
+                ':detail6': detail6val
+            },
+             ScanIndexForward: false 
+         }
+         return params;
+    }
+
     public getFormReviewer(val: any) {
     
         let params = {
