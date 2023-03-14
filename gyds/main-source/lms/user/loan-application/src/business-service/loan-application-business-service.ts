@@ -126,6 +126,7 @@ export class LoanApplicationBusinessService {
                                                                     (loanData) => {
                                                                         for(let item in loanData.Items)
                                                                             {
+                                                                                
                                                                                 if(loanData.Items[item].formname = "Affidavit of Undertaking"
                                                                                 && loanData.Items[item].affidavitUTCurrency == matrixParamsResults.Items[res].detail9
                                                                                 && Number(loanData.Items[item].affidavitUTAmount) <= Number(matrixParamsResults.Items[res].detail5))
@@ -186,6 +187,13 @@ export class LoanApplicationBusinessService {
                                                  
                                             }
                                         )
+
+                                        holderObj = holderObj.filter((value, index, self) =>
+                                        index === self.findIndex((t) => (
+                                          t.id === value.id
+                                        ))
+                                      )
+                                    
                                     observer.next(holderObj);
                                     observer.complete();
                                 }
@@ -214,12 +222,12 @@ export class LoanApplicationBusinessService {
 
     }
 
-    public getLoanByMatrixByReviewer(username: any) : Observable<any> {
+    public getLoanByMatrixByReviewer(username: any, identifier: any) : Observable<any> {
         console.log("getLoanByMatrixByReviewer")
         let roleParams = this.lmsRole.getUserRole(username);
         return Observable.create(async (observer) => {
 
-            await this.apiChecker.isValidUserPerModule(username, "reviewer").subscribe(
+            await this.apiChecker.isValidUserPerModule(username, identifier).subscribe(
                 async (data) => {
                     console.log("data.message", data.message)
                     if(data.message == "authorized")
@@ -236,7 +244,7 @@ export class LoanApplicationBusinessService {
                                     // for(let item in uniqueRole)
                                     // {
                                        
-                                        let checkVal = this.roleMatrix.getRoleMatrix("reviewer", "");
+                                        let checkVal = this.roleMatrix.getRoleMatrix(identifier, "");
                                         await this.loanApplicationDataService.executequeryDataServicePromise(checkVal).then(
                                             async (checkValResults)=> {
                                                 
@@ -269,8 +277,16 @@ export class LoanApplicationBusinessService {
                                                 else {
                                                     for(let role in filterRole)
                                                     {
-                                                    let matrixParams = this.formParams.getFormReviewer(filterRole[role]);
-                                                    await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
+                                                    let identifierParams : any;
+                                                    if(identifier == "reviewer")
+                                                    {
+                                                        identifierParams  = this.formParams.getFormReviewer(filterRole[role]);
+                                                    }
+                                                    else if(identifier == "approver")
+                                                    {
+                                                        identifierParams  = this.formParams.getFormApprover(filterRole[role]);
+                                                    }
+                                                    await this.loanApplicationDataService.executequeryDataServicePromise(identifierParams).then(
                                                     async (matrixParamsResults) => {
                                                         
                                                         if(matrixParamsResults.Count > 0)
@@ -345,6 +361,12 @@ export class LoanApplicationBusinessService {
                                                  
                                             }
                                         )
+                                        holderObj.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i)
+                                    //     holderObj = holderObj.filter((value, index, self) =>
+                                    //     index === self.findIndex((t) => (
+                                    //       t.id === value.id
+                                    //     ))
+                                    //   )
                                     observer.next(holderObj);
                                     observer.complete();
                                 }

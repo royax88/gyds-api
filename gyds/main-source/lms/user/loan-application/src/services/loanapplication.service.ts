@@ -12,6 +12,7 @@ export class LoanApplicationService {
     name: any;
     loankey: any;
     roleAccess: any;
+    identifier: any;
     private loanApplicationBusinessService = new LoanApplicationBusinessService();
 
     constructor() {
@@ -80,13 +81,14 @@ export class LoanApplicationService {
             if(process.env['localenv']==="true")
             {
                 this.username = event.body.username;
+                this.identifier = event.body.identifier;
             }
             else
             {
                 this.username = JSON.parse(event.body).username;
-            
-            }
-            return this.loanApplicationBusinessService.getLoanByMatrixByReviewer(this.username);
+                this.identifier = JSON.parse(event.body).identifier;
+            }   
+            return this.loanApplicationBusinessService.getLoanByMatrixByReviewer(this.username, this.identifier);
         }
 
         else if(this.actioncd=='getLoanRequestById')
