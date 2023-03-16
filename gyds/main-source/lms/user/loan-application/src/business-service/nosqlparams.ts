@@ -49,7 +49,7 @@ export class LoanApplicationNoSQLParams {
             'promissoryCurrency' : obj.data.fourthCurrency == undefined || obj.data.fourthCurrency == "" ? "" : obj.data.fourthCurrency.code,
             'promissoryInWords' : obj.data.fourthInwords,
             'promissoryDateOfLoan': obj.data.fourthpromissoryDateOfLoan.year + "-" + obj.data.fourthpromissoryDateOfLoan.month + "-" + obj.data.fourthpromissoryDateOfLoan.day,
-            'promissoryLoanPeriod': obj.data.fourthpromissoryLoanPeriod.year + "-" + obj.data.fourthpromissoryLoanPeriod.month + "-" + obj.data.fourthpromissoryLoanPeriod.day,
+            'promissoryLoanPeriod': '0-0-0',
             'promissoryLoanPurpose' : obj.data.fourthLoanPurpose,
             'promissoryInterestRate' : obj.data.fourthInterestRate,
             'promissoryScheme': obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected.code,
@@ -65,7 +65,14 @@ export class LoanApplicationNoSQLParams {
             'formid': formid,
             'incrementValue': incVal,
             'formname' : obj.data.selectedForm,
-            'docNumber' : loankey
+            'docNumber' : loankey,
+            'promisorryLoanPeriodYear' : obj.data.loanPeriodYear,
+            'promisorryLoanPeriodMonth' : obj.data.loanPeriodMonth,
+            'promisorryLoanPeriodDay' : obj.data.loanPeriodDay,
+            'promissoryLinkForm1' : obj.data.promissoryLinkForm1,
+            'promissoryLinkForm2' : obj.data.promissoryLinkForm2,
+            'link1' : obj.data.link1,
+            'link2' : obj.data.link2
         }
         };
         return finalParams;
@@ -174,6 +181,23 @@ export class LoanApplicationNoSQLParams {
          return params;
     }
 
+    public getLoanTransApplicationDate(appdate: any)
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'applicationDate-index',
+            KeyConditionExpression: '#applicationDate =:applicationDate',
+            ExpressionAttributeNames: {
+                '#applicationDate' : 'applicationDate'
+            },
+            ExpressionAttributeValues: {
+                ':applicationDate': appdate
+            },
+             ScanIndexForward: false 
+         }
+         return params;
+    }
+
     public getLoanTransactionByStatus() {
     
         let params = {
@@ -181,6 +205,7 @@ export class LoanApplicationNoSQLParams {
      }
      return params;
     }
+
 
     public updateLoanTransaction(obj:any)
     {
@@ -215,7 +240,7 @@ export class LoanApplicationNoSQLParams {
                            "affidavitUTType = :affidavitUTType,affidavitUTDetail1 = :affidavitUTDetail1,affidavitUTDetail2 = :affidavitUTDetail2,affidavitCMAmount = :affidavitCMAmount," + 
                            "affivaditCMCurrency = :affivaditCMCurrency,affidavitCMInWords = :affidavitCMInWords,affidavitCMType = :affidavitCMType,affidavitCMDetail1 = :affidavitCMDetail1," +
                            "affidavitCMDetail2 = :affidavitCMDetail2,promissoryAmount = :promissoryAmount,promissoryCurrency = :promissoryCurrency,promissoryInWords = :promissoryInWords," +
-                           "promissoryDateOfLoan = :promissoryDateOfLoan,promissoryLoanPeriod = :promissoryLoanPeriod,promissoryLoanPurpose = :promissoryLoanPurpose,promissoryInterestRate = :promissoryInterestRate,promissoryScheme = :promissoryScheme, promissoryPaymentTerm = :promissoryPaymentTerm",
+                           "promissoryDateOfLoan = :promissoryDateOfLoan,promissoryLoanPurpose = :promissoryLoanPurpose,promissoryInterestRate = :promissoryInterestRate,promissoryScheme = :promissoryScheme, promissoryPaymentTerm = :promissoryPaymentTerm, promisorryLoanPeriodYear = :promisorryLoanPeriodYear,  promisorryLoanPeriodMonth = :promisorryLoanPeriodMonth, promisorryLoanPeriodDay = :promisorryLoanPeriodDay, promissoryLinkForm1 = :promissoryLinkForm1, promissoryLinkForm2 = :promissoryLinkForm2, link1 = :link1, link2 = :link2",
             ExpressionAttributeValues:{
                 ":statusVal" : obj.data.status,
                 ":updatedBy" : obj.data.user,
@@ -244,19 +269,24 @@ export class LoanApplicationNoSQLParams {
                 ":promissoryCurrency" : obj.data.fourthCurrency == undefined || obj.data.fourthCurrency == "" ? "" : obj.data.fourthCurrency,
                 ":promissoryInWords" : obj.data.fourthInwords,
                 ":promissoryDateOfLoan" : obj.data.fourthpromissoryDateOfLoan.year + "-" + obj.data.fourthpromissoryDateOfLoan.month + "-" + obj.data.fourthpromissoryDateOfLoan.day,
-                ":promissoryLoanPeriod" : obj.data.fourthpromissoryLoanPeriod.year + "-" + obj.data.fourthpromissoryLoanPeriod.month + "-" + obj.data.fourthpromissoryLoanPeriod.day,
                 ":promissoryLoanPurpose" : obj.data.fourthLoanPurpose,
                 ":promissoryInterestRate" : obj.data.fourthInterestRate,
                 ":promissoryScheme" : obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected,
-                ":promissoryPaymentTerm" : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected
-
+                ":promissoryPaymentTerm" : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected,
+                ":promisorryLoanPeriodYear" : obj.data.loanPeriodYear,
+                ":promisorryLoanPeriodMonth" : obj.data.loanPeriodMonth,
+                ":promisorryLoanPeriodDay" : obj.data.loanPeriodDay,
+                ":promissoryLinkForm1" : obj.data.promissoryLinkForm1,
+                ":promissoryLinkForm2" : obj.data.promissoryLinkForm2,
+                ":link1" : obj.data.link1,
+                ":link2" : obj.data.link2
             },
             ReturnValues:"UPDATED_NEW"
         };
         return finalParams;
     }
 
-    public insertCommentsTbl(obj:any)
+    public insertCommentsTbl(obj:any, role?:any)
     {
 
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
@@ -269,6 +299,7 @@ export class LoanApplicationNoSQLParams {
             'comments' : obj.data.comments,
             'statsVal' : obj.data.status,
             'user': obj.data.user,
+            'userRole' : role,
             'audit': day
         }
         };

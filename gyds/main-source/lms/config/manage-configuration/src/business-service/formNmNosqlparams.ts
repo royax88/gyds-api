@@ -236,35 +236,38 @@ export class FormNoSQLParams {
          return params;
     }
 
-    public getFormReviewer(val: any) {
+    public getFormReviewer(formid: any, detail7val: any) {
     
         let params = {
         TableName: this.formTbl,
-        IndexName: 'detail7-index',
-        KeyConditionExpression: '#detail7 =:detail7',
+        IndexName: 'formidval-detail7-index',
+        KeyConditionExpression: '#formidval =:formidval and #detail7 =:detail7',
             ExpressionAttributeNames: {
+                '#formidval' : 'formidval',
                 '#detail7' : 'detail7'
-               
             },
             ExpressionAttributeValues: {
-                ':detail7': val
+                ':formidval': formid,
+                ':detail7': detail7val
             },
         ScanIndexForward: false 
      }
      return params;
     }
 
-    public getFormApprover(val: any) {
+    public getFormApprover(formid, val: any) {
     
         let params = {
         TableName: this.formTbl,
-        IndexName: 'detail8-index',
-        KeyConditionExpression: '#detail8 =:detail8',
+        IndexName: 'formidval-detail8-index',
+        KeyConditionExpression: '#formidval =:formidval and #detail8 =:detail8',
             ExpressionAttributeNames: {
+                '#formidval' : 'formidval',
                 '#detail8' : 'detail8'
                
             },
             ExpressionAttributeValues: {
+                ':formidval': formid,
                 ':detail8': val
             },
         ScanIndexForward: false 

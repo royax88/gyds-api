@@ -63,6 +63,21 @@ export class LoanApplicationService {
             return this.loanApplicationBusinessService.getLoanRequest(this.username);
         }
 
+        else if(this.actioncd=='searchDocNumber')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body.data;
+            }
+            else
+            {
+                this.objData = event.body.data;
+               
+            
+            }
+            return this.loanApplicationBusinessService.searchDocNumber(this.objData);
+        }
+
         else if(this.actioncd=='getLoanRequestByMatrix')
         {
             if(process.env['localenv']==="true")
@@ -120,13 +135,14 @@ export class LoanApplicationService {
             if(process.env['localenv']==="true")
             {
                 this.objData = event.body;
+                this.roleAccess = event.body.role
             }
             else
             {
                 this.objData = JSON.parse(event.body);
-            
+                this.roleAccess = JSON.parse(event.body.role);
             }
-            return this.loanApplicationBusinessService.updateLoanTransaction(this.objData);
+            return this.loanApplicationBusinessService.updateLoanTransaction(this.objData, this.roleAccess);
         }
 
         else if(this.actioncd=='updateLoantransByProcessor')
