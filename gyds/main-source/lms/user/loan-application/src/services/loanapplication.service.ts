@@ -67,7 +67,7 @@ export class LoanApplicationService {
         {
             if(process.env['localenv']==="true")
             {
-                this.objData = event.body.data;
+                this.objData = event.body;
             }
             else
             {
@@ -134,7 +134,7 @@ export class LoanApplicationService {
             if(process.env['localenv']==="true")
             {
                 this.objData = event.body;
-                this.roleAccess = event.body.role
+                this.roleAccess = event.body
             }
             else
             {

@@ -72,7 +72,8 @@ export class LoanApplicationNoSQLParams {
             'promissoryLinkForm1' : obj.data.promissoryLinkForm1,
             'promissoryLinkForm2' : obj.data.promissoryLinkForm2,
             'link1' : obj.data.link1,
-            'link2' : obj.data.link2
+            'link2' : obj.data.link2,
+            "isDelete" : "0"
         }
         };
         return finalParams;
@@ -198,6 +199,23 @@ export class LoanApplicationNoSQLParams {
          return params;
     }
 
+    public getAllActive()
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'isDelete-index',
+            KeyConditionExpression: '#isDelete =:isDelete',
+                ExpressionAttributeNames: {
+                    '#isDelete' : 'isDelete'
+                },
+                ExpressionAttributeValues: {
+                    ':isDelete': "0" 
+                },
+            ScanIndexForward: false 
+         }
+         return params;
+    }
+
     public getLoanTransactionByStatus() {
     
         let params = {
@@ -228,6 +246,7 @@ export class LoanApplicationNoSQLParams {
 
     public updateLoanTransByProcessor(obj:any)
     {
+        console.log("obj.data.link", obj.data.link)
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
         let finalParams: any = {
         TableName: this.loanTbl,

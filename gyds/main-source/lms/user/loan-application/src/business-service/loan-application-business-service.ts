@@ -167,7 +167,7 @@ export class LoanApplicationBusinessService {
                                                         let docStatusParams : any;
                                                         if(ojbData.applicateDate != "" && ojbData.statusVal == "" && ojbData.docNumVal == "")
                                                         {
-                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTransApplicationDate(ojbData.applicateDate)
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
                                                         }
                                                         else if(ojbData.statusVal != "" && ojbData.docNumVal != "" && ojbData.applicateDate == "")
                                                         {
@@ -182,26 +182,23 @@ export class LoanApplicationBusinessService {
                                                         }
                                                         else if(ojbData.applicateDate != "" && ojbData.statusVal != "" && ojbData.docNumVal != "")
                                                         {
-                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTransApplicationDate(ojbData.applicateDate)
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
                                                         }
                                                         else if(ojbData.applicateDate != "" && ojbData.statusVal != "" && ojbData.docNumVal == "")
                                                         {
-                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTransApplicationDate(ojbData.applicateDate)
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
                                                         }
                                                         else if(ojbData.applicateDate != "" && ojbData.statusVal == "" && ojbData.docNumVal != "")
                                                         {
-                                                            docStatusParams = this.loanApplicationNoSQLParams.getLoanTransApplicationDate(ojbData.applicateDate)
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
                                                         }
                                                         else {
-                                                            let msg = {
-                                                                message: "NoRecords"
-                                                            }
-                                                            observer.next(msg);
-                                                            observer.complete();
+                                                            docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
                                                         }
                                                             
                                                             await this.loanApplicationDataService.executequeryDataServicePromise(docStatusParams).then(
                                                                 async (loanData) => {
+                                                                    console.log("loanData", loanData.Count)
                                                                     let isLoan : any = false;
                                                                     if((ojbData.statusVal != "" && ojbData.docNumVal != "" && ojbData.applicateDate == "") || (ojbData.docNumVal != "" && ojbData.statusVal == ""  && ojbData.applicateDate == "") )
                                                                     { 
@@ -219,7 +216,7 @@ export class LoanApplicationBusinessService {
                                                                                 {
                                                                                     matrixParams  = this.formParams.getFormApprover(loanData.Items[0].formid, filterRole[role]);
                                                                                 }
-                                                                                else {
+                                                                                else if(ojbData.userRole == "processor") {
                                                                                     matrixParams = this.formParams.getFormByDetail6(loanData.Items[0].formid,filterRole[role]);
                                                                                 }   
                                                                                 
@@ -314,124 +311,9 @@ export class LoanApplicationBusinessService {
                                                                             }
                                                                         }
                                                                     }
-                                                                    // else if(ojbData.docNumVal != "")
-                                                                    // {
-                                                                        
-                                                                    //     if(loanData.Count > 0)
-                                                                    //     {
-                                                                    //         for(let role in filterRole)
-                                                                    //         {
-                                                                    //             let matrixParams = this.formParams.getFormByDetail6(loanData.Items[0].formid,filterRole[role]);
-
-                                                                    //             await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
-                                                                    //                 async (matrixParamsResults) => {
-                                                                    //                         if(matrixParamsResults.Count > 0)
-                                                                    //                         {
-                                                                    //                             for(let item in matrixParamsResults.Items)
-                                                                    //                             {
-                                                                                                
-                                                                    //                                 if(this.CheckCOMaker(loanData,matrixParamsResults.Items, item, 0))
-                                                                    //                                 {
-                                                                    //                                     let loanRequests = this.transformResponse(loanData.Items, 0)
-                                                                    //                                     holderObj.push(loanRequests)
-                                                                    //                                     isLoan = true;
-                                                                    //                                 }
-                                                                    //                                 else if(this.CheckPromissory(loanData,matrixParamsResults.Items, item, 0))
-                                                                    //                                 {
-                                                                    //                                     let loanRequests = this.transformResponse(loanData.Items, 0)
-                                                                    //                                     holderObj.push(loanRequests)
-                                                                    //                                     isLoan = true;
-                                                                    //                                 }
-                                                                    //                                 else if(this.CheckAffidavitUndertaking(loanData,matrixParamsResults.Items, item, 0))
-                                                                    //                                 {
-                                                                    //                                     let loanRequests = this.transformResponse(loanData.Items, 0)
-                                                                    //                                     holderObj.push(loanRequests)
-                                                                    //                                     isLoan = true;
-                                                                    //                                 }
-                                                                    //                                 if(isLoan) break;
-                                                                    //                             }
-                                                                                                
-                                                                    //                         }
-                                                                    //                 }
-                                                                    //             )
-                                                                    //         }
-
-
-                                                                    //     }
-                                                                    // }
                                                                 }
                                                         )
-                                                //     for(let role in filterRole)
-                                                //     {
-                                                //     let matrixParams = this.formParams.getFormProcessor(filterRole[role]);
-                                                //     await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
-                                                //     async (matrixParamsResults) => {
-                                                //         console.log("matrixParamsResults", matrixParamsResults)
-                                                //         if(matrixParamsResults.Count > 0)
-                                                //         {
-                                                //             for(let res in matrixParamsResults.Items)
-                                                //             {
-                                                                
-                                                //                 let queryParams = this.loanApplicationNoSQLParams.getFormId(matrixParamsResults.Items[res].formidval);
-                                                                
-                                                                
-                                                //                 await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
-                                                //                     (loanData) => {
-                                                //                         for(let item in loanData.Items)
-                                                //                             {
-                                                                                
-                                                //                                 if(loanData.Items[item].formname = "Affidavit of Undertaking"
-                                                //                                 && loanData.Items[item].affidavitUTCurrency == matrixParamsResults.Items[res].detail9
-                                                //                                 && Number(loanData.Items[item].affidavitUTAmount) <= Number(matrixParamsResults.Items[res].detail5))
-                                                //                                 {
-                                                //                                     let loanRequests = {
-                                                //                                         id: loanData.Items[item].loankey,
-                                                //                                         applicantName: loanData.Items[item].applicantLastNm,
-                                                //                                         status: loanData.Items[item].statusVal,
-                                                //                                         applicationDate: loanData.Items[item].applicationDate,
-                                                //                                         docNumber: loanData.Items[item].docNumber
-                                                //                                     }  
-                                                //                                     holderObj.push(loanRequests)
-                                                //                                 }
-
-                                                //                                 else if(loanData.Items[item].formname = "Affidavit of Co-maker"
-                                                //                                 && loanData.Items[item].affivaditCMCurrency == matrixParamsResults.Items[res].detail9
-                                                //                                 && Number(loanData.Items[item].affidavitCMAmount) <= Number(matrixParamsResults.Items[res].detail5))
-                                                //                                 {
-                                                //                                     let loanRequests = {
-                                                //                                         id: loanData.Items[item].loankey,
-                                                //                                         applicantName: loanData.Items[item].applicantLastNm,
-                                                //                                         status: loanData.Items[item].statusVal,
-                                                //                                         applicationDate: loanData.Items[item].applicationDate,
-                                                //                                         docNumber: loanData.Items[item].docNumber
-                                                //                                     }  
-                                                //                                     holderObj.push(loanRequests)
-                                                //                                 }
-
-                                                //                                 else if(loanData.Items[item].formname = "Promissory Note"
-                                                //                                 && loanData.Items[item].promissoryCurrency == matrixParamsResults.Items[res].detail9
-                                                //                                 && Number(loanData.Items[item].promissoryAmount) <= Number(matrixParamsResults.Items[res].detail5))
-                                                //                                 {
-                                                //                                     let loanRequests = {
-                                                //                                         id: loanData.Items[item].loankey,
-                                                //                                         applicantName: loanData.Items[item].applicantLastNm,
-                                                //                                         status: loanData.Items[item].statusVal,
-                                                //                                         applicationDate: loanData.Items[item].applicationDate,
-                                                //                                         docNumber: loanData.Items[item].docNumber
-                                                //                                     }  
-                                                //                                     holderObj.push(loanRequests)
-                                                //                                 }
-
-                                                //                             }   
-                                                //                     }
-                                                //                 )
-                                                             
-                                                //             }
-                                                            
-                                                //         } 
-                                                //     }
-                                                //    )
-                                                //     }
+                                               
                                                 }
                                                 
 
@@ -447,7 +329,7 @@ export class LoanApplicationBusinessService {
                                         ))
                                       )
                                     //filter based on id and status
-                                    let retVal = this.filterReturn(holderObj, ojbData.statusVal, ojbData.docNumVal, ojbData.applicateDate);
+                                    let retVal = this.filterReturn(holderObj, ojbData.statusVal, ojbData.docNumVal, ojbData.applicateDate, ojbData.applicateDateTo);
                                     observer.next(retVal);
                                     observer.complete();
                                 }
@@ -477,8 +359,10 @@ export class LoanApplicationBusinessService {
 
     }
 
-    private filterReturn(responseObj: any, status: any, docNumber: any, appDate: any)
+    private filterReturn(responseObj: any, status: any, docNumber: any, appDate: any, appDateTo: any)
     {
+        const appDateFrom = dateFormat(appDate, "yyyy-mm-dd");
+        let convertDateFromUI = new Date(appDateFrom);
         let newObj = [];
         if(appDate != "" && status != "" && docNumber != "")
         {
@@ -486,14 +370,8 @@ export class LoanApplicationBusinessService {
             {
                 if(responseObj[item].status == status.value && responseObj[item].docNumber == docNumber)
                 {
-                    let loanRequests = {
-                        id: responseObj[item].loankey,
-                        applicantName: responseObj[item].applicantName,
-                        status: responseObj[item].status,
-                        applicationDate: responseObj[item].applicationDate,
-                        docNumber: responseObj[item].docNumber
-                    }  
-                    newObj.push(loanRequests)
+                    let val = this.filterAppFromTo(responseObj[item], convertDateFromUI, appDateTo)
+                    if (val != undefined) newObj.push(val)
                 }
             }
             return newObj;
@@ -504,14 +382,8 @@ export class LoanApplicationBusinessService {
             {
                 if(responseObj[item].status == status.value)
                 {
-                    let loanRequests = {
-                        id: responseObj[item].loankey,
-                        applicantName: responseObj[item].applicantName,
-                        status: responseObj[item].status,
-                        applicationDate: responseObj[item].applicationDate,
-                        docNumber: responseObj[item].docNumber
-                    }  
-                    newObj.push(loanRequests)
+                    let val = this.filterAppFromTo(responseObj[item], convertDateFromUI, appDateTo)
+                    if (val != undefined) newObj.push(val)
                 }
             }
             return newObj;
@@ -520,18 +392,22 @@ export class LoanApplicationBusinessService {
         {
             for (let item in responseObj)
             {
-                console.log("responseObj", responseObj)
                 if(responseObj[item].docNumber == docNumber)
                 {
-                    let loanRequests = {
-                        id: responseObj[item].loankey,
-                        applicantName: responseObj[item].applicantName,
-                        status: responseObj[item].status,
-                        applicationDate: responseObj[item].applicationDate,
-                        docNumber: responseObj[item].docNumber
-                    }  
-                    newObj.push(loanRequests)
+                    let val = this.filterAppFromTo(responseObj[item], convertDateFromUI, appDateTo)
+                    if (val != undefined) newObj.push(val)
+
                 }
+            }
+            return newObj;
+        }
+        else if(appDate != "" && status == "" && docNumber == "")
+        {
+            
+            for (let item in responseObj)
+            {
+                let val = this.filterAppFromTo(responseObj[item], convertDateFromUI, appDateTo)
+                if (val != undefined) newObj.push(val)
             }
             return newObj;
         }
@@ -539,6 +415,46 @@ export class LoanApplicationBusinessService {
         {
             return responseObj;
         }
+    }
+
+    filterAppFromTo(responseObj, convertDateFromUI, appDateTo)
+    {
+                const responseAppdate = dateFormat(responseObj.applicationDate, "yyyy-mm-dd");
+                let loanTransAppDate = new Date(responseAppdate)
+                    if(loanTransAppDate >= convertDateFromUI)
+                    {
+                        
+                        
+                        if(appDateTo != "")
+                        {
+                            const appDateToVal = dateFormat(appDateTo, "yyyy-mm-dd");
+                            let convertFromUITo = new Date(appDateToVal)
+                            if(loanTransAppDate <= convertFromUITo)
+                            {
+                                let loanRequests = {
+                                    id: responseObj.loankey,
+                                    applicantName: responseObj.applicantName,
+                                    status: responseObj.status,
+                                    applicationDate: responseObj.applicationDate,
+                                    docNumber: responseObj.docNumber
+                                }  
+                                return loanRequests
+                            }
+                            
+                        }
+                        else {
+                            let loanRequests = {
+                                id: responseObj.loankey,
+                                applicantName: responseObj.applicantName,
+                                status: responseObj.status,
+                                applicationDate: responseObj.applicationDate,
+                                docNumber: responseObj.docNumber
+                            }  
+                            return loanRequests
+                        }
+                        
+                    }   
+                    
     }
 
 
@@ -574,17 +490,9 @@ export class LoanApplicationBusinessService {
         && loanData.Items[loanitem].affidavitUTCurrency == matrixParamsResults[item].detail9
         && Number(loanData.Items[loanitem].affidavitUTAmount) <= Number(matrixParamsResults[item].detail5))
         {
-            // console.log("1", loanData.Items[loanitem].affidavitUTCurrency)
-            // console.log("1", matrixParamsResults[item].detail9)
-            // console.log("1", loanData.Items[loanitem].affidavitUTAmount)
-            // console.log("1", matrixParamsResults[item].detail5)
             return true;
         }
         else {
-            // console.log("2", loanData.Items[loanitem].affidavitUTCurrency)
-            // console.log("2", matrixParamsResults[item].detail9)
-            // console.log("2", loanData.Items[loanitem].affidavitUTAmount)
-            // console.log("2", matrixParamsResults[item].detail5)
             false;
         }
     }
