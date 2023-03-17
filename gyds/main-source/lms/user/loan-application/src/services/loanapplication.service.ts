@@ -71,11 +71,10 @@ export class LoanApplicationService {
             }
             else
             {
-                this.objData = event.body.data;
-               
+                this.objData = JSON.parse(event.body);
             
             }
-            return this.loanApplicationBusinessService.searchDocNumber(this.objData);
+            return this.loanApplicationBusinessService.searchDocNumber(this.objData.data);
         }
 
         else if(this.actioncd=='getLoanRequestByMatrix')
@@ -140,9 +139,9 @@ export class LoanApplicationService {
             else
             {
                 this.objData = JSON.parse(event.body);
-                this.roleAccess = JSON.parse(event.body.role);
+                this.roleAccess = JSON.parse(event.body);
             }
-            return this.loanApplicationBusinessService.updateLoanTransaction(this.objData, this.roleAccess);
+            return this.loanApplicationBusinessService.updateLoanTransaction(this.objData, this.roleAccess.role);
         }
 
         else if(this.actioncd=='updateLoantransByProcessor')

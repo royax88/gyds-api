@@ -60,8 +60,8 @@ export class LoanApplicationBusinessService {
        console.log("event", event)
         // let queryParams = this.loanApplicationNoSQLParams.getLoanTranByDocNumber(event);
         let queryParams = this.loanApplicationNoSQLParams.getLoanTransactionByStatus();
-        return Observable.create((observer) => {
-            this.loanApplicationDataService.executescanDS(queryParams).subscribe(
+        return Observable.create( async (observer) => {
+            await this.loanApplicationDataService.executescanDS(queryParams).subscribe(
                 (data) => {            
                     let obj =[];
                     let max = 0;
