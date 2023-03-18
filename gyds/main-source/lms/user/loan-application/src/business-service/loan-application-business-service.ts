@@ -198,7 +198,6 @@ export class LoanApplicationBusinessService {
                                                             
                                                             await this.loanApplicationDataService.executequeryDataServicePromise(docStatusParams).then(
                                                                 async (loanData) => {
-                                                                    console.log("loanData", loanData.Count)
                                                                     let isLoan : any = false;
                                                                     if((ojbData.statusVal != "" && ojbData.docNumVal != "" && ojbData.applicateDate == "") || (ojbData.docNumVal != "" && ojbData.statusVal == ""  && ojbData.applicateDate == "") )
                                                                     { 
@@ -432,7 +431,7 @@ export class LoanApplicationBusinessService {
                             if(loanTransAppDate <= convertFromUITo)
                             {
                                 let loanRequests = {
-                                    id: responseObj.loankey,
+                                    id: responseObj.id,
                                     applicantName: responseObj.applicantName,
                                     status: responseObj.status,
                                     applicationDate: responseObj.applicationDate,
@@ -444,7 +443,7 @@ export class LoanApplicationBusinessService {
                         }
                         else {
                             let loanRequests = {
-                                id: responseObj.loankey,
+                                id: responseObj.id,
                                 applicantName: responseObj.applicantName,
                                 status: responseObj.status,
                                 applicationDate: responseObj.applicationDate,
