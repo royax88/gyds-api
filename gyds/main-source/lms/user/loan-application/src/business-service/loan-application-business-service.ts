@@ -446,6 +446,48 @@ export class LoanApplicationBusinessService {
             }
             return newObj;
         }
+        else if(appDate == "" && status != "" && docNumber.length == 0)
+        {
+            for (let item in responseObj)
+            {
+                if(responseObj[item].status == status.value)
+                {
+                    let loanRequests = {
+                        id: responseObj[item].id,
+                        applicantName: responseObj[item].applicantName,
+                        status: responseObj[item].status,
+                        applicationDate: responseObj[item].applicationDate,
+                        docNumber: responseObj[item].docNumber
+                    }  
+                    newObj.push(loanRequests);
+                }
+            }
+            return newObj;
+        }
+        else if(appDate == "" && status != "" && docNumber.length > 0)
+        {
+            for (let item in responseObj)
+            {
+                if(responseObj[item].status == status.value)
+                {
+                    for(let uiItem in docNumber)
+                    {
+                        if(docNumber[uiItem].docNumber == responseObj[item].docNumber)
+                        {
+                            let loanRequests = {
+                                id: responseObj[item].id,
+                                applicantName: responseObj[item].applicantName,
+                                status: responseObj[item].status,
+                                applicationDate: responseObj[item].applicationDate,
+                                docNumber: responseObj[item].docNumber
+                            }  
+                            newObj.push(loanRequests);
+                        }
+                    }
+                }
+            }
+            return newObj;
+        }
         else 
         {
             return responseObj;
@@ -787,7 +829,6 @@ export class LoanApplicationBusinessService {
                 (schemeObj) => {
                     this.loanApplicationDataService.executequeryDataService(getLoanParams).subscribe(
                         (loanData) => {
-                            console.log("loandata", loanData)
                             if(loanData.Count > 0)
                             {
                                 let isValidFY = this.isValidYearDependent(schemeObj, obj.data.selectedRangeData, obj.data.firstapplicationDate);
@@ -840,7 +881,8 @@ export class LoanApplicationBusinessService {
                                                 //     )
 
                                                     let msg = {
-                                                        message: "createdLoan"
+                                                        message: "createdLoan",
+                                                        docNumber: loankey
                                                     }
                                                     observer.next(msg);
                                                     observer.complete();
@@ -898,7 +940,8 @@ export class LoanApplicationBusinessService {
                                                     //         }   
                                                     //     )
                                                     let msg = {
-                                                        message: "createdLoan"
+                                                        message: "createdLoan",
+                                                        docNumber: loankey
                                                     }
                                                     observer.next(msg);
                                                     observer.complete();
