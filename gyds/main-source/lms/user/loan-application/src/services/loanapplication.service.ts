@@ -177,6 +177,31 @@ export class LoanApplicationService {
             }
             return this.loanApplicationBusinessService.getCommentsHistory(this.loankey);
         }
+        else if(this.actioncd=='calculateNetProceeds')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }
+            return this.loanApplicationBusinessService.calculateNetProceeds(this.objData);
+        }
+
+        else if(this.actioncd=='updateLoanByRelease')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }
+            return this.loanApplicationBusinessService.updateLoanByRelease(this.objData);
+        }
     }
     
 

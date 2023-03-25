@@ -285,7 +285,7 @@ export class LoanApplicationBusinessService {
                                 let checkVal = this.roleMatrix.getRoleMatrix(ojbData.userRole, "");
      
                                 let docStatusParams : any;
-                                docStatusParams = this.loanApplicationNoSQLParams.getAllApproved();
+                                docStatusParams = this.loanApplicationNoSQLParams.getAllApproved(ojbData.company);
                                                             
                                 await this.loanApplicationDataService.executequeryDataServicePromise(docStatusParams).then(
                                      async (loanData) => {
@@ -1208,6 +1208,63 @@ export class LoanApplicationBusinessService {
                                         });
           
          })
+
+    }
+
+    public calculateNetProceeds(objData: any) : Observable<any> {
+        return Observable.create((observer) => {
+
+            let interestAmount = objData.data.loanAmount * (objData.data.interest / 100);
+            let totalAmount = parseFloat(objData.data.balance) + parseFloat(objData.data.servicefee) + parseFloat(objData.data.insurance) + parseFloat(objData.data.othercharges) + interestAmount;
+            let retVal = {
+                interestAmt: interestAmount,
+                netProceeds: Math.round(totalAmount * 100) / 100
+            }
+            observer.next(retVal);
+            observer.complete();
+         })
+
+    }
+
+    public updateLoanByRelease(obj: any) : Observable<any> {
+        
+        let queryParams = this.loanApplicationNoSQLParams.updateLoanByRelease(obj);
+        let newObj = {
+            data : {
+                id: obj.data.id,
+                comments: "Create Loan Release Form.",
+                role: "release officer",
+                status: "Loan Release - For Processing",
+                user: obj.data.user
+            }
+        }
+        let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(newObj, "release officer");
+        return Observable.create((observer) => {
+                
+            this.loanApplicationDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+
+                    this.loanApplicationDataService.InsertData(commentsParams).subscribe(
+                        (data) => {
+                            let msg = {
+                                message: "updateLoanTransaction"
+                            }
+                            observer.next(msg);
+                            observer.complete();
+                            
+                        },
+                        (error) => {
+                            console.log("errr", error)
+                            observer.error(error);
+                        });
+              
+
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
 
     }
 
