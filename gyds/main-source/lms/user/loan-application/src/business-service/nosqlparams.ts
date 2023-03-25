@@ -73,7 +73,8 @@ export class LoanApplicationNoSQLParams {
             'promissoryLinkForm2' : obj.data.promissoryLinkForm2,
             'link1' : obj.data.link1,
             'link2' : obj.data.link2,
-            "isDelete" : "0"
+            "isDelete" : "0",
+            "isForRelease": "0"
         }
         };
         return finalParams;
@@ -216,6 +217,25 @@ export class LoanApplicationNoSQLParams {
          return params;
     }
 
+    public getAllApproved()
+    {
+        let params = {
+            TableName: this.loanTbl,
+            IndexName: 'isForRelease-formname-index',
+            KeyConditionExpression: '#isForRelease =:isForRelease and #formname =:formname',
+                ExpressionAttributeNames: {
+                    '#isForRelease' : 'isForRelease',
+                    '#formname' : 'formname'
+                },
+                ExpressionAttributeValues: {
+                    ':isForRelease': "1",
+                    ':formname': "Promissory Note" 
+                },
+            ScanIndexForward: false 
+         }
+         return params;
+    }
+
     public getLoanTransactionByStatus() {
     
         let params = {
@@ -225,18 +245,25 @@ export class LoanApplicationNoSQLParams {
     }
 
 
-    public updateLoanTransaction(obj:any)
+    public updateLoanTransaction(obj:any, role: any)
     {
+        let isForReleaseVal : any = 0;
+        if(obj.data.status == "Approved" && role == "approver")
+        {
+            isForReleaseVal = "1";
+        }
+
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
         let finalParams: any = {
         TableName: this.loanTbl,
         Key: {
             loankey: obj.data.id
         },
-        UpdateExpression: "set statusVal = :statusVal, updatedBy = :updatedBy, updatedDate = :updatedDate",
+        UpdateExpression: "set statusVal = :statusVal, updatedBy = :updatedBy,isForRelease = :isForRelease, updatedDate = :updatedDate",
             ExpressionAttributeValues:{
                 ":statusVal" : obj.data.status,
                 ":updatedBy" : obj.data.user,
+                ":isForRelease" : isForReleaseVal.toString(),
                 ":updatedDate" : day
             },
             ReturnValues:"UPDATED_NEW"
@@ -246,7 +273,6 @@ export class LoanApplicationNoSQLParams {
 
     public updateLoanTransByProcessor(obj:any)
     {
-        console.log("obj.data.link", obj.data.link)
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
         let finalParams: any = {
         TableName: this.loanTbl,

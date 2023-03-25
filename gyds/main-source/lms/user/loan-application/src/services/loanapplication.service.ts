@@ -89,7 +89,14 @@ export class LoanApplicationService {
                 this.username = JSON.parse(event.body).username;
                 this.objData = JSON.parse(event.body).data;
             }
-            return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username, this.objData);
+            if(this.objData.userRole == "releaseOfficer")
+            {
+                return this.loanApplicationBusinessService.getReleaseLoan(this.username, this.objData)
+            }
+            else {
+                return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username, this.objData);
+            }
+           
         }
 
         else if(this.actioncd=='getRequestForReview')

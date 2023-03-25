@@ -132,8 +132,6 @@ export class LoanApplicationBusinessService {
                                     
                                     let holderObj = [];
                                     let uniqueRole = roleParamsResults.Items[0].lmsroleNm.filter((item, i, ar) => ar.indexOf(item) === i)
-                                    // for(let item in uniqueRole)
-                                    // {
                                         
                                         let checkVal = this.roleMatrix.getRoleMatrix(ojbData.userRole, "");
                                         await this.loanApplicationDataService.executequeryDataServicePromise(checkVal).then(
@@ -165,104 +163,12 @@ export class LoanApplicationBusinessService {
                                                 }
                                                 else {
                                                         let docStatusParams : any;
-                                                        // if(ojbData.applicateDate != "" && ojbData.statusVal == "" && ojbData.docNumVal.length == 0)
-                                                        // {
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-                                                        // else if(ojbData.statusVal != "" && ojbData.docNumVal.length > 0 && ojbData.applicateDate == "")
-                                                        // {
-                                                        //     // docStatusParams = this.loanApplicationNoSQLParams.getLoanTranByStatusDoc(ojbData.statusVal.value, ojbData.docNumVal)
-                                                        //     // docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-                                                        // else if(ojbData.statusVal != "" && ojbData.applicateDate == "" && ojbData.docNumVal.length == 0)  {
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getLoanTranByStatusFilter(ojbData.statusVal.value)
-                                                        // }
-                                                        // else if(ojbData.docNumVal.length > 0 && ojbData.applicateDate == "" && ojbData.statusVal == "")
-                                                        // {
-                                                        //     // docStatusParams = this.loanApplicationNoSQLParams.getLoanTranByDocNumber(ojbData.docNumVal)
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-                                                        // else if(ojbData.applicateDate != "" && ojbData.statusVal != "" && ojbData.docNumVal.length > 0)
-                                                        // {
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-                                                        // else if(ojbData.applicateDate != "" && ojbData.statusVal != "" && ojbData.docNumVal.length == 0)
-                                                        // {
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-                                                        // else if(ojbData.applicateDate != "" && ojbData.statusVal == "" && ojbData.docNumVal.length > 0)
-                                                        // {
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-                                                        // else {
-                                                        //     docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
-                                                        // }
-
                                                         docStatusParams = this.loanApplicationNoSQLParams.getAllActive()
                                                             
                                                             await this.loanApplicationDataService.executequeryDataServicePromise(docStatusParams).then(
                                                                 async (loanData) => {
                                                                     let isLoan : any = false;
-                                                                    // console.log("loandata", loanData)
-                                                                    // if((ojbData.statusVal != "" && ojbData.docNumVal.length > 0 && ojbData.applicateDate == "") || (ojbData.docNumVal.length == 0 && ojbData.statusVal == ""  && ojbData.applicateDate == "") )
-                                                                    // { 
-                                                                       
-                                                                    //     if(loanData.Count > 0)
-                                                                    //     {
-                                                                    //         for(let role in filterRole)
-                                                                    //         {
-                                                                    //             let matrixParams : any;
-                                                                    //             if(ojbData.userRole == "reviewer")
-                                                                    //             {
-                                                                    //                 matrixParams  = this.formParams.getFormReviewer(loanData.Items[0].formid, filterRole[role]);
-                                                                    //             }
-                                                                    //             else if(ojbData.userRole == "approver")
-                                                                    //             {
-                                                                    //                 matrixParams  = this.formParams.getFormApprover(loanData.Items[0].formid, filterRole[role]);
-                                                                    //             }
-                                                                    //             else if(ojbData.userRole == "processor") {
-                                                                    //                 matrixParams = this.formParams.getFormByDetail6(loanData.Items[0].formid,filterRole[role]);
-                                                                    //             }   
-                                                                                
-
-                                                                    //             await this.loanApplicationDataService.executequeryDataServicePromise(matrixParams).then(
-                                                                    //                 async (matrixParamsResults) => {
-                                                                    //                         if(matrixParamsResults.Count > 0)
-                                                                    //                         {
-                                                                    //                             for(let item in matrixParamsResults.Items)
-                                                                    //                             {
-                                                                                                
-                                                                    //                                 if(this.CheckCOMaker(loanData,matrixParamsResults.Items, item, 0))
-                                                                    //                                 {
-                                                                    //                                     let loanRequests = this.transformResponse(loanData.Items, 0)
-                                                                    //                                     holderObj.push(loanRequests)
-                                                                    //                                     isLoan = true;
-                                                                    //                                 }
-                                                                    //                                 else if(this.CheckPromissory(loanData,matrixParamsResults.Items, item, 0))
-                                                                    //                                 {
-                                                                    //                                     let loanRequests = this.transformResponse(loanData.Items, 0)
-                                                                    //                                     holderObj.push(loanRequests)
-                                                                    //                                     isLoan = true;
-                                                                    //                                 }
-                                                                    //                                 else if(this.CheckAffidavitUndertaking(loanData,matrixParamsResults.Items, item, 0))
-                                                                    //                                 {
-                                                                    //                                     let loanRequests = this.transformResponse(loanData.Items, 0)
-                                                                    //                                     holderObj.push(loanRequests)
-                                                                    //                                     isLoan = true;
-                                                                    //                                 }
-                                                                    //                                 if(isLoan) break;
-                                                                    //                             }
-                                                                                                
-                                                                    //                         }
-                                                                    //                 }
-                                                                    //             )
-                                                                    //         }
-
-
-                                                                    //     }
-                                                                    // }
-                                                                    // else 
-                                                                    // {
+                                                        
                                                                         
                                                                         if(loanData.Count > 0)
                                                                         {
@@ -364,7 +270,133 @@ export class LoanApplicationBusinessService {
 
     }
 
-    private filterReturn(responseObj: any, status: any, docNumber: any, appDate: any, appDateTo: any)
+    public getReleaseLoan(username: any, ojbData: any) : Observable<any> {
+        console.log("getReleaseLoan")
+        let roleParams = this.lmsRole.getUserRole(username);
+        return Observable.create(async (observer) => {
+            let holderObj = [];
+            await this.apiChecker.isValidUserPerModule(username, ojbData.userRole).subscribe(
+                async (data) => {
+                    
+                    if(data.message == "authorized")
+                    {
+                        console.log("authorized")
+                                let count = 0; 
+                                let checkVal = this.roleMatrix.getRoleMatrix(ojbData.userRole, "");
+     
+                                let docStatusParams : any;
+                                docStatusParams = this.loanApplicationNoSQLParams.getAllApproved();
+                                                            
+                                await this.loanApplicationDataService.executequeryDataServicePromise(docStatusParams).then(
+                                     async (loanData) => {
+                                         let isLoan : any = false;
+                                            if(loanData.Count > 0)
+                                                {
+                                                    console.log("ojbData.collectionGroup", ojbData.collectionGroup)
+                                                    console.log("ojbData.collectionAgent", ojbData.collectionAgent)
+                                                    for (let loanval in loanData.Items)
+                                                        {
+                                                        if(ojbData.collectionGroup != "" && ojbData.collectionAgent != "" && ojbData.applicant != "")
+                                                        {
+                                                            if(ojbData.collectionGroup == loanData.Items[loanval].addtlCollectionGroup && ojbData.collectionAgent == loanData.Items[loanval].addtlCollectionAgent
+                                                                && loanData.Items[loanval].applicantLastNm.toLowerCase().indexOf(ojbData.applicant.toLowerCase()) > -1)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else if(ojbData.collectionGroup != "" && ojbData.collectionAgent != "" && ojbData.applicant == "")
+                                                        {
+                                                            if(ojbData.collectionGroup == loanData.Items[loanval].addtlCollectionGroup && ojbData.collectionAgent == loanData.Items[loanval].addtlCollectionAgent)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else if(ojbData.collectionGroup != "" && ojbData.collectionAgent == "" && ojbData.applicant != "")
+                                                        {
+                                                            if(ojbData.collectionGroup == loanData.Items[loanval].addtlCollectionGroup && loanData.Items[loanval].applicantLastNm.toLowerCase().indexOf(ojbData.applicant.toLowerCase()) > -1)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else if(ojbData.collectionGroup == "" && ojbData.collectionAgent != "" && ojbData.applicant != "")
+                                                        {
+                                                            if(ojbData.collectionAgent == loanData.Items[loanval].addtlCollectionAgent && loanData.Items[loanval].applicantLastNm.toLowerCase().indexOf(ojbData.applicant.toLowerCase()) > -1)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else if(ojbData.collectionGroup != "" && ojbData.collectionAgent == "" && ojbData.applicant == "")
+                                                        {
+                                                            if(ojbData.collectionGroup == loanData.Items[loanval].addtlCollectionGroup)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else if(ojbData.collectionGroup == "" && ojbData.collectionAgent != "" && ojbData.applicant == "")
+                                                        {
+                                                            if(ojbData.collectionAgent == loanData.Items[loanval].addtlCollectionAgent)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else if(ojbData.collectionGroup == "" && ojbData.collectionAgent == "" && ojbData.applicant != "")
+                                                        {
+                                                            if(loanData.Items[loanval].applicantLastNm.toLowerCase().indexOf(ojbData.applicant.toLowerCase()) > -1)
+                                                            {
+                                                                let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                                holderObj.push(loanRequests)
+                                                            } 
+                                                        }
+                                                        else {
+                                                            let loanRequests = this.transformResponse(loanData.Items,loanval)
+                                                            holderObj.push(loanRequests)
+                                                        }
+                                                        
+                                                    }        
+                                                }
+                                                else {
+                                                    let msg = {
+                                                        message: "NoRecords"
+                                                    }
+                                                    observer.next(msg);
+                                                    observer.complete();
+                                                }
+                                    }
+                                  )
+                                               
+                            holderObj = holderObj.filter((value, index, self) =>
+                            index === self.findIndex((t) => (
+                            t.id === value.id
+                            )))
+
+                            let retVal = this.filterReturn(holderObj, ojbData.statusVal, ojbData.docNumVal, ojbData.applicateDate, ojbData.applicateDateTo, ojbData);
+                            observer.next(retVal);
+                            observer.complete();
+
+                    }
+                    else {
+                        
+                        observer.next(data)
+                        observer.complete();
+                    }
+                                       
+                },
+                (error) => {
+    
+                }
+            )
+
+        })
+
+    }
+
+    private filterReturn(responseObj: any, status: any, docNumber: any, appDate: any, appDateTo: any, objData? : any)
     {
         const appDateFrom = dateFormat(appDate, "yyyy-mm-dd");
         let convertDateFromUI = new Date(appDateFrom);
@@ -1091,7 +1123,7 @@ export class LoanApplicationBusinessService {
 
     public updateLoanTransaction(obj: any, role: any) : Observable<any> {
 
-        let queryParams = this.loanApplicationNoSQLParams.updateLoanTransaction(obj);
+        let queryParams = this.loanApplicationNoSQLParams.updateLoanTransaction(obj, role);
         let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(obj, role);
         return Observable.create((observer) => {
             this.loanApplicationDataService.executeupdate(queryParams).subscribe(
