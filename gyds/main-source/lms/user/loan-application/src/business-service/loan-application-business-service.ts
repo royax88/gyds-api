@@ -1186,26 +1186,40 @@ export class LoanApplicationBusinessService {
 
     public getCommentsHistory(loankey: any) : Observable<any> {
        
+        let getLoan = this.loanApplicationNoSQLParams.viewLoanRequestById(loankey);
         let queryParams = this.loanApplicationNoSQLParams.getCommentsHistorybyId(loankey);
         return Observable.create((observer) => {
 
-                                    this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
-                                        (data) => {
-                                            let objData = []
-                                            const sortedAsc = data.Items.sort(
-                                                (objA, objB) => Number(new Date(objA.audit)) - Number(new Date(objB.audit)),
-                                              );
-                                            // console.log("sortedAsc", sortedAsc)
+            // this.loanApplicationDataService.executequeryDataService(getLoan).subscribe(
+            //     (data) => {
+            //         if(data.Count > 0)
+            //         {
+                        
+                        // if(data.Items[0].isForRelease == '1')
+                        // {
+                        //     queryParams = this.loanApplicationNoSQLParams.getCommentsHistorybyRelease(loankey);
+                        // }
+                        this.loanApplicationDataService.executequeryDataService(queryParams).subscribe(
+                            (data) => {
+                                let objData = []
+                                const sortedAsc = data.Items.sort(
+                                    (objA, objB) => Number(new Date(objA.audit)) - Number(new Date(objB.audit)),
+                                  );
 
-                                            observer.next(sortedAsc)
-                                            observer.complete();
+                                observer.next(sortedAsc)
+                                observer.complete();
 
-                                           
-                                        },
-                                        (error) => {
-                                            console.log("errr", error)
-                                            observer.error(error);
-                                        });
+                               
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+            //         }
+            //     }
+            // )
+
+                                    
           
          })
 
@@ -1215,7 +1229,7 @@ export class LoanApplicationBusinessService {
         return Observable.create((observer) => {
 
             let interestAmount = objData.data.loanAmount * (objData.data.interest / 100);
-            let totalAmount = parseFloat(objData.data.balance) + parseFloat(objData.data.servicefee) + parseFloat(objData.data.insurance) + parseFloat(objData.data.othercharges) + interestAmount;
+            let totalAmount = parseFloat(objData.data.balance) + parseFloat(objData.data.servicefee) + parseFloat(objData.data.insurance) + parseFloat(objData.data.othercharges) + interestAmount + parseFloat(objData.data.loanAmount);
             let retVal = {
                 interestAmt: interestAmount,
                 netProceeds: Math.round(totalAmount * 100) / 100
@@ -1238,7 +1252,7 @@ export class LoanApplicationBusinessService {
                 user: obj.data.user
             }
         }
-        let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(newObj, "release officer");
+        let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(newObj, "release officer", true);
         return Observable.create((observer) => {
                 
             this.loanApplicationDataService.executeupdate(queryParams).subscribe(

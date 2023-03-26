@@ -358,9 +358,16 @@ export class LoanApplicationNoSQLParams {
         return finalParams;
     }
 
-    public insertCommentsTbl(obj:any, role?:any)
+    public insertCommentsTbl(obj:any, role?:any, isRelease? : any)
     {
-
+        let releaseInd : any;
+        if(isRelease == true)
+        {
+            releaseInd = "1"
+        } else
+        {
+            releaseInd = "0"
+        }
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
 
         let finalParams: any = {
@@ -372,7 +379,8 @@ export class LoanApplicationNoSQLParams {
             'statsVal' : obj.data.status,
             'user': obj.data.user,
             'userRole' : role,
-            'audit': day
+            'audit': day,
+            'isForRelease' :releaseInd
         }
         };
         return finalParams;
@@ -389,6 +397,25 @@ export class LoanApplicationNoSQLParams {
             },
             ExpressionAttributeValues: {
                 ':formidval': loankey
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
+    public getCommentsHistorybyRelease(loankey: any) {
+    
+        let params = {
+        TableName: this.commentsTbl,
+        IndexName: 'formidval-isForRelease-index',
+        KeyConditionExpression: '#formidval =:formidval and #isForRelease =:isForRelease',
+            ExpressionAttributeNames: {
+                '#formidval' : 'formidval',
+                '#isForRelease' : 'isForRelease'
+            },
+            ExpressionAttributeValues: {
+                ':formidval': loankey,
+                ':isForRelease': "1"
             },
         ScanIndexForward: false 
      }
