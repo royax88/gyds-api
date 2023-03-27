@@ -97,4 +97,41 @@ export class BusinssPartnerBusinessService {
 
     }
 
+    public getBPCodes() : Observable<any> {
+
+       
+        let queryParams = this.noparams.getAllBusinessPartner();
+       
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {    
+                    let newObj = [];    
+                    if(data.Count > 0)
+                    {
+                        for(let item in data.Items)
+                        {
+                            let codes = {
+                                name: data.Items[item].bpName,
+                                value: data.Items[item].bpCode
+                            }
+                            newObj.push(codes);
+                        }
+                        observer.next(newObj)
+                        observer.complete();
+                    }     
+
+                    observer.next(data)
+                    observer.complete();
+
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
 }

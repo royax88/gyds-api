@@ -1229,7 +1229,7 @@ export class LoanApplicationBusinessService {
         return Observable.create((observer) => {
 
             let interestAmount = objData.data.loanAmount * (objData.data.interest / 100);
-            let totalAmount = parseFloat(objData.data.balance) + parseFloat(objData.data.servicefee) + parseFloat(objData.data.insurance) + parseFloat(objData.data.othercharges) + interestAmount + parseFloat(objData.data.loanAmount);
+            let totalAmount = parseFloat(objData.data.loanAmount) - parseFloat(objData.data.balance) - parseFloat(objData.data.servicefee) - parseFloat(objData.data.insurance) - parseFloat(objData.data.othercharges) - interestAmount;
             let retVal = {
                 interestAmt: interestAmount,
                 netProceeds: Math.round(totalAmount * 100) / 100
@@ -1246,9 +1246,9 @@ export class LoanApplicationBusinessService {
         let newObj = {
             data : {
                 id: obj.data.id,
-                comments: "Create Loan Release Form.",
+                comments: "",
                 role: "release officer",
-                status: "Loan Release - For Processing",
+                status: "LR Processed",
                 user: obj.data.user
             }
         }

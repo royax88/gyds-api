@@ -145,6 +145,11 @@ export class ManageConfigService {
             return this.businssPartnerBusinessService.getAllBusinessPartner();
         }
 
+        else if(this.actioncd=='getBPCodes')
+        {
+            return this.businssPartnerBusinessService.getBPCodes();
+        }
+
         else if(this.actioncd =="getAllApprovalMatrix")
         {
             return this.approvalMatrixBusinessService.getAllMatrix();

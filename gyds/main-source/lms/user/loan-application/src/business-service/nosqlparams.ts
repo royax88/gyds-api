@@ -248,7 +248,7 @@ export class LoanApplicationNoSQLParams {
     public updateLoanTransaction(obj:any, role: any)
     {
         let isForReleaseVal : any = 0;
-        if(obj.data.status == "Approved" && obj.data.formName == "Promissory Note")
+        if((obj.data.status == "Approved" || obj.data.status == "LR Processed" || obj.data.status == "LR Approved" || obj.data.status == "LR Reviewed" || obj.data.status == "LR Rejected" || obj.data.status == "Released") && obj.data.formName == "Promissory Note")
         {
             isForReleaseVal = "1";
         }
