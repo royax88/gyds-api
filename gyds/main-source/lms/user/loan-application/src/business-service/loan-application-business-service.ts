@@ -1282,5 +1282,47 @@ export class LoanApplicationBusinessService {
 
     }
 
+    public updateReleaseForm(obj: any) : Observable<any> {
+        
+        let queryParams = this.loanApplicationNoSQLParams.releaseForm(obj);
+        let newObj = {
+            data : {
+                id: obj.data.id,
+                comments: "",
+                role: "release Officer",
+                status: "Released",
+                user: obj.data.user
+            }
+        }
+        let commentsParams = this.loanApplicationNoSQLParams.insertCommentsTbl(newObj, "release officer", true);
+        return Observable.create((observer) => {
+                
+            this.loanApplicationDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+
+                    this.loanApplicationDataService.InsertData(commentsParams).subscribe(
+                        (data) => {
+                            let msg = {
+                                message: "updateLoanTransaction"
+                            }
+                            observer.next(msg);
+                            observer.complete();
+                            
+                        },
+                        (error) => {
+                            console.log("errr", error)
+                            observer.error(error);
+                        });
+              
+
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
 
 }

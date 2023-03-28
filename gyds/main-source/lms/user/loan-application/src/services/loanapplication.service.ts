@@ -202,6 +202,19 @@ export class LoanApplicationService {
             }
             return this.loanApplicationBusinessService.updateLoanByRelease(this.objData);
         }
+
+        else if(this.actioncd=='updateReleaseForm')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }
+            return this.loanApplicationBusinessService.updateReleaseForm(this.objData);
+        }
     }
     
 

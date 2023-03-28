@@ -248,7 +248,7 @@ export class LoanApplicationNoSQLParams {
     public updateLoanTransaction(obj:any, role: any)
     {
         let isForReleaseVal : any = 0;
-        if((obj.data.status == "Approved" || obj.data.status == "LR Processed" || obj.data.status == "LR Approved" || obj.data.status == "LR Reviewed" || obj.data.status == "LR Rejected" || obj.data.status == "Released") && obj.data.formName == "Promissory Note")
+        if((obj.data.status == "Approved" || obj.data.status == "LR Processed" || obj.data.status == "LR Approved" || obj.data.status == "LR Reviewed" || obj.data.status == "LR Rejected" || obj.data.status == "Released" || obj.data.status == "LR For Reprocessing") && obj.data.formName == "Promissory Note")
         {
             isForReleaseVal = "1";
         }
@@ -349,6 +349,27 @@ export class LoanApplicationNoSQLParams {
                 ":LRinterestAmt" : obj.data.interestAmt.toString(),
                 ":LRloanReleaseDt" : obj.data.loanReleaseDt.year + "-" + obj.data.loanReleaseDt.month + "-" + obj.data.loanReleaseDt.day,
                 ":LRNetProceed" : obj.data.netProceed,
+                ":statusVal" : obj.data.statusVal,
+                ":updatedBy" : obj.data.user,
+                ":updatedDate" : day
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
+    public releaseForm(obj:any)
+    {
+
+        var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let finalParams: any = {
+        TableName: this.loanTbl,
+        Key: {
+            loankey: obj.data.id
+        },
+        UpdateExpression: "set LRloanReleaseDt = :LRloanReleaseDt, statusVal = :statusVal, updatedBy = :updatedBy, updatedDate = :updatedDate",
+            ExpressionAttributeValues:{
+                ":LRloanReleaseDt" : obj.data.loanReleaseDt.year + "-" + obj.data.loanReleaseDt.month + "-" + obj.data.loanReleaseDt.day,
                 ":statusVal" : obj.data.statusVal,
                 ":updatedBy" : obj.data.user,
                 ":updatedDate" : day
