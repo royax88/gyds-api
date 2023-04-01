@@ -842,8 +842,6 @@ export class LoanApplicationBusinessService {
         var currentDate=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
         let getSchemeParams = this.schemeCd.getSchemeByCode(obj.data.selectedRangeData.detail2);
         let getLoanParams = this.loanApplicationNoSQLParams.getFormId(obj.data.selectedRangeData.formid);
-        //let queryParams = this.loanApplicationNoSQLParams.insertIntoUserTable(obj);
-        // let matrixParms = this.matrixParams.insertMatrixTbl(queryParams.Item.loankey, obj.data.createdBy, obj.data.username);
 
         return Observable.create((observer) => {
 
@@ -894,23 +892,6 @@ export class LoanApplicationBusinessService {
                                         let insertParams = this.loanApplicationNoSQLParams.insertIntoUserTable(obj,loankey,obj.data.selectedRangeData.formid, newVal);
                                         this.loanApplicationDataService.InsertData(insertParams).subscribe(
                                             (data) => {
-                                                //insert into audit table
-                                                // console.log("insert loan", data)
-                                                // this.auditSvc.insertIntoAuditTbl(
-                                                //     loankey, 
-                                                //     "Processed",
-                                                //     "Create New Loan Application",
-                                                //     obj.data.createdBy,
-                                                //     currentDate
-                                                //     ).subscribe(
-                                                //         (data) => {            
-                                                //             let msg = {
-                                                //                 message: "createdLoan"
-                                                //             }
-                                                //             observer.next(msg);
-                                                //             observer.complete();
-                                                //         }   
-                                                //     )
 
                                                     let msg = {
                                                         message: "createdLoan",
@@ -951,26 +932,8 @@ export class LoanApplicationBusinessService {
                                 else {
                                     let loankey = this.generateKey(obj.data.selectedRangeData.formid,Number(obj.data.selectedRangeData.detail3), true)
                                     let insertParams = this.loanApplicationNoSQLParams.insertIntoUserTable(obj,loankey,obj.data.selectedRangeData.formid, obj.data.selectedRangeData.detail3);
-                                    
                                     this.loanApplicationDataService.InsertData(insertParams).subscribe(
                                                 (data) => {
-                                                    //insert into audit table
-                                                    // console.log("insert loan", data)
-                                                    // this.auditSvc.insertIntoAuditTbl(
-                                                    //     loankey, 
-                                                    //     "Processed",
-                                                    //     "Create New Loan Application",
-                                                    //     obj.data.createdBy,
-                                                    //     currentDate
-                                                    //     ).subscribe(
-                                                    //         (data) => {            
-                                                    //             let msg = {
-                                                    //                 message: "createdLoan"
-                                                    //             }
-                                                    //             observer.next(msg);
-                                                    //             observer.complete();
-                                                    //         }   
-                                                    //     )
                                                     let msg = {
                                                         message: "createdLoan",
                                                         docNumber: loankey

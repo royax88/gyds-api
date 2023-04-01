@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { HomePageModel } from '../models/HomePageModel';
 import { LoanApplicationBusinessService} from '../business-service/loan-application-business-service';
+import {LoanReportBusinessService} from '../business-service/loan-report-business-service'
 import { resolve } from 'url';
 
 export class LoanApplicationService {
@@ -14,6 +15,7 @@ export class LoanApplicationService {
     roleAccess: any;
     identifier: any;
     private loanApplicationBusinessService = new LoanApplicationBusinessService();
+    private loanReport = new LoanReportBusinessService();
 
     constructor() {
         
@@ -214,6 +216,19 @@ export class LoanApplicationService {
                 this.objData = JSON.parse(event.body);
             }
             return this.loanApplicationBusinessService.updateReleaseForm(this.objData);
+        }
+
+        else if(this.actioncd=='generateLoanAppReport')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }   
+            return this.loanReport.generateLoanAppReport(this.objData);
         }
     }
     

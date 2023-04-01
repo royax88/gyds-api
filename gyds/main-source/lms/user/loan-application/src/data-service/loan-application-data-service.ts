@@ -21,6 +21,35 @@ export class LoanApplicationDataService {
         });
     }
 
+    public executequeryDataServiceAsync =  function (params: any){
+          docClient.query(params, function (err, data) {
+            
+            if (err) {
+                console.log("actual error", err);
+                return err;
+            }
+            else {
+                return data;
+                
+            }
+        });
+    }
+
+    public executequeryAsyncMethod = async function (nosqlparam: any, callback) {
+
+        await docClient.query(nosqlparam, function (err, data) {
+            if (err) {
+                console.log("actual error", err);
+                callback(err, null);
+            }
+            else {
+                callback(null, data);
+            }
+        });
+
+    }
+    
+
     public executequeryDataServicePromise(params: any): Promise<any>
     {
         return new Promise(
