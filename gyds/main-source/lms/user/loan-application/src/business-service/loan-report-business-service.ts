@@ -49,38 +49,76 @@ export class LoanReportBusinessService {
 
             if(objData.data.applicantCode == "" && objData.data.coMakerCode == "" && objData.data.appFomDate == "" && objData.data.collectionGroup == "" && objData.data.collectonAgent == "" && objData.data.status == "")
             {
-                for(let item in loanObj)
-                {
-                    let newObj = {
-                        applicantCode: loanObj[item].applicantFirstNm,
-                        applicantName: loanObj[item].applicantLastNm,
-                        coMakerCode: loanObj[item].comakerFirstNm,
-                        coMakerName: loanObj[item].comakerLastNm,
-                        company: loanObj[item].addtlCompanyValue,
-                        applicationDate: loanObj[item].applicationDate,
-                        loanForm: loanObj[item].docNumber,
-                        appStatus: loanObj[item].statusVal,
-                        processor: loanObj[item].createdBy,
-                        collectionGroup: loanObj[item].addtlCollectionGroupValue,
-                        collectionAgency: loanObj[item].addtlCollectionAgentValue,
-                        amount: loanObj[item].promissoryAmount,
-                        currency: loanObj[item].promissoryCurrency,
-                        dateOfLoan: loanObj[item].promissoryDateOfLoan,
-                        loanPurpose: loanObj[item].promissoryLoanPurpose,
-                        interestRate: loanObj[item].promissoryInterestRate,
-                        interestScheme: loanObj[item].promissorySchemeValue,
-                        paymentTerm: loanObj[item].promissoryPaymentTermValue
-                    }
-                    allObj.push(newObj);
-                }
+                // for(let item in loanObj)
+                // {
+                //     let newAmount : any;
+                //     let newCurrency: any;
+                //     let collateral: any;
+                //     let detail1: any;
+                //     let detail2: any;
 
-                let retval = {
-                    report : allObj,
-                    title: "Loan Application Report",
-                    generatedDate: dateToday 
-                }
-                observer.next(retval);
-                observer.complete();
+                //     if(loanObj[item].formname == "Promissory Note")
+                //     {
+                //         newAmount = loanObj[item].promissoryAmount;
+                //         newCurrency = loanObj[item].promissoryCurrency;
+                //         collateral = "";
+                //         detail1 = "";
+                //         detail2 = "";
+                //     }
+                //     else if(loanObj[item].formname == "Affidavit of Co-maker")
+                //     {
+                //         newAmount = loanObj[item].affidavitCMAmount;
+                //         newCurrency = loanObj[item].affivaditCMCurrency;
+                //         collateral = loanObj[item].affidavitCMTypeValue;
+                //         detail1 = loanObj[item].affidavitCMDetail1;
+                //         detail2 = loanObj[item].affidavitCMDetail2;
+                //     }
+
+                //     else if(loanObj[item].formname == "Affidavit of Undertaking")
+                //     {
+                //         newAmount = loanObj[item].affidavitUTAmount;
+                //         newCurrency = loanObj[item].affidavitUTCurrency
+                //         collateral = loanObj[item].affidavitUTTypeValue;
+                //         detail1 = loanObj[item].affidavitUTDetail1;
+                //         detail2 = loanObj[item].affidavitUTDetail2;
+                //     }
+
+                //     let newObj = {
+                //         applicantCode: loanObj[item].applicantFirstNm,
+                //         applicantName: loanObj[item].applicantLastNm,
+                //         coMakerCode: loanObj[item].comakerFirstNm,
+                //         coMakerName: loanObj[item].comakerLastNm,
+                //         company: loanObj[item].addtlCompanyValue,
+                //         applicationDate: loanObj[item].applicationDate == '0-0-0' ? "" : dateFormat(loanObj[item].applicationDate, "yyyy-mm-dd"),
+                //         loanForm: loanObj[item].docNumber,
+                //         appStatus: loanObj[item].statusVal,
+                //         processor: loanObj[item].createdBy,
+                //         collectionGroup: loanObj[item].addtlCollectionGroupValue,
+                //         collectionAgency: loanObj[item].addtlCollectionAgentValue,
+                //         amount: newAmount,
+                //         currency: newCurrency,
+                //         dateOfLoan: loanObj[item].promissoryDateOfLoan == '0-0-0' ? "" : dateFormat(loanObj[item].promissoryDateOfLoan, "yyyy-mm-dd"),
+                //         loanPurpose: loanObj[item].promissoryLoanPurpose,
+                //         interestRate: loanObj[item].promissoryInterestRate,
+                //         interestScheme: loanObj[item].promissorySchemeValue,
+                //         paymentTerm: loanObj[item].promissoryPaymentTermValue,
+                //         collateral: collateral,
+                //         detail1: detail1,
+                //         detail2: detail2,
+                //         link1: loanObj[item].promissoryLinkForm1,
+                //         link2: loanObj[item].promissoryLinkForm2
+                //     }
+                //     allObj.push(newObj);
+                // }
+
+                // let retval = {
+                //     report : allObj,
+                //     title: "Loan Application Report",
+                //     generatedDate: dateToday 
+                // }
+                // observer.next(retval);
+                // observer.complete();
+                allObj = loanObj;
             }
             
 
@@ -238,25 +276,62 @@ export class LoanReportBusinessService {
                 let returnObj = [];
                 for(let item in allObj)
                 {
+                    let newAmount : any;
+                    let newCurrency: any;
+                    let collateral: any;
+                    let detail1: any;
+                    let detail2: any;
+
+                    if(allObj[item].formname == "Promissory Note")
+                    {
+                        newAmount = allObj[item].promissoryAmount;
+                        newCurrency = allObj[item].promissoryCurrency
+                        collateral = "";
+                        detail1 = "";
+                        detail2 = "";
+                    }
+                    else if(allObj[item].formname == "Affidavit of Co-maker")
+                    {
+                        newAmount = allObj[item].affidavitCMAmount;
+                        newCurrency = allObj[item].affivaditCMCurrency
+                        collateral = allObj[item].affidavitCMTypeValue;
+                        detail1 = allObj[item].affidavitCMDetail1;
+                        detail2 = allObj[item].affidavitCMDetail2;
+                    }
+
+                    else if(allObj[item].formname == "Affidavit of Undertaking")
+                    {
+                        newAmount = allObj[item].affidavitUTAmount;
+                        newCurrency = allObj[item].affidavitUTCurrency
+                        collateral = allObj[item].affidavitUTTypeValue;
+                        detail1 = allObj[item].affidavitUTDetail1;
+                        detail2 = allObj[item].affidavitUTDetail2;
+                    }
+
                     let newObj = {
                         applicantCode: allObj[item].applicantFirstNm,
                         applicantName: allObj[item].applicantLastNm,
                         coMakerCode: allObj[item].comakerFirstNm,
                         coMakerName: allObj[item].comakerLastNm,
                         company: allObj[item].addtlCompanyValue,
-                        applicationDate: allObj[item].applicationDate,
+                        applicationDate: allObj[item].applicationDate == '0-0-0' ? "" :dateFormat(allObj[item].applicationDate, "yyyy-mm-dd"),
                         loanForm: allObj[item].docNumber,
                         appStatus: allObj[item].statusVal,
                         processor: allObj[item].createdBy,
                         collectionGroup: allObj[item].addtlCollectionGroupValue,
                         collectionAgency: allObj[item].addtlCollectionAgentValue,
-                        amount: allObj[item].promissoryAmount,
-                        currency: allObj[item].promissoryCurrency,
-                        dateOfLoan: allObj[item].promissoryDateOfLoan,
+                        amount: newAmount,
+                        currency: newCurrency,
+                        dateOfLoan: allObj[item].promissoryDateOfLoan == '0-0-0' ? "" : dateFormat(allObj[item].promissoryDateOfLoan, "yyyy-mm-dd"),
                         loanPurpose: allObj[item].promissoryLoanPurpose,
                         interestRate: allObj[item].promissoryInterestRate,
                         interestScheme: allObj[item].promissorySchemeValue,
-                        paymentTerm: allObj[item].promissoryPaymentTermValue
+                        paymentTerm: allObj[item].promissoryPaymentTermValue,
+                        collateral: collateral,
+                        detail1: detail1,
+                        detail2: detail2,
+                        link1: allObj[item].promissoryLinkForm1,
+                        link2: allObj[item].promissoryLinkForm2
                     }
                     returnObj.push(newObj);
                 }
