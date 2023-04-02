@@ -303,6 +303,20 @@ export class ManageConfigService {
             }
             return this.manageConfigBusinessService.getDocumentRangeByid(this.objData);
         }
+
+        else if(this.actioncd =="getLoanReportFields")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.getLoanReportFields(this.objData);
+        }
     }
 
 }

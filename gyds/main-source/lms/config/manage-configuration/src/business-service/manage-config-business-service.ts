@@ -8,7 +8,9 @@ import {BranchNoSQLParams} from './branchNosqlparams';
 import {BusinessPartnerNoSQLParams} from './businesspartnerNosqlparams';
 import {DocumentNoSQLParams} from './documentNosqlparams';
 import {PaymentInterestNoSQLParams} from './paymentinterestNosqlparams';
-import {FormNoSQLParams} from './formNmNosqlparams'
+import {FormNoSQLParams} from './formNmNosqlparams';
+import {LoanReportParams} from './loanreportparams';
+
 export class ManageConfigBusinessService {
 
     private manageConfigDataService = new ManageConfigDataService();
@@ -21,6 +23,7 @@ export class ManageConfigBusinessService {
     private docNoSqlParams = new DocumentNoSQLParams();
     private paymentParams = new PaymentInterestNoSQLParams();
     private formParams = new FormNoSQLParams();
+    private loanReportParams = new LoanReportParams();
     
     constructor() {
 
@@ -561,6 +564,23 @@ export class ManageConfigBusinessService {
 
     public getDocumentRangeByid(obj: any) : Observable<any> {
         let queryParams = this.formParams.getDocumentRangeById(obj.data.formId);
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
+                (data) => {
+                    observer.next(data)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public getLoanReportFields(obj: any) : Observable<any> {
+        let queryParams = this.loanReportParams.getLoanReportFields(obj.data);
         return Observable.create((observer) => {
             this.manageConfigDataService.executequeryDataService(queryParams).subscribe(
                 (data) => {

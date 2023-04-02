@@ -19,7 +19,7 @@ export class LoanReportBusinessService {
          let allObj = [];
          let filterAppCodeObject = [];
          let filterAppCode : any;
-         var dateToday=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss TT");
+         var dateToday=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
          let filterComakerObject = [];
          let filterCoMakerCode : any;
          let filterStatus : any;
