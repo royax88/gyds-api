@@ -260,6 +260,23 @@ export class BusinessPartnerNoSQLParams {
      return params;
     }
 
+    public getBPByCompanyCode(code:any) {
+    
+        let params = {
+        TableName: this.businessPartnerTbl,
+        IndexName: 'bpCompanyCd-index',
+        KeyConditionExpression: '#bpCompanyCd =:bpCompanyCd',
+            ExpressionAttributeNames: {
+                '#bpCompanyCd' : 'bpCompanyCd'
+            },
+            ExpressionAttributeValues: {
+                ':bpCompanyCd': code
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
     private setNoSqlTables() {
 
         this.manageConfigTbl = "gyds-lms-manage-config-"+ process.env['environment_tag'];

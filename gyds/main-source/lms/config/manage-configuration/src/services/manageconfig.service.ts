@@ -4,6 +4,7 @@ import { ManageConfigBusinessService} from '../business-service/manage-config-bu
 import {BusinssPartnerBusinessService} from '../business-service/businesspartner.service';
 import {ApprovalMatrixPartnerBusinessService} from '../business-service/approvalmatrix.service';
 import {RoleBusinessService} from '../business-service/role.service';
+import {BusinessPartnerReportBusinessService} from '../business-service/report/business-partner-report';
 export class ManageConfigService {
 
     private model;
@@ -15,6 +16,7 @@ export class ManageConfigService {
     private businssPartnerBusinessService= new BusinssPartnerBusinessService();
     private approvalMatrixBusinessService = new ApprovalMatrixPartnerBusinessService();
     private roleBusinessService = new RoleBusinessService();
+    private bpReport = new BusinessPartnerReportBusinessService();
     constructor() {
         
     }
@@ -316,6 +318,20 @@ export class ManageConfigService {
             
             }
             return this.manageConfigBusinessService.getLoanReportFields(this.objData);
+        }
+
+        else if(this.actioncd =="getBusinessPartnerReport")
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.bpReport.getBusinessPartnerReport(this.objData);
         }
     }
 
