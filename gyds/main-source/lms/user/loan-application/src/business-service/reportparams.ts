@@ -21,16 +21,24 @@ export class LoanReportNoSQLParams {
             },
         ScanIndexForward: false 
      }
-    // let params = {
-    //     TableName: this.loanTbl,
-    //     FilterExpression: "contains(#addtlCompany, :addtlCompany)",
-    //     ExpressionAttributeNames: {
-    //         "#addtlCompany": "addtlCompany",
-    //     },
-    //     ExpressionAttributeValues: {
-    //         ":addtlCompany": company,
-    //     }    
-    //  }
+     return params;
+    }
+
+    public getLoanAppByCompanyByStatus(company: any) {
+        let params = {
+        TableName: this.loanTbl,
+        IndexName: 'addtlCompany-statusVal-index',
+        KeyConditionExpression: '#addtlCompany =:addtlCompany and #statusVal =:statusVal',
+            ExpressionAttributeNames: {
+                '#addtlCompany' : 'addtlCompany',
+                '#statusVal' : 'statusVal'
+            },
+            ExpressionAttributeValues: {
+                ':addtlCompany': company,
+                ':statusVal': "Released"
+            },
+        ScanIndexForward: false 
+     }
      return params;
     }
 
