@@ -231,6 +231,19 @@ export class LoanApplicationService {
             return this.loanReport.generateLoanAppReport(this.objData);
         }
 
+        else if(this.actioncd=='generateLoanReceivableReport')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }   
+            return this.loanReport.generateLoanReceivableReport(this.objData);
+        }
+
         else if(this.actioncd=='generateLoanChargesReport')
         {
             if(process.env['localenv']==="true")

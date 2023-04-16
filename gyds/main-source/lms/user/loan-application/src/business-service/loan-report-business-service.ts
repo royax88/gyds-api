@@ -552,7 +552,7 @@ export class LoanReportBusinessService {
                     company: allObj[item].addtlCompanyValue,
                     applicantCode: allObj[item].applicantFirstNm,
                     applicantName: allObj[item].applicantLastNm,
-                    loanReleaseDt: allObj[item].LRloanReleaseDt,
+                    loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
                     docNumber:  allObj[item].docNumber,
                     releasedBy: allObj[item].updatedBy,
                     amount: allObj[item].LRserviceFee,
@@ -563,7 +563,7 @@ export class LoanReportBusinessService {
                     company: allObj[item].addtlCompanyValue,
                     applicantCode: allObj[item].applicantFirstNm,
                     applicantName: allObj[item].applicantLastNm,
-                    loanReleaseDt: allObj[item].LRloanReleaseDt,
+                    loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
                     docNumber:  allObj[item].docNumber,
                     releasedBy: allObj[item].updatedBy,
                     amount: allObj[item].LRinsuranceVal,
@@ -575,7 +575,7 @@ export class LoanReportBusinessService {
                     company: allObj[item].addtlCompanyValue,
                     applicantCode: allObj[item].applicantFirstNm,
                     applicantName: allObj[item].applicantLastNm,
-                    loanReleaseDt: allObj[item].LRloanReleaseDt,
+                    loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
                     docNumber:  allObj[item].docNumber,
                     releasedBy: allObj[item].updatedBy,
                     amount: allObj[item].LRothercharges,
@@ -609,6 +609,311 @@ export class LoanReportBusinessService {
                    title: "Loan Charges Report",
                    generatedDate: dateToday,
                    totalVal: totalVal
+               }
+               observer.next(retval);
+               observer.complete();
+           }
+           else {
+                   let retObject = []
+                   observer.next(retObject);
+                   observer.complete();
+           
+           }
+
+           
+
+           
+        })
+
+    }
+
+    public generateLoanReceivableReport(objData: any) : Observable<any> {
+        let loanObj = [];
+        let companyOjb = [];
+        let allObj = [];
+        let filterAppCodeObject = [];
+        let filterAppCode : any;
+        var dateToday=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
+        let filterComakerObject = [];
+        let filterCoMakerCode : any;
+        let filterStatus : any;
+        let filterCollectionGroup: any;
+        let filterCollectionAgent: any;
+        let filterAppDate: any;
+        let isComaker : any = false;
+        let filterdocNumber: any;
+        return Observable.create(async (observer) => {
+
+           for(let comp in objData.data.company)
+           {
+
+               let queryParams = this.reportParams.getLoanAppByCompanyByStatus(objData.data.company[comp].code);
+               await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
+                   (data) => {
+                       if(data.Count >0)
+                       {
+                           for (let companyRes in data.Items)
+                           {
+                               loanObj.push(data.Items[companyRes])
+                           }
+                       }
+                   }
+               )
+           }
+
+           if(objData.data.applicantCode == "" && objData.data.coMakerCode == "" && objData.data.appFomDate == "" && objData.data.collectionGroup == "" && objData.data.collectonAgent == "" && objData.data.docNumber.length == 0)
+           {
+               allObj = loanObj;
+           }
+           
+
+           //filter applicant code
+           if(objData.data.applicantCode != "")
+           {
+               console.log("with applicant")
+               filterAppCode = this.filterApplicantCode(loanObj, objData.data);
+               if(filterAppCode.length > 0)
+               {
+                   allObj = new Array();
+                   allObj = filterAppCode;
+               }
+               else {
+                   let retObject = []
+                   observer.next(retObject);
+                   observer.complete();
+               }      
+           }
+           //filter comaker code
+           if(objData.data.coMakerCode != "")
+           {
+               console.log("with comaker")
+               if(allObj.length > 0)
+               {
+                   filterCoMakerCode = this.filterComakerCode(allObj, objData.data);
+               }
+               else {
+                   filterCoMakerCode = this.filterComakerCode(loanObj, objData.data);
+               }   
+
+               if(filterCoMakerCode.length > 0)
+               {
+                   allObj = new Array();
+                   allObj = filterCoMakerCode;
+               }
+               else {
+                   let retObject = []
+                   observer.next(retObject);
+                   observer.complete();
+               }          
+ 
+           }
+
+
+           //filter collection group
+           if(objData.data.collectionGroup != "")
+           {
+               console.log("with collection group")
+               if(allObj.length > 0)
+               {
+                   filterCollectionGroup = this.filterCollectionGroup(allObj, objData.data);
+               }
+               else {
+                   filterCollectionGroup = this.filterCollectionGroup(loanObj, objData.data);
+               }   
+
+               if(filterCollectionGroup.length > 0)
+               {
+                   allObj = new Array();
+                   allObj = filterCollectionGroup;
+               }
+               else {
+                   let retObject = []
+                   observer.next(retObject);
+                   observer.complete();
+               }          
+ 
+           }
+           
+            //filter collection agent
+            if(objData.data.collectonAgent != "")
+            {
+                console.log("with collection agent")
+                if(allObj.length > 0)
+                {
+                    filterCollectionAgent = this.filterCollectionAgent(allObj, objData.data);
+                }
+                else {
+                   filterCollectionAgent = this.filterCollectionAgent(loanObj, objData.data);
+                }   
+
+                if(filterCollectionAgent.length > 0)
+                {
+                    allObj = new Array();
+                    allObj = filterCollectionAgent;
+                }
+                else {
+                    let retObject = []
+                    observer.next(retObject);
+                    observer.complete();
+                }          
+  
+            }
+
+            //filter app date
+            if(objData.data.appFomDate != "")
+            {
+                if(allObj.length > 0)
+                {
+                    filterAppDate = this.filterReleaseDate(allObj, objData.data);
+                }
+                else {
+                   filterAppDate = this.filterReleaseDate(loanObj, objData.data);
+                }   
+
+                if(filterAppDate.length > 0)
+                {
+                    allObj = new Array();
+                    allObj = filterAppDate;
+                }
+                else {
+                    let retObject = []
+                    observer.next(retObject);
+                    observer.complete();
+                }          
+  
+            }
+
+            //filter DocNumber
+            if(objData.data.docNumber.length > 0)
+            {
+                console.log("with docnumber")
+                if(allObj.length > 0)
+                {
+                    filterdocNumber = this.filterDocNumber(allObj, objData.data);
+                }
+                else {
+                    filterdocNumber = this.filterDocNumber(loanObj, objData.data);
+                }   
+
+                if(filterdocNumber.length > 0)
+                {
+                    allObj = new Array();
+                    allObj = filterdocNumber;
+                }
+                else {
+                    let retObject = []
+                    observer.next(retObject);
+                    observer.complete();
+                }          
+  
+            }
+           
+           allObj = allObj.filter((value, index, self) =>
+                  index === self.findIndex((t) => (
+                  t.loankey === value.loankey
+             ))
+           )
+           let currencyExcelVal: any;
+           if(allObj.length > 0 )
+           {   
+            let totalVal: any = 0;
+            
+               let returnObj = [];
+               for(let item in allObj)
+               {
+                   let newObj1 = {
+                    company: allObj[item].addtlCompanyValue,
+                    applicantCode: allObj[item].applicantFirstNm,
+                    applicantName: allObj[item].applicantLastNm,
+                    coMakerCode: allObj[item].comakerFirstNm,
+                    coMakerName: allObj[item].comakerLastNm,
+                    applicationDate: dateFormat(allObj[item].applicationDate, "yyyy-mm-dd"),
+                    releaseDate: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
+                    loanForm: allObj[item].docNumber,
+                    releasedBy: allObj[item].updatedBy,
+                    collectionGroup: allObj[item].addtlCollectionGroupValue,
+                    collectionAgency: allObj[item].addtlCollectionAgentValue,
+                    amount: allObj[item].promissoryAmount,
+                    currency: allObj[item].promissoryCurrency,
+                    remarks: "Loan Amount",
+                    interestRate: allObj[item].promissoryInterestRate,
+                    interestScheme: allObj[item].promissorySchemeValue,
+                    paymentTerm: allObj[item].promissoryPaymentTermValue,
+                   }
+                   returnObj.push(newObj1);
+
+                   let newObj2 = {
+                    company: allObj[item].addtlCompanyValue,
+                    applicantCode: allObj[item].applicantFirstNm,
+                    applicantName: allObj[item].applicantLastNm,
+                    coMakerCode: allObj[item].comakerFirstNm,
+                    coMakerName: allObj[item].comakerLastNm,
+                    applicationDate: dateFormat(allObj[item].applicationDate, "yyyy-mm-dd"),
+                    releaseDate: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
+                    loanForm: allObj[item].docNumber,
+                    releasedBy: allObj[item].updatedBy,
+                    collectionGroup: allObj[item].addtlCollectionGroupValue,
+                    collectionAgency: allObj[item].addtlCollectionAgentValue,
+                    amount: allObj[item].LRinterestAmt,
+                    currency: allObj[item].promissoryCurrency,
+                    remarks: "Interest Paid",
+                    interestRate: allObj[item].promissoryInterestRate,
+                    interestScheme: allObj[item].promissorySchemeValue,
+                    paymentTerm: allObj[item].promissoryPaymentTermValue,
+                   }
+                   returnObj.push(newObj2);
+
+                   let newObj3 = {
+                    company: allObj[item].addtlCompanyValue,
+                    applicantCode: allObj[item].applicantFirstNm,
+                    applicantName: allObj[item].applicantLastNm,
+                    coMakerCode: allObj[item].comakerFirstNm,
+                    coMakerName: allObj[item].comakerLastNm,
+                    applicationDate: dateFormat(allObj[item].applicationDate, "yyyy-mm-dd"),
+                    releaseDate: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
+                    loanForm: allObj[item].docNumber,
+                    releasedBy: allObj[item].updatedBy,
+                    collectionGroup: allObj[item].addtlCollectionGroupValue,
+                    collectionAgency: allObj[item].addtlCollectionAgentValue,
+                    amount: allObj[item].LRoutstandingBalance,
+                    currency: allObj[item].promissoryCurrency,
+                    remarks: "Previous outstanding balance",
+                    interestRate: allObj[item].promissoryInterestRate,
+                    interestScheme: allObj[item].promissorySchemeValue,
+                    paymentTerm: allObj[item].promissoryPaymentTermValue,
+                   }
+                   returnObj.push(newObj3);
+
+                   totalVal = totalVal + Number(newObj1.amount) + Number(newObj2.amount) + Number(newObj3.amount)
+                   currencyExcelVal = allObj[item].promissoryCurrency
+                   
+               }
+
+               let newobj4 = {
+                company: "Grand Total by Currency",
+                    applicantCode: "",
+                    applicantName: "",
+                    coMakerCode: "",
+                    coMakerName: "",
+                    applicationDate: "",
+                    releaseDate: "",
+                    loanForm: "",
+                    releasedBy: "",
+                    collectionGroup: "",
+                    collectionAgency: "",
+                    amount: totalVal,
+                    currency: currencyExcelVal,
+                    remarks: "",
+                    interestRate: "",
+                    interestScheme: "",
+                    paymentTerm: "",
+               }
+               returnObj.push(newobj4);
+
+               let retval = {
+                   report : returnObj,
+                   title: "Loan Receivable Report",
+                   generatedDate: dateToday 
                }
                observer.next(retval);
                observer.complete();
