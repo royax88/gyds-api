@@ -854,7 +854,7 @@ export class LoanReportBusinessService {
                     releasedBy: allObj[item].updatedBy,
                     collectionGroup: allObj[item].addtlCollectionGroupValue,
                     collectionAgency: allObj[item].addtlCollectionAgentValue,
-                    amount: allObj[item].LRinterestAmt,
+                    amount: "-" + allObj[item].LRinterestAmt,
                     currency: allObj[item].promissoryCurrency,
                     remarks: "Interest Paid",
                     interestRate: allObj[item].promissoryInterestRate,
@@ -875,7 +875,7 @@ export class LoanReportBusinessService {
                     releasedBy: allObj[item].updatedBy,
                     collectionGroup: allObj[item].addtlCollectionGroupValue,
                     collectionAgency: allObj[item].addtlCollectionAgentValue,
-                    amount: allObj[item].LRoutstandingBalance,
+                    amount: "-" + allObj[item].LRoutstandingBalance,
                     currency: allObj[item].promissoryCurrency,
                     remarks: "Previous outstanding balance",
                     interestRate: allObj[item].promissoryInterestRate,
@@ -884,7 +884,7 @@ export class LoanReportBusinessService {
                    }
                    returnObj.push(newObj3);
 
-                   totalVal = totalVal + Number(newObj1.amount) + Number(newObj2.amount) + Number(newObj3.amount)
+                   totalVal = totalVal + Number(newObj1.amount) - Number(allObj[item].LRinterestAmt) - Number(allObj[item].LRoutstandingBalance)
                    currencyExcelVal = allObj[item].promissoryCurrency
                    
                }
