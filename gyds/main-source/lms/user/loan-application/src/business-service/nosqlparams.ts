@@ -57,10 +57,10 @@ export class LoanApplicationNoSQLParams {
             'promissoryLoanPeriod': '0-0-0',
             'promissoryLoanPurpose' : obj.data.fourthLoanPurpose,
             'promissoryInterestRate' : obj.data.fourthInterestRate,
-            'promissoryScheme': obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected.code,
-            'promissorySchemeValue': obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected.value,
-            'promissoryPaymentTerm' : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected.code,
-            'promissoryPaymentTermValue' : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected.value,
+            'promissoryScheme': obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected.codeVal,
+            'promissorySchemeValue': obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected.description,
+            'promissoryPaymentTerm' : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected.codeVal,
+            'promissoryPaymentTermValue' : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected.description,
             'createdDate': day,
             'updatedDate': day,
             'createdBy' : obj.data.createdBy,
@@ -287,12 +287,12 @@ export class LoanApplicationNoSQLParams {
             loankey: obj.data.id
         },
         UpdateExpression: "set statusVal = :statusVal, updatedBy = :updatedBy, updatedDate = :updatedDate, applicantLastNm = :applicantLastNm, applicantCivilStatus = :applicantCivilStatus, comakerLastNm = :comakerLastNm," +
-                           "comakerCivilstatus = :comakerCivilstatus, addtlCompany = :addtlCompany, addtlCollectionGroup = :addtlCollectionGroup, addtlCollectionAgent = :addtlCollectionAgent," +
+                           "comakerCivilstatus = :comakerCivilstatus, addtlCompany = :addtlCompany, addtlCompanyValue = :addtlCompanyValue, addtlCollectionGroup = :addtlCollectionGroup, addtlCollectionGroupValue = :addtlCollectionGroupValue, addtlCollectionAgent = :addtlCollectionAgent,addtlCollectionAgentValue = :addtlCollectionAgentValue," +
                            "applicationDate = :applicationDate,affidavitUTAmount = :affidavitUTAmount, affidavitUTCurrency = :affidavitUTCurrency, affidavitUTInwords = :affidavitUTInwords," +
                            "affidavitUTType = :affidavitUTType,affidavitUTDetail1 = :affidavitUTDetail1,affidavitUTDetail2 = :affidavitUTDetail2,affidavitCMAmount = :affidavitCMAmount," + 
                            "affivaditCMCurrency = :affivaditCMCurrency,affidavitCMInWords = :affidavitCMInWords,affidavitCMType = :affidavitCMType,affidavitCMDetail1 = :affidavitCMDetail1," +
                            "affidavitCMDetail2 = :affidavitCMDetail2,promissoryAmount = :promissoryAmount,promissoryCurrency = :promissoryCurrency,promissoryInWords = :promissoryInWords," +
-                           "promissoryDateOfLoan = :promissoryDateOfLoan,promissoryLoanPurpose = :promissoryLoanPurpose,promissoryInterestRate = :promissoryInterestRate,promissoryScheme = :promissoryScheme, promissoryPaymentTerm = :promissoryPaymentTerm, promisorryLoanPeriodYear = :promisorryLoanPeriodYear,  promisorryLoanPeriodMonth = :promisorryLoanPeriodMonth, promisorryLoanPeriodDay = :promisorryLoanPeriodDay, promissoryLinkForm1 = :promissoryLinkForm1, promissoryLinkForm2 = :promissoryLinkForm2, link1 = :link1, link2 = :link2",
+                           "promissoryDateOfLoan = :promissoryDateOfLoan,promissoryLoanPurpose = :promissoryLoanPurpose,promissoryInterestRate = :promissoryInterestRate,promissoryScheme = :promissoryScheme,promissorySchemeValue = :promissorySchemeValue, promissoryPaymentTerm = :promissoryPaymentTerm,promissoryPaymentTermValue = :promissoryPaymentTermValue, promisorryLoanPeriodYear = :promisorryLoanPeriodYear,  promisorryLoanPeriodMonth = :promisorryLoanPeriodMonth, promisorryLoanPeriodDay = :promisorryLoanPeriodDay, promissoryLinkForm1 = :promissoryLinkForm1, promissoryLinkForm2 = :promissoryLinkForm2, link1 = :link1, link2 = :link2",
             ExpressionAttributeValues:{
                 ":statusVal" : obj.data.status,
                 ":updatedBy" : obj.data.user,
@@ -302,8 +302,11 @@ export class LoanApplicationNoSQLParams {
                 ":comakerLastNm" : obj.data.firstcoMakerAppLastName,
                 ":comakerCivilstatus" : obj.data.firstcoMakerCivilStatus,
                 ":addtlCompany" : obj.data.firstcompanySelect == undefined || obj.data.firstcompanySelect == "" ? "" : obj.data.firstcompanySelect,
+                ":addtlCompanyValue" : obj.data.firstcompanySelect == undefined || obj.data.firstcompanySelect == "" ? "" : obj.data.firstcompanySelectVal,
                 ":addtlCollectionGroup" : obj.data.firstcollectionSelect == undefined || obj.data.firstcollectionSelect == "" ? "" : obj.data.firstcollectionSelect,
+                ":addtlCollectionGroupValue" : obj.data.firstcollectionSelect == undefined || obj.data.firstcollectionSelect == "" ? "" : obj.data.firstcollectionSelectVal,
                 ":addtlCollectionAgent" : obj.data.firstcollectionAgentSelect == undefined || obj.data.firstcollectionAgentSelect == "" ? "" : obj.data.firstcollectionAgentSelect,
+                ":addtlCollectionAgentValue" : obj.data.firstcollectionAgentSelect == undefined || obj.data.firstcollectionAgentSelect == "" ? "" : obj.data.firstcollectionAgentSelectVal,
                 ":applicationDate" : obj.data.firstapplicationDate.year + "-" + obj.data.firstapplicationDate.month + "-" + obj.data.firstapplicationDate.day,
                 ":affidavitUTAmount" : obj.data.secondAmount,
                 ":affidavitUTCurrency" : obj.data.secondCurrency == undefined || obj.data.secondCurrency == "" ? "" : obj.data.secondCurrency,
@@ -324,7 +327,9 @@ export class LoanApplicationNoSQLParams {
                 ":promissoryLoanPurpose" : obj.data.fourthLoanPurpose,
                 ":promissoryInterestRate" : obj.data.fourthInterestRate,
                 ":promissoryScheme" : obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelected,
+                ":promissorySchemeValue" : obj.data.fourthpromissorySchemeSelected == undefined || obj.data.fourthpromissorySchemeSelected == "" ? "" : obj.data.fourthpromissorySchemeSelectedVal,
                 ":promissoryPaymentTerm" : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelected,
+                ":promissoryPaymentTermValue" : obj.data.fourthpromissoryPaymentTermSelected == undefined || obj.data.fourthpromissoryPaymentTermSelected == "" ? "" : obj.data.fourthpromissoryPaymentTermSelectedVal,
                 ":promisorryLoanPeriodYear" : obj.data.loanPeriodYear,
                 ":promisorryLoanPeriodMonth" : obj.data.loanPeriodMonth,
                 ":promisorryLoanPeriodDay" : obj.data.loanPeriodDay,
