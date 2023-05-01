@@ -9,6 +9,7 @@ export class ManageConfigNoSQLParams {
     public collectionAgent: string;
     public configurationTbl: string;
     public manageConfigTbl: string;
+    public interestCalc: string;
 
     constructor() {
         this.setNoSqlTables();
@@ -224,6 +225,35 @@ export class ManageConfigNoSQLParams {
         return finalParams;
     }
 
+    public getInterestCalculationTbl() {
+    
+        let params = {
+        TableName: this.interestCalc
+     }
+     return params;
+    }
+
+    public updateInterestCalculationTbl(obj:any)
+    {
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.interestCalc,
+        Key: {
+            id: obj.data.id
+        },
+        UpdateExpression: "set addDeductAction = :addDeductAction, interestCalculation = :interestCalculation, updatedDate = :updatedDate, updatedBy = :updatedBy, reportOutput = :reportOutput",
+            ExpressionAttributeValues:{
+                ":addDeductAction" : obj.data.addDeductAction,
+                ":interestCalculation" : obj.data.interestCalculation,
+                ":updatedDate" : day,
+                ":updatedBy" : obj.data.user,
+                ":reportOutput" : obj.data.reportOutput,
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        return finalParams;
+    }
+
     private setNoSqlTables() {
 
         this.manageCompany = "gyds-lms-config-company-" + process.env['environment_tag'];
@@ -231,6 +261,7 @@ export class ManageConfigNoSQLParams {
         this.collectionAgent = "gyds-lms-config-collection-agent-" + process.env['environment_tag'];
         this.configurationTbl = "gyds-lms-configuration-"+ process.env['environment_tag'];
         this.manageConfigTbl = "gyds-lms-manage-config-"+ process.env['environment_tag'];
+        this.interestCalc = "gyds-lms-config-interest-calculation-" + process.env['environment_tag'];
     }
     
 }

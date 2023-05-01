@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs/Observable';
 import { HomePageModel } from '../models/HomePageModel';
 import { LoanApplicationBusinessService} from '../business-service/loan-application-business-service';
-import {LoanReportBusinessService} from '../business-service/loan-report-business-service'
+import {LoanReportBusinessService} from '../business-service/loan-report-business-service';
+import {LoanInterestCalculationBusinessService} from '../business-service/loan-report-interest-calc-service';
 import { resolve } from 'url';
 
 export class LoanApplicationService {
@@ -16,6 +17,7 @@ export class LoanApplicationService {
     identifier: any;
     private loanApplicationBusinessService = new LoanApplicationBusinessService();
     private loanReport = new LoanReportBusinessService();
+    private interestCal = new LoanInterestCalculationBusinessService();
 
     constructor() {
         
@@ -255,6 +257,32 @@ export class LoanApplicationService {
                 this.objData = JSON.parse(event.body);
             }   
             return this.loanReport.generateLoanChargesReport(this.objData);
+        }
+
+        else if(this.actioncd=='generateInterestCalculationReport')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }   
+            return this.interestCal.generateInterestCalcReport(this.objData);
+        }
+
+        else if(this.actioncd=='postInterestCalculationReport')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }   
+            return this.interestCal.postInterestCalculationReport(this.objData);
         }
     }
     

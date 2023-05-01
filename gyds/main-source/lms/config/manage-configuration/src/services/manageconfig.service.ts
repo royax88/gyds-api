@@ -333,6 +333,34 @@ export class ManageConfigService {
             }
             return this.bpReport.getBusinessPartnerReport(this.objData);
         }
+
+        else if(this.actioncd=='getInterestCalculation')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.name = event.body;
+            }
+            else
+            {
+                this.name = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.getInterestCalculation();
+        }
+
+        else if(this.actioncd=='updateInterestCalculation')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.updateInterestCalculation(this.objData);
+        }
     }
 
 }

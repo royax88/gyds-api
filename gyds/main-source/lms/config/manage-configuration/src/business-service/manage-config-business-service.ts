@@ -596,4 +596,58 @@ export class ManageConfigBusinessService {
 
     }
 
+    public getInterestCalculation() : Observable<any> {
+
+        let queryParams = this.manageConfigNoSQLParams.getInterestCalculationTbl();
+       
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {            
+                    let obj =[];
+                    for(let item in data.Items)
+                    {
+                        let newVal = {
+                            id: data.Items[item].id,
+                            typeOfTransaction: data.Items[item].typeOfTransaction,
+                            addDeductAction: data.Items[item].addDeductAction,
+                            interestCalculation: data.Items[item].interestCalculation,
+                            reportOutput: data.Items[item].reportOutput,
+                        }
+                        obj.push(newVal)
+                    } 
+                    observer.next(obj)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public updateInterestCalculation(obj: any) : Observable<any> {
+        
+        let queryParams = this.manageConfigNoSQLParams.updateInterestCalculationTbl(obj);
+        return Observable.create((observer) => {
+            this.manageConfigDataService.executeupdate(queryParams).subscribe(
+                (data) => {
+                    
+                    let msg = {
+                        message: "updatedConfig"
+                    }
+                    observer.next(msg);
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
 }

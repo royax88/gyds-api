@@ -2,16 +2,16 @@ import { Observable } from 'rxjs/Observable';
 import {LoanReportNoSQLParams} from '../business-service/reportparams';
 import {LoanApplicationDataService} from '../data-service/loan-application-data-service';
 var dateFormat = require('dateformat');
-
-
+import {ManageConfigNoSQLParams} from '../../../../config/manage-configuration/src/business-service/nosqlparams';
+// import {LoanInterestCalculationBusinessService} from './loan-report-interest-calc-service';
 export class LoanReportBusinessService {
     private reportParams = new LoanReportNoSQLParams();
     private loanApplicationDataService = new LoanApplicationDataService();
-
+    // private configParams = new ManageConfigNoSQLParams();
+    // private interestCalBS = new LoanInterestCalculationBusinessService();
     constructor() {
 
     }
-
 
     public generateLoanAppReport(objData: any) : Observable<any> {
          let loanObj = [];
@@ -194,8 +194,6 @@ export class LoanReportBusinessService {
    
              }
 
-
-            
             allObj = allObj.filter((value, index, self) =>
                    index === self.findIndex((t) => (
                    t.loankey === value.loankey
@@ -447,7 +445,7 @@ export class LoanReportBusinessService {
            for(let comp in objData.data.company)
            {
 
-               let queryParams = this.reportParams.getLoanAppByCompanyByStatus(objData.data.company[comp].code);
+               let queryParams = this.reportParams.getLoanChargeReport(objData.data.company[comp].code);
                await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
                    (data) => {
                        console.log("completed")
@@ -533,13 +531,12 @@ export class LoanReportBusinessService {
   
             }
 
-
            
-           allObj = allObj.filter((value, index, self) =>
-                  index === self.findIndex((t) => (
-                  t.loankey === value.loankey
-             ))
-           )
+        //    allObj = allObj.filter((value, index, self) =>
+        //           index === self.findIndex((t) => (
+        //           t.loankey === value.loankey
+        //      ))
+        //    )
 
            if(allObj.length > 0 )
            {   
@@ -555,39 +552,36 @@ export class LoanReportBusinessService {
                     loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
                     docNumber:  allObj[item].docNumber,
                     releasedBy: allObj[item].updatedBy,
-                    amount: allObj[item].LRserviceFee,
+                    amount: allObj[item].amountVal,
                     currency: allObj[item].promissoryCurrency,
-                    remarks: "Service Fee"
+                    remarks: allObj[item].remarksVal,
                    }
-                   let newobj2 = {
-                    company: allObj[item].addtlCompanyValue,
-                    applicantCode: allObj[item].applicantFirstNm,
-                    applicantName: allObj[item].applicantLastNm,
-                    loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
-                    docNumber:  allObj[item].docNumber,
-                    releasedBy: allObj[item].updatedBy,
-                    amount: allObj[item].LRinsuranceVal,
-                    currency: allObj[item].promissoryCurrency,
-                    remarks: "Insurance"
-                   }
+                //    let newobj2 = {
+                //     company: allObj[item].addtlCompanyValue,
+                //     applicantCode: allObj[item].applicantFirstNm,
+                //     applicantName: allObj[item].applicantLastNm,
+                //     loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
+                //     docNumber:  allObj[item].docNumber,
+                //     releasedBy: allObj[item].updatedBy,
+                //     amount: allObj[item].LRinsuranceVal,
+                //     currency: allObj[item].promissoryCurrency,
+                //     remarks: "Insurance"
+                //    }
 
-                   let newobj3 = {
-                    company: allObj[item].addtlCompanyValue,
-                    applicantCode: allObj[item].applicantFirstNm,
-                    applicantName: allObj[item].applicantLastNm,
-                    loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
-                    docNumber:  allObj[item].docNumber,
-                    releasedBy: allObj[item].updatedBy,
-                    amount: allObj[item].LRothercharges,
-                    currency: allObj[item].promissoryCurrency,
-                    remarks: "Other Charges"
-                   }
+                //    let newobj3 = {
+                //     company: allObj[item].addtlCompanyValue,
+                //     applicantCode: allObj[item].applicantFirstNm,
+                //     applicantName: allObj[item].applicantLastNm,
+                //     loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
+                //     docNumber:  allObj[item].docNumber,
+                //     releasedBy: allObj[item].updatedBy,
+                //     amount: allObj[item].LRothercharges,
+                //     currency: allObj[item].promissoryCurrency,
+                //     remarks: "Other Charges"
+                //    }
 
-                   totalVal = totalVal + Number(newobj1.amount) + Number(newobj2.amount) + Number(newobj3.amount)
+                   totalVal = totalVal + Number(newobj1.amount)
                    returnObj.push(newobj1);
-                   returnObj.push(newobj2);
-                   returnObj.push(newobj3);
-
                    currencyVal = allObj[item].promissoryCurrency
                }
 
@@ -642,12 +636,13 @@ export class LoanReportBusinessService {
         let filterAppDate: any;
         let isComaker : any = false;
         let filterdocNumber: any;
+        let interestCalcTableObj: any;
         return Observable.create(async (observer) => {
 
            for(let comp in objData.data.company)
            {
 
-               let queryParams = this.reportParams.getLoanAppByCompanyByStatus(objData.data.company[comp].code);
+               let queryParams = this.reportParams.getLoanReceivableReport(objData.data.company[comp].code);
                await this.loanApplicationDataService.executequeryDataServicePromise(queryParams).then(
                    (data) => {
                        if(data.Count >0)
@@ -659,7 +654,13 @@ export class LoanReportBusinessService {
                        }
                    }
                )
+
            }
+        //    let interestCalTable = this.configParams.getInterestCalculationTbl();
+        //    await this.loanApplicationDataService.executequeryScanServicePromise(interestCalTable).then(
+        //     (data) => {
+        //         interestCalcTableObj = data;
+        //     })
 
            if(objData.data.applicantCode == "" && objData.data.coMakerCode == "" && objData.data.appFomDate == "" && objData.data.collectionGroup == "" && objData.data.collectonAgent == "" && objData.data.docNumber.length == 0)
            {
@@ -808,11 +809,11 @@ export class LoanReportBusinessService {
   
             }
            
-           allObj = allObj.filter((value, index, self) =>
-                  index === self.findIndex((t) => (
-                  t.loankey === value.loankey
-             ))
-           )
+        //    allObj = allObj.filter((value, index, self) =>
+        //           index === self.findIndex((t) => (
+        //           t.loankey === value.loankey
+        //      ))
+        //    )
            let currencyExcelVal: any;
            if(allObj.length > 0 )
            {   
@@ -822,6 +823,8 @@ export class LoanReportBusinessService {
                for(let item in allObj)
                {
                    let newObj1 = {
+                    loankey: allObj[item].loankey,
+                    createdDate: allObj[item].createdDate,
                     company: allObj[item].addtlCompanyValue,
                     applicantCode: allObj[item].applicantFirstNm,
                     applicantName: allObj[item].applicantLastNm,
@@ -833,62 +836,54 @@ export class LoanReportBusinessService {
                     releasedBy: allObj[item].updatedBy,
                     collectionGroup: allObj[item].addtlCollectionGroupValue,
                     collectionAgency: allObj[item].addtlCollectionAgentValue,
-                    amount: allObj[item].promissoryAmount,
+                    amount: allObj[item].amountVal,
                     currency: allObj[item].promissoryCurrency,
-                    remarks: "Loan Amount",
+                    remarks: allObj[item].remarksVal,
                     interestRate: allObj[item].promissoryInterestRate,
                     interestScheme: allObj[item].promissorySchemeValue,
                     paymentTerm: allObj[item].promissoryPaymentTermValue,
+                    calculatedInterest: allObj[item].calculatedInterest,
+                    interestDueDate: allObj[item].interestDueDate,
+                    interestCalculationDate: allObj[item].interestCalculationDate
                    }
-                   returnObj.push(newObj1);
+                   
 
-                   let newObj2 = {
-                    company: allObj[item].addtlCompanyValue,
-                    applicantCode: allObj[item].applicantFirstNm,
-                    applicantName: allObj[item].applicantLastNm,
-                    coMakerCode: allObj[item].comakerFirstNm,
-                    coMakerName: allObj[item].comakerLastNm,
-                    applicationDate: dateFormat(allObj[item].applicationDate, "yyyy-mm-dd"),
-                    releaseDate: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
-                    loanForm: allObj[item].docNumber,
-                    releasedBy: allObj[item].updatedBy,
-                    collectionGroup: allObj[item].addtlCollectionGroupValue,
-                    collectionAgency: allObj[item].addtlCollectionAgentValue,
-                    amount: "-" + allObj[item].LRinterestAmt,
-                    currency: allObj[item].promissoryCurrency,
-                    remarks: "Interest Paid",
-                    interestRate: allObj[item].promissoryInterestRate,
-                    interestScheme: allObj[item].promissorySchemeValue,
-                    paymentTerm: allObj[item].promissoryPaymentTermValue,
-                   }
-                   returnObj.push(newObj2);
+                if(allObj[item].remarksVal == "Previous outstanding balance")
+                {
+                    totalVal = totalVal - Number(allObj[item].amountVal);
+                    newObj1.amount = "-" + allObj[item].amountVal;
+                }
+                else if(allObj[item].remarksVal == "Loan Receivable")
+                {
+                    totalVal = totalVal + Number(allObj[item].amountVal);
+                    newObj1.amount = allObj[item].amountVal;
+                }
+                else if(allObj[item].remarksVal == "Interest Paid")
+                {
+                    totalVal = totalVal - Number(allObj[item].amountVal);
+                    newObj1.amount = "-" + allObj[item].amountVal;
+                }
+                else if(allObj[item].remarksVal == "Interest Receivable")
+                {
+                    totalVal = totalVal + Number(allObj[item].amountVal);
+                    newObj1.amount = + allObj[item].amountVal;
+                }
+                else if(allObj[item].remarksVal == "Pro-rated Interest")
+                {
+                    totalVal = totalVal + Number(allObj[item].amountVal);
+                    newObj1.amount = allObj[item].amountVal;
+                }
+                else if(allObj[item].remarksVal == "Reversed Pro-rated Interest")
+                {
+                    totalVal = totalVal - Number(allObj[item].amountVal);
+                    newObj1.amount = allObj[item].amountVal;
+                }
 
-                   let newObj3 = {
-                    company: allObj[item].addtlCompanyValue,
-                    applicantCode: allObj[item].applicantFirstNm,
-                    applicantName: allObj[item].applicantLastNm,
-                    coMakerCode: allObj[item].comakerFirstNm,
-                    coMakerName: allObj[item].comakerLastNm,
-                    applicationDate: dateFormat(allObj[item].applicationDate, "yyyy-mm-dd"),
-                    releaseDate: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
-                    loanForm: allObj[item].docNumber,
-                    releasedBy: allObj[item].updatedBy,
-                    collectionGroup: allObj[item].addtlCollectionGroupValue,
-                    collectionAgency: allObj[item].addtlCollectionAgentValue,
-                    amount: "-" + allObj[item].LRoutstandingBalance,
-                    currency: allObj[item].promissoryCurrency,
-                    remarks: "Previous outstanding balance",
-                    interestRate: allObj[item].promissoryInterestRate,
-                    interestScheme: allObj[item].promissorySchemeValue,
-                    paymentTerm: allObj[item].promissoryPaymentTermValue,
-                   }
-                   returnObj.push(newObj3);
-
-                   totalVal = totalVal + Number(newObj1.amount) - Number(allObj[item].LRinterestAmt) - Number(allObj[item].LRoutstandingBalance)
+                returnObj.push(newObj1);
                    currencyExcelVal = allObj[item].promissoryCurrency
                    
                }
-
+               console.log("totalVal", totalVal)
                let newobj4 = {
                 company: "Grand Total by Currency",
                     applicantCode: "",
@@ -909,6 +904,7 @@ export class LoanReportBusinessService {
                     paymentTerm: "",
                }
                returnObj.push(newobj4);
+
 
                let retval = {
                    report : returnObj,
@@ -931,5 +927,7 @@ export class LoanReportBusinessService {
         })
 
     }
+    
+
 
 }

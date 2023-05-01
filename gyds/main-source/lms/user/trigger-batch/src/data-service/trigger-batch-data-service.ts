@@ -2,7 +2,7 @@ var nosql = require("aws-sdk");
 var docClient = new nosql.DynamoDB.DocumentClient({ region: process.env['region'] });  
 import { Observable } from 'rxjs/Observable';
 
-export class LoanApplicationDataService {
+export class triggerBatchDataService {
 
     constructor() {
     }
@@ -73,39 +73,6 @@ export class LoanApplicationDataService {
             docClient.put(param, function(err, data) {
                 if (err) {
                     console.log("executequeryInsertServicePromise", err)
-                } else {
-                    resolve(data)
-                }
-              });
-        }
-            
-        )
-    }
-
-    public executequeryUpdateServicePromise(param: any): Promise<any>
-    {
-        return new Promise(
-        (resolve, reject) => {
-            docClient.update(param, function(err, data) {
-                if (err) {
-                    console.log("executequeryUpdateServicePromise", err)
-                } else {
-                    resolve(data)
-                }
-              });
-        }
-            
-        )
-    }
-    
-
-    public executequeryScanServicePromise(param: any): Promise<any>
-    {
-        return new Promise(
-        (resolve, reject) => {
-            docClient.scan(param, function(err, data) {
-                if (err) {
-                    console.log("executequeryScanServicePromise", err)
                 } else {
                     resolve(data)
                 }
