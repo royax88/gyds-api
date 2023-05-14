@@ -149,7 +149,7 @@ export class LoanReportNoSQLParams {
             'createdDate': day,
             'isLastIndicator': '1',
             'isOneYearIndicator': overYearInd,
-            'promissoryCurrency' : obj.promissoryCurrency,
+            'promissoryCurrency' : obj.currency,
             'calculatedInterest': obj.calculatedInterest,
             'interestCalculationDate': obj.interestCalculationDate,
             'interestDueDate': obj.interestDueDate

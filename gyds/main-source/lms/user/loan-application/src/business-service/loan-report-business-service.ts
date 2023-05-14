@@ -876,7 +876,7 @@ export class LoanReportBusinessService {
                 else if(allObj[item].remarksVal == "Reversed Pro-rated Interest")
                 {
                     totalVal = totalVal - Number(allObj[item].amountVal);
-                    newObj1.amount = allObj[item].amountVal;
+                    newObj1.amount = "-" + allObj[item].amountVal;
                 }
 
                 returnObj.push(newObj1);

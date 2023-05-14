@@ -32,9 +32,15 @@ export class TriggerBatchService {
             let eventStatus = this.objData.Records[0].dynamodb.NewImage.statusVal;
             let eventObj = this.objData.Records[0].dynamodb.NewImage;
 
-            if(eventSrc == "aws:dynamodb" && eventStatus.S == "Released" && eventNm == "INSERT")
+            if(eventNm == "INSERT" || eventNm == "MODIFY")
             {
-                return this.triggerBatchBusinessService.processLoanReleaestransaction(eventObj);
+                if(eventSrc == "aws:dynamodb" && eventStatus.S == "Released")
+                {
+                    return this.triggerBatchBusinessService.processLoanReleaestransaction(eventObj);
+                }
+                else {
+                    return this.triggerBatchBusinessService.returnSkip();
+                }
             }
             else {
                 return this.triggerBatchBusinessService.returnSkip();
