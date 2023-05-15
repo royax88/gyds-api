@@ -111,6 +111,24 @@ export class LoanReportNoSQLParams {
      return params;
     }
 
+    public checkExistingProRateAndInterestReceivable(interestDueDate: any, loankey: any) {
+        let params = {
+        TableName: this.loanReceivable,
+        IndexName: 'interestDueDate-loankey-index',
+        KeyConditionExpression: '#interestDueDate =:interestDueDate and #loankey =:loankey',
+            ExpressionAttributeNames: {
+                '#interestDueDate' : 'interestDueDate',
+                '#loankey' : 'loankey'
+            },
+            ExpressionAttributeValues: {
+                ':interestDueDate': interestDueDate,
+                ':loankey': loankey
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
     public insertIntoReceivableReportTbl(obj:any)
     {
         let overYearInd : any = "0";
