@@ -744,6 +744,7 @@ export class LoanInterestCalculationBusinessService {
         let companyOjb = [];
         let allObj = [];
         let filterAppCode : any;
+        let filterCalcValue: any;
         let interestSchemeObj: any;
         let currencyObj: any;
         let interestDueDate: any;
@@ -814,12 +815,33 @@ export class LoanInterestCalculationBusinessService {
                }      
            }
 
+           //filter applicant code
+           let newObjForCalc = new Array;
+           for(let item in allObj)
+           {
+                const uiCalcDate = dateFormat(objData.data.calcDate, "yyyy-mm-dd");
+                let convuiCalcDate = new Date(uiCalcDate)
+
+                const loanReleaseDt = dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd");
+                let convloanReleaseDt = new Date(loanReleaseDt)
+
+                if(convloanReleaseDt <= convuiCalcDate)
+                {
+                    newObjForCalc.push(allObj[item])
+                }
+           }
+
+            allObj = new Array();
+            allObj = newObjForCalc;
            
-        //    allObj = allObj.filter((value, index, self) =>
-        //           index === self.findIndex((t) => (
-        //           t.loankey === value.loankey
-        //      ))
-        //    )
+           
+           allObj = allObj.filter((value, index, self) =>
+                  index === self.findIndex((t) => (
+                  t.loankey === value.loankey
+             ))
+           )
+
+           console.log("allObj", allObj)
 
            
            for (let item in allObj)
@@ -838,6 +860,7 @@ export class LoanInterestCalculationBusinessService {
             let isWithHigherDueDate: any;
             let reverseProDate: any;
             isOverYearAnnualIndicator = false;
+            existingPastLoanDue = false;
 
                 isLoanDueindicator = this.isLoanDueDatePeriod(allObj[item].promisorryLoanPeriodYear,allObj[item].promisorryLoanPeriodMonth,allObj[item].promisorryLoanPeriodDay,allObj[item].LRloanReleaseDt,objData.data.calcDate);
                 
@@ -960,8 +983,6 @@ export class LoanInterestCalculationBusinessService {
                             // } 
                         })
                 // }
-                console.log("first lastInterestDueDate", lastInterestDueDate)
-                console.log("firstInterestReceivable", firstInterestReceivable)
                 
                 let interestDueSchemeObj = this.calculateInterestDueDate(lastInterestDueDate, interestSchemeObj, allObj[item].promissoryScheme, 
                     allObj[item].promisorryLoanPeriodYear,allObj[item].promisorryLoanPeriodMonth,allObj[item].promisorryLoanPeriodDay);
@@ -1022,7 +1043,6 @@ export class LoanInterestCalculationBusinessService {
                             {
                                 let proRateValue = this.calculateProRateInterest(interestDueSchemeObj.schemeVal, interestDueSchemeObj.periodDetermination, interestDueSchemeObj.periodDeterminationDay, lastInterestDueDate,objData.data.calcDate,
                                 basedAmount, allObj[item].promissoryInterestRate, currencyObj, allObj[item].promissoryCurrency, interestDueObj.interestDueDate)
-                                console.log("proRateValue", proRateValue)
                                 let calcInterestNewObj = this.getReturnValue(allObj[item],interestCalculationDate,interestDueObj.interestDueDate, proRateValue,newRemarks, interestCalcTableObj, "", proRateValue, "true")
                                 returnCalObj.push(calcInterestNewObj);
         
@@ -1156,7 +1176,6 @@ export class LoanInterestCalculationBusinessService {
                                                 //     monthNo = 30;
                                                 // }
                                                 // else { monthNo = 31; }
-                                                console.log("lastInterestDueDate", lastInterestDueDate)
                                                 let proRatedVal = this.calculateProRateInterest(interestDueSchemeObj.schemeVal, interestDueSchemeObj.periodDetermination, interestDueSchemeObj.periodDeterminationDay, lastInterestDueDate,objData.data.calcDate,
                                                     basedAmount, allObj[item].promissoryInterestRate, currencyObj, allObj[item].promissoryCurrency, lastInterestDueDate)
 
@@ -1188,9 +1207,15 @@ export class LoanInterestCalculationBusinessService {
            }
 
 
+
            if(returnCalObj.length > 0 )
            {   
-        
+                returnCalObj = returnCalObj.filter((value, index, self) =>
+                        index === self.findIndex((t) => (
+                        t.loankey === value.loankey && t.interestDueDate === value.interestDueDate && t.interestCalculationDate === value.interestCalculationDate && t.remarks === value.remarks
+                ))
+                )
+
                var dateToday=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
 
                let retval = {

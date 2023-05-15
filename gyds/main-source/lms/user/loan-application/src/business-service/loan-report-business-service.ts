@@ -388,6 +388,25 @@ export class LoanReportBusinessService {
         return newObj;
      }
 
+     public filterInterestCalculation(objdata: any, UIobject: any) {
+        let newObj = [];
+            for(let item in objdata)
+            {
+                const uiCalcDate = dateFormat(UIobject.calcDate, "yyyy-mm-dd");
+                let convuiCalcDate = new Date(uiCalcDate)
+
+                const loanReleaseDt = dateFormat(objdata[item].LRloanReleaseDt, "yyyy-mm-dd");
+                let convloanReleaseDt = new Date(loanReleaseDt)
+
+                if(convloanReleaseDt <= convuiCalcDate)
+                {
+                    newObj.push(objdata[item])
+                }
+                
+            }
+        return newObj;
+     }
+
      public filterReleaseDate(objdata: any, UIobject: any) {
         let newObj = [];
             for(let item in objdata)
