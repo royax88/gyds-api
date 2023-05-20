@@ -10,6 +10,7 @@ export class ManageConfigNoSQLParams {
     public configurationTbl: string;
     public manageConfigTbl: string;
     public interestCalc: string;
+    public paymentConfig: string;
 
     constructor() {
         this.setNoSqlTables();
@@ -233,6 +234,14 @@ export class ManageConfigNoSQLParams {
      return params;
     }
 
+    public getPaymentConfigTbl() {
+    
+        let params = {
+        TableName: this.paymentConfig
+     }
+     return params;
+    }
+
     public updateInterestCalculationTbl(obj:any)
     {
         var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
@@ -254,6 +263,32 @@ export class ManageConfigNoSQLParams {
         return finalParams;
     }
 
+    public insertIntoPaymentConfigTbl(obj:any)
+    {
+
+        var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let finalParams: any = {
+        TableName: this.paymentConfig,
+        Item: {
+            'id': obj.data.company.code,
+            'companyCd' : obj.data.company.code,
+            'companyVal' : obj.data.company.value,
+            'transactionCd' : obj.data.transaction.code,
+            'transactionVal' : obj.data.transaction.value,
+            'fyStartVal' : obj.data.fystart.year + "-" + obj.data.fystart.month + "-" + obj.data.fystart.day,
+            'noSchemeCd' : obj.data.noschemecode.codeVal,
+            'noSchemeVal' : obj.data.noschemecode.description,
+            'rangeFrom' : obj.data.rangefrom,
+            'rangeTo' : obj.data.rangeTo,
+            'createdBy' : obj.data.createdBy,
+            'createdDate' : day,
+            'updatedBy' : obj.data.createdBy,
+            'updatedDate' : day,
+        }
+        };
+        return finalParams;
+    }
+
     private setNoSqlTables() {
 
         this.manageCompany = "gyds-lms-config-company-" + process.env['environment_tag'];
@@ -262,6 +297,7 @@ export class ManageConfigNoSQLParams {
         this.configurationTbl = "gyds-lms-configuration-"+ process.env['environment_tag'];
         this.manageConfigTbl = "gyds-lms-manage-config-"+ process.env['environment_tag'];
         this.interestCalc = "gyds-lms-config-interest-calculation-" + process.env['environment_tag'];
+        this.paymentConfig = "gyds-lms-config-payment-" + process.env['environment_tag'];
     }
     
 }

@@ -650,4 +650,47 @@ export class ManageConfigBusinessService {
 
     }
 
+    public getPaymentConfig() : Observable<any> {
+
+        let queryParams = this.manageConfigNoSQLParams.getPaymentConfigTbl();
+       
+        return Observable.create((observer) => {
+
+            this.manageConfigDataService.executescanDS(queryParams).subscribe(
+                (data) => {            
+                    observer.next(data)
+                    observer.complete();
+                    
+                },
+                (error) => {
+                    console.log("errr", error)
+                    observer.error(error);
+                });
+        })
+
+    }
+
+    public insertIntoPaymentConfigTbl(obj: any) : Observable<any> {
+        console.log("insertIntoPaymentConfigTbl")
+        return Observable.create((observer) => {
+                        let insertParams = this.manageConfigNoSQLParams.insertIntoPaymentConfigTbl(obj);
+
+                        this.manageConfigDataService.InsertData(insertParams).subscribe(
+                            (data) => {
+                                
+                                let msg = {
+                                    message: "insertedForm"
+                                }
+                                observer.next(msg);
+                                observer.complete();
+                                
+                            },
+                            (error) => {
+                                console.log("errr", error)
+                                observer.error(error);
+                            });
+                    
+        })
+    }
+
 }

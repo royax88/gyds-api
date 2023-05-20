@@ -361,6 +361,33 @@ export class ManageConfigService {
             }
             return this.manageConfigBusinessService.updateInterestCalculation(this.objData);
         }
+
+        else if(this.actioncd=='insertIntoPaymentConfigTbl')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.insertIntoPaymentConfigTbl(this.objData);
+        }
+        else if(this.actioncd=='getPaymentConfig')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            
+            }
+            return this.manageConfigBusinessService.getPaymentConfig();
+        }
     }
 
 }
