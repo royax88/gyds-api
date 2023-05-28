@@ -71,7 +71,9 @@ export class TriggerBatchNoSQLParams {
             'promissoryPaymentTermValue': obj.promissoryPaymentTermValue,
             'promissoryCurrency': obj.promissoryCurrency,
             'createdDate': day,
-            'isLastIndicator': '1'
+            'isLastIndicator': '1',
+            'statusVal' : "Released",
+            'isForPayment' : "0"
         }
         };
         return finalParams;

@@ -3,6 +3,7 @@ import { HomePageModel } from '../models/HomePageModel';
 import { LoanApplicationBusinessService} from '../business-service/loan-application-business-service';
 import {LoanReportBusinessService} from '../business-service/loan-report-business-service';
 import {LoanInterestCalculationBusinessService} from '../business-service/loan-report-interest-calc-service';
+import {LoanPaymentReceiptBusinessService} from '../business-service/loan-report-payment-service'
 import { resolve } from 'url';
 
 export class LoanApplicationService {
@@ -18,6 +19,7 @@ export class LoanApplicationService {
     private loanApplicationBusinessService = new LoanApplicationBusinessService();
     private loanReport = new LoanReportBusinessService();
     private interestCal = new LoanInterestCalculationBusinessService();
+    private paymentReceipt = new LoanPaymentReceiptBusinessService();
 
     constructor() {
         
@@ -283,6 +285,33 @@ export class LoanApplicationService {
                 this.objData = JSON.parse(event.body);
             }   
             return this.interestCal.postInterestCalculationReport(this.objData);
+        }
+
+        else if(this.actioncd=='generatePaymentReceipt')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }   
+            return this.paymentReceipt.generatePaymentReceipt(this.objData);
+        }
+
+        
+        else if(this.actioncd=='postPayments')
+        {
+            if(process.env['localenv']==="true")
+            {
+                this.objData = event.body;
+            }
+            else
+            {
+                this.objData = JSON.parse(event.body);
+            }   
+            return this.paymentReceipt.postPayments(this.objData);
         }
     }
     

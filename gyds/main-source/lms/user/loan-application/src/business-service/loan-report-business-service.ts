@@ -303,6 +303,23 @@ export class LoanReportBusinessService {
         return newObj;
      }
 
+     //filter 
+     public singleFilterApplicantCode(objdata: any, UIobject: any) {
+        let newObj = new Array;
+            for(let item in objdata)
+            {
+                // for(let filter in UIobject.applicantCode)
+                // {
+                    if(objdata[item].applicantFirstNm == UIobject.applicantCode.value)
+                    {
+                        newObj.push(objdata[item])
+                    }
+                // }
+            }
+        
+        return newObj;
+     }
+
      public filterComakerCode(objdata: any, UIobject: any) {
         let newObj = new Array;
             for(let item in objdata)
@@ -428,6 +445,60 @@ export class LoanReportBusinessService {
             }
         return newObj;
      }
+
+     public filterReportDate(reportDate: any, releaseDt: any) {
+
+            const uireportDate = dateFormat(reportDate, "yyyy-mm-dd");
+            let convuireportDate = new Date(uireportDate)
+
+            const backendreleaseDt = dateFormat(releaseDt, "yyyy-mm-dd");
+            let convbackendreleaseDt = new Date(backendreleaseDt)
+
+            if(convbackendreleaseDt <= convuireportDate)
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+                
+     }
+
+     public filterReportDate2(reportDate: any, interestCalcDate: any) {
+
+        const uireportDate = dateFormat(reportDate, "yyyy-mm-dd");
+        let convuireportDate = new Date(uireportDate)
+
+        let convinterestCalcDate = new Date(interestCalcDate)
+
+        if(convinterestCalcDate <= convuireportDate)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+            
+    }
+
+    public filterReportDate3(reportDate: any, paymentDate: any) {
+
+        const uireportDate = dateFormat(reportDate, "yyyy-mm-dd");
+        let convuireportDate = new Date(uireportDate)
+
+        let convpaymentDate = new Date(paymentDate)
+
+        if(convpaymentDate <= convuireportDate)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+            
+    }
+
+
 
      public filterDocNumber(objdata: any, UIobject: any) {
         let newObj = [];
@@ -575,29 +646,6 @@ export class LoanReportBusinessService {
                     currency: allObj[item].promissoryCurrency,
                     remarks: allObj[item].remarksVal,
                    }
-                //    let newobj2 = {
-                //     company: allObj[item].addtlCompanyValue,
-                //     applicantCode: allObj[item].applicantFirstNm,
-                //     applicantName: allObj[item].applicantLastNm,
-                //     loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
-                //     docNumber:  allObj[item].docNumber,
-                //     releasedBy: allObj[item].updatedBy,
-                //     amount: allObj[item].LRinsuranceVal,
-                //     currency: allObj[item].promissoryCurrency,
-                //     remarks: "Insurance"
-                //    }
-
-                //    let newobj3 = {
-                //     company: allObj[item].addtlCompanyValue,
-                //     applicantCode: allObj[item].applicantFirstNm,
-                //     applicantName: allObj[item].applicantLastNm,
-                //     loanReleaseDt: dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd"),
-                //     docNumber:  allObj[item].docNumber,
-                //     releasedBy: allObj[item].updatedBy,
-                //     amount: allObj[item].LRothercharges,
-                //     currency: allObj[item].promissoryCurrency,
-                //     remarks: "Other Charges"
-                //    }
 
                    totalVal = totalVal + Number(newobj1.amount)
                    returnObj.push(newobj1);
@@ -825,7 +873,6 @@ export class LoanReportBusinessService {
                     observer.next(retObject);
                     observer.complete();
                 }          
-  
             }
            
         //    allObj = allObj.filter((value, index, self) =>
@@ -841,6 +888,20 @@ export class LoanReportBusinessService {
                let returnObj = [];
                for(let item in allObj)
                {
+
+                let newStatus : any;
+                if(allObj[item].statusVal == "Unpaid" || allObj[item].statusVal == "Unapplied")
+                {
+                    newStatus = ""
+                }
+                else if(allObj[item].isReverseIndicator == "1")
+                {
+                    newStatus = "Reversed"
+                }
+                else {
+                    newStatus = allObj[item].statusVal
+                }
+
                    let newObj1 = {
                     loankey: allObj[item].loankey,
                     createdDate: allObj[item].createdDate,
@@ -863,7 +924,12 @@ export class LoanReportBusinessService {
                     paymentTerm: allObj[item].promissoryPaymentTermValue,
                     calculatedInterest: allObj[item].calculatedInterest,
                     interestDueDate: allObj[item].interestDueDate,
-                    interestCalculationDate: allObj[item].interestCalculationDate
+                    interestCalculationDate: allObj[item].interestCalculationDate,
+                    paidAmount: allObj[item].amountPaid,
+                    statusVal: newStatus,
+                    paymentReference: allObj[item].paymentReference,
+                    paymentDocument: allObj[item].paymentDoc,
+                    paymentDate: allObj[item].paymentDate
                    }
                    
 
@@ -871,38 +937,99 @@ export class LoanReportBusinessService {
                 {
                     totalVal = totalVal - Number(allObj[item].amountVal);
                     newObj1.amount = "-" + allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Loan Receivable")
                 {
                     totalVal = totalVal + Number(allObj[item].amountVal);
                     newObj1.amount = allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Interest Paid")
                 {
                     totalVal = totalVal - Number(allObj[item].amountVal);
                     newObj1.amount = "-" + allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
+                }
+                else if(allObj[item].remarksVal == "Loan Repayment")
+                {
+                    totalVal = totalVal - Number(allObj[item].amountVal);
+                    newObj1.amount = "-" + allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Interest Receivable")
                 {
                     totalVal = totalVal + Number(allObj[item].amountVal);
                     newObj1.amount = + allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Pro-rated Interest")
                 {
                     totalVal = totalVal + Number(allObj[item].amountVal);
                     newObj1.amount = allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Reversed Pro-rated Interest")
                 {
                     totalVal = totalVal - Number(allObj[item].amountVal);
                     newObj1.amount = "-" + allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
+                }
+                else if(allObj[item].remarksVal == "Pro-rated Interest Paid")
+                {
+                    totalVal = totalVal - Number(allObj[item].amountVal);
+                    newObj1.amount = "-" + allObj[item].amountVal;
+                    newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
 
-                returnObj.push(newObj1);
-                   currencyExcelVal = allObj[item].promissoryCurrency
+                if(allObj[item].remarksVal == "Previous outstanding balance" || allObj[item].remarksVal == "Loan Receivable" || allObj[item].remarksVal == "Interest Paid" && allObj[item].isForPayment != "1")
+                {
+                    console.log("here")
+                    // let newReleastDt = dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd");
+                    if(objData.data.reportDate != "" && allObj[item].LRloanReleaseDt != "")
+                    {
+                        if(this.filterReportDate(objData.data.reportDate,allObj[item].LRloanReleaseDt ))
+                        {
+                            returnObj.push(newObj1);
+                        }
+                    }
+                    else {
+                        returnObj.push(newObj1);
+                    }
+                }
+                else if(allObj[item].remarksVal == "Interest Receivable" || allObj[item].remarksVal == "Pro-rated Interest" || allObj[item].remarksVal == "Reversed Pro-rated Interest")
+                {
+                    console.log("here 2")
+                    if(objData.data.reportDate != "" && allObj[item].interestCalculationDate != "")
+                    {
+                        if(this.filterReportDate2(objData.data.reportDate,allObj[item].interestCalculationDate))
+                        {
+                            returnObj.push(newObj1);
+                        }
+                    }
+                    else {
+                        returnObj.push(newObj1);
+                    }
+                }
+                else if(allObj[item].remarksVal == "Pro-rated Interest Paid" || allObj[item].remarksVal == "Interest Paid" && allObj[item].isForPayment == "1")
+                {
+                    console.log("here 3", objData.data.reportDate)
+                    console.log("here 4", allObj[item].paymentDate)
+                    if(objData.data.reportDate != "" && allObj[item].paymentDate != "")
+                    {
+                        if(this.filterReportDate3(objData.data.reportDate,allObj[item].paymentDate))
+                        {
+                            returnObj.push(newObj1);
+                        }
+                    }
+                    else {
+                        returnObj.push(newObj1);
+                    }
+                }
+
+                currencyExcelVal = allObj[item].promissoryCurrency
                    
                }
-               console.log("totalVal", totalVal)
                let newobj4 = {
                 company: "Grand Total by Currency",
                     applicantCode: "",

@@ -41,11 +41,22 @@ export class ManageConfigBusinessService {
                     {
                         for(let item in data.Items)
                         {
-                            let newVal = {
-                                code: data.Items[item].code,
-                                value: data.Items[item].valueVal,
+                            if(name=="company")
+                            {
+                                let newVal = {
+                                    code: data.Items[item].code,
+                                    value: data.Items[item].valueVal,
+                                    currency: data.Items[item].currencyCd
+                                }
+                                objData.push(newVal);
                             }
-                            objData.push(newVal);
+                            else {
+                                let newVal = {
+                                    code: data.Items[item].code,
+                                    value: data.Items[item].valueVal,
+                                }
+                                objData.push(newVal);
+                            }
                         }
                     }
                    

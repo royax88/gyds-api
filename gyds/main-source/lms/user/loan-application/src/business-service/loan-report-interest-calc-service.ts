@@ -908,77 +908,81 @@ export class LoanInterestCalculationBusinessService {
                                 
                                 for(let exist in data.Items)
                                 {
-                                    let newRLDObject: any;
-                                    if(data.Items[exist].isLastIndicator == "1")
+                                    if(data.Items.isForPayment != "1")
                                     {
-                                        let currentValue = data.Items[exist].interestDueDate;
-
-                                        newRLDObject = {
-                                            MeasureDate : data.Items[exist].interestDueDate
-                                        }
-                                        dtArray.push(data.Items[exist].interestDueDate);
-
-                                        if(currentValue != undefined  && lastInterestDueDate != undefined)
+                                        let newRLDObject: any;
+                                        if(data.Items[exist].isLastIndicator == "1")
                                         {
-                                            
-                                            if(new Date(currentValue) > new Date(lastInterestDueDate))
-                                            {
-                                                higherInterestDueDate = data.Items[exist].interestDueDate;
+                                            let currentValue = data.Items[exist].interestDueDate;
+    
+                                            newRLDObject = {
+                                                MeasureDate : data.Items[exist].interestDueDate
                                             }
-                                            else {
+                                            dtArray.push(data.Items[exist].interestDueDate);
+    
+                                            if(currentValue != undefined  && lastInterestDueDate != undefined)
+                                            {
+                                                
+                                                if(new Date(currentValue) > new Date(lastInterestDueDate))
+                                                {
+                                                    higherInterestDueDate = data.Items[exist].interestDueDate;
+                                                }
+                                                else {
+                                                    lastInterestDueDate = data.Items[exist].interestDueDate;
+                                                }
+                                            } 
+                                            else
+                                            {
                                                 lastInterestDueDate = data.Items[exist].interestDueDate;
                                             }
-                                        } 
-                                        else
-                                        {
-                                            lastInterestDueDate = data.Items[exist].interestDueDate;
+    
                                         }
-
+                                        if(data.Items[exist].remarksVal == "Pro-rated Interest" && data.Items[exist].isLastIndicator == "1")
+                                        {
+                                            existingPastLoanDue = true;
+                                            prevcalculatedInterest = data.Items[exist].calculatedInterest;
+                                            reverseProDate = data.Items[exist].interestDueDate;
+                                            proRateInterestCalcDate = data.Items[exist].interestCalculationDate;
+                                            let proRatedObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
+                                            returnCalObj.push(proRatedObj)
+                                        }
+                                        if(data.Items[exist].remarksVal == "Pro-rated Interest" && data.Items[exist].isLastIndicator == "0")
+                                        {
+                                            let proRatedObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
+                                            returnCalObj.push(proRatedObj)
+                                        }
+    
+                                        if(data.Items[exist].remarksVal == "Reversed Pro-rated Interest")
+                                        {
+                                            let proRatedObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  "-" + data.Items[exist].amountVal, "false")
+                                            returnCalObj.push(proRatedObj)
+                                        }
+    
+                                        
+                                        if(data.Items[exist].remarksVal == "Interest Receivable")
+                                        {
+                                            withExistingInterestRec = true;
+                                            let interestReceivableObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
+                                            returnCalObj.push(interestReceivableObj)
+                                        }
+    
+                                        if(data.Items[exist].remarksVal == "Loan Receivable")
+                                        {
+                                            amountVal = data.Items[exist].amountVal;
+    
+                                            //add loan receivable in the return obj
+                                            let loanReceivableObj = this.getReturnValue(allObj[item],"","", "",data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
+                                            returnCalObj.push(loanReceivableObj)
+                                        }
+    
+                                        if(data.Items[exist].remarksVal == "Interest Paid")
+                                        {
+                                            //add interest paid in the return obj
+                                            let loanReceivableObj = this.getReturnValue(allObj[item],"","", "",data.Items[exist].remarksVal, interestCalcTableObj, "",  "-" + data.Items[exist].amountVal, "false")
+                                            returnCalObj.push(loanReceivableObj)
+                                        }
                                     }
-                                    if(data.Items[exist].remarksVal == "Pro-rated Interest" && data.Items[exist].isLastIndicator == "1")
-                                    {
-                                        existingPastLoanDue = true;
-                                        prevcalculatedInterest = data.Items[exist].calculatedInterest;
-                                        reverseProDate = data.Items[exist].interestDueDate;
-                                        proRateInterestCalcDate = data.Items[exist].interestCalculationDate;
-                                        let proRatedObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
-                                        returnCalObj.push(proRatedObj)
-                                    }
-                                    if(data.Items[exist].remarksVal == "Pro-rated Interest" && data.Items[exist].isLastIndicator == "0")
-                                    {
-                                        let proRatedObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
-                                        returnCalObj.push(proRatedObj)
-                                    }
-
-                                    if(data.Items[exist].remarksVal == "Reversed Pro-rated Interest")
-                                    {
-                                        let proRatedObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  "-" + data.Items[exist].amountVal, "false")
-                                        returnCalObj.push(proRatedObj)
-                                    }
-
-                                    
-                                    if(data.Items[exist].remarksVal == "Interest Receivable")
-                                    {
-                                        withExistingInterestRec = true;
-                                        let interestReceivableObj = this.getReturnValue(allObj[item],data.Items[exist].interestCalculationDate,data.Items[exist].interestDueDate,data.Items[exist].calculatedInterest,data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
-                                        returnCalObj.push(interestReceivableObj)
-                                    }
-
-                                    if(data.Items[exist].remarksVal == "Loan Receivable")
-                                    {
-                                        amountVal = data.Items[exist].amountVal;
-
-                                        //add loan receivable in the return obj
-                                        let loanReceivableObj = this.getReturnValue(allObj[item],"","", "",data.Items[exist].remarksVal, interestCalcTableObj, "",  data.Items[exist].amountVal, "false")
-                                        returnCalObj.push(loanReceivableObj)
-                                    }
-
-                                    if(data.Items[exist].remarksVal == "Interest Paid")
-                                    {
-                                        //add interest paid in the return obj
-                                        let loanReceivableObj = this.getReturnValue(allObj[item],"","", "",data.Items[exist].remarksVal, interestCalcTableObj, "",  "-" + data.Items[exist].amountVal, "false")
-                                        returnCalObj.push(loanReceivableObj)
-                                    }
+                                   
                                 }
 
 
@@ -1341,7 +1345,8 @@ export class LoanInterestCalculationBusinessService {
                                     let newObj = {
                                         id: data.Items[item].id,
                                         interestDueDate: data.Items[item].interestDueDate,
-                                        loankey: data.Items[item].loankey
+                                        loankey: data.Items[item].loankey,
+                                        remarks: data.Items[item].remarksVal
                                     }
                                     updateObj.push(newObj);
                                 }
@@ -1384,7 +1389,7 @@ export class LoanInterestCalculationBusinessService {
 
             for(let item in updateObj)
             {
-                let updateLastInd = this.reportParams.updateLastIndicator(updateObj[item].id);
+                let updateLastInd = this.reportParams.updateLastIndicator(updateObj[item].id, updateObj[item].remarks);
                 await this.loanApplicationDataService.executequeryUpdateServicePromise(updateLastInd).then(
                     (data) => {
                     },
