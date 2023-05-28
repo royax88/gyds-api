@@ -73,7 +73,8 @@ export class TriggerBatchNoSQLParams {
             'createdDate': day,
             'isLastIndicator': '1',
             'statusVal' : "Released",
-            'isForPayment' : "0"
+            'isForPayment' : "0",
+            'isReverseIndicator' : "0"
         }
         };
         return finalParams;

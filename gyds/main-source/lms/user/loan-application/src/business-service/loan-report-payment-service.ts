@@ -79,6 +79,7 @@ export class LoanPaymentReceiptBusinessService {
  
            }
 
+           
            allObj = allObj.filter((value, index, self) =>
                   index === self.findIndex((t) => (
                   t.loankey === value.loankey
@@ -103,6 +104,7 @@ export class LoanPaymentReceiptBusinessService {
                     )
                 }
            }
+
            let returnCalObj = [];
 
            if(filterAllObj.length > 0)
