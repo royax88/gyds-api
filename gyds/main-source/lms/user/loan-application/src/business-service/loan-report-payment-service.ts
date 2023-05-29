@@ -119,13 +119,13 @@ export class LoanPaymentReceiptBusinessService {
                    
                 }
 
-                let newObj1 = this.getReturnValueEmpty("Total amount selected for payment")
+                let newObj1 = this.getReturnValueEmpty("Total amount selected for payment", true)
                 returnCalObj.push(newObj1);
 
-                let newObj2 = this.getReturnValueEmpty("Total amount received")
+                let newObj2 = this.getReturnValueEmpty("Total amount received", false)
                 returnCalObj.push(newObj2);
 
-                let newObj3 = this.getReturnValueEmpty("Unapplied payment")
+                let newObj3 = this.getReturnValueEmpty("Unapplied payment", true)
                 returnCalObj.push(newObj3);
                 
                 observer.next(returnCalObj);
@@ -181,7 +181,7 @@ export class LoanPaymentReceiptBusinessService {
         return retObject;
     }
 
-    private getReturnValueEmpty(id)
+    private getReturnValueEmpty(id, enabledField: any)
     {
         let retObject = {
             id: "",
@@ -198,7 +198,7 @@ export class LoanPaymentReceiptBusinessService {
             exchangeRate: "",
             companyCurrency: "",
             amountPaid: "",
-            isAmountPaidDisabled: true,
+            isAmountPaidDisabled: enabledField,
             amountPaid2: true,
             isAmountPaid2Disabled: true,
             paymentStatus: "",
