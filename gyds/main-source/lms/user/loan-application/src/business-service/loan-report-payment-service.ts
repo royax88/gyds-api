@@ -186,8 +186,8 @@ export class LoanPaymentReceiptBusinessService {
         let retObject = {
             id: "",
             loankey: "",
-            applicantCode: id,
-            applicantName:"",
+            applicantCode: "",
+            applicantName:id,
             loanForm: "",
             amount: "",
             currency: "",
