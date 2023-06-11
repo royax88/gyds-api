@@ -4,6 +4,8 @@ import {DynamoDBDataService} from '../data-service/security-data-service';
 import {noSqlParams} from './nosqlparams';
 var dateFormat = require('dateformat');
 
+const crypto = require("crypto");
+
 export class SecurityBusinessService {
 
     private dynamoDBDataService = new DynamoDBDataService();
@@ -13,9 +15,16 @@ export class SecurityBusinessService {
 
     }
 
-    public checkUserInfo(username, password) : Observable<any> {
+    public decrypt(text) {
+        let encryptedText = Buffer.from(text, 'hex');
+        let decipher = crypto.createDecipher('aes-256-cbc', Buffer.from("password"));
+        let decrypted = decipher.update(encryptedText);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString();
+     }
 
-        let queryParams = this.noSqlParams.checkUserLogin(username, password);
+    public checkUserInfo(username, password) : Observable<any> {
+        let queryParams = this.noSqlParams.checkUserLoginByUserName(username);
         return Observable.create((observer) => {
 
             this.dynamoDBDataService.executequeryDataService(queryParams).subscribe(
@@ -29,55 +38,58 @@ export class SecurityBusinessService {
                         observer.complete();
                     }
                     else {
-                        if(data.Items[0].status == "active")
+                        let decryptPassword = this.decrypt(data.Items[0].password);
+                        if(password == decryptPassword)
                         {
-                            let dateToday=dateFormat(new Date(), "yyyy-mm-dd");
-                            
-                            let convertDateToday = new Date(dateToday)
-                            let convertFrom = new Date(data.Items[0].validFrom)
-                            let convertTo = new Date(data.Items[0].validTo)
-
-                            if(convertDateToday >= convertFrom && convertDateToday <= convertTo)
+                                if(data.Items[0].status == "active")
                             {
-                                let lmsRoleParams = this.noSqlParams.getLMSrole(username);
-                                this.dynamoDBDataService.executequeryDataService(lmsRoleParams).subscribe(
-                                (lmsroledata) => {
-                                    if(lmsroledata.Count > 0)
-                                    {
-                                        let info = 
+                                let dateToday=dateFormat(new Date(), "yyyy-mm-dd");
+                                
+                                let convertDateToday = new Date(dateToday)
+                                let convertFrom = new Date(data.Items[0].validFrom)
+                                let convertTo = new Date(data.Items[0].validTo)
+
+                                if(convertDateToday >= convertFrom && convertDateToday <= convertTo)
+                                {
+                                    let lmsRoleParams = this.noSqlParams.getLMSrole(username);
+                                    this.dynamoDBDataService.executequeryDataService(lmsRoleParams).subscribe(
+                                    (lmsroledata) => {
+                                        if(lmsroledata.Count > 0)
                                         {
-                                            id: 1,
-                                            fullName: data.Items[0].firstNm + " " + data.Items[0].lastNm,
-                                            systemRole: data.Items[0].systemRole,
-                                            module: data.Items[0].module,
-                                            lmsRole: lmsroledata.Items[0].lmsrole.filter((item, i, ar) => ar.indexOf(item) === i),
-                                            username: data.Items[0].username,
-                                            apikey: process.env["apikey"],
-                                            message: "validuser"
+                                            let info = 
+                                            {
+                                                id: 1,
+                                                fullName: data.Items[0].firstNm + " " + data.Items[0].lastNm,
+                                                systemRole: data.Items[0].systemRole,
+                                                module: data.Items[0].module,
+                                                lmsRole: lmsroledata.Items[0].lmsrole.filter((item, i, ar) => ar.indexOf(item) === i),
+                                                username: data.Items[0].username,
+                                                apikey: process.env["apikey"],
+                                                message: "validuser"
+                                            }
+                                                observer.next(info);
+                                                observer.complete();                                   
                                         }
+                                        else {
+                                            let tempLmsRole = [];
+                                            tempLmsRole.push("None")
+                                            let info = 
+                                            {
+                                                id: 1,
+                                                fullName: data.Items[0].firstNm + " " + data.Items[0].lastNm,
+                                                systemRole: data.Items[0].systemRole,
+                                                module: data.Items[0].module,
+                                                lmsRole: tempLmsRole,
+                                                apikey: process.env["apikey"],
+                                                message: "validuser"
+                                            }
+                                            console.log("info 2", info)
                                             observer.next(info);
-                                            observer.complete();                                   
-                                    }
-                                    else {
-                                        let tempLmsRole = [];
-                                        tempLmsRole.push("None")
-                                        let info = 
-                                        {
-                                            id: 1,
-                                            fullName: data.Items[0].firstNm + " " + data.Items[0].lastNm,
-                                            systemRole: data.Items[0].systemRole,
-                                            module: data.Items[0].module,
-                                            lmsRole: tempLmsRole,
-                                            apikey: process.env["apikey"],
-                                            message: "validuser"
+                                            observer.complete();
                                         }
-                                        console.log("info 2", info)
-                                        observer.next(info);
-                                        observer.complete();
-                                    }
-                                   
-                                } 
-                            )
+                                    
+                                    } 
+                                )
                             }
                             else 
                             {
@@ -96,6 +108,16 @@ export class SecurityBusinessService {
                             observer.next(msg);
                             observer.complete();
                         }
+
+                        }
+                        else {
+                            let msg = {
+                                message: "NotFound"
+                            }
+                            observer.next(msg);
+                            observer.complete();
+                        }
+                        
                         
                     }
                     

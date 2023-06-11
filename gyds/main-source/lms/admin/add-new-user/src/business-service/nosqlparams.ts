@@ -1,6 +1,9 @@
 var dateFormat = require('dateformat');
+const crypto = require("crypto")
 
 export class AddUserNoSQLParams {
+
+    public keyGen: any = "password"
 
     public userInfoTbl: string;
     public userRoleTbl: string;
@@ -56,17 +59,28 @@ export class AddUserNoSQLParams {
      return params;
     }
 
+
+    public encrypt(text) {
+
+        const algorithm = 'aes-256-cbc'; //Using AES encryption
+        var key = this.keyGen;
+        let cipher = crypto.createCipher('aes-256-cbc', Buffer.from(key));
+        let encrypted = cipher.update(text);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        return { encryptedData: encrypted.toString('hex') };
+     }
+
     public insertIntoUserTable(obj:any)
     {
-        console.log("obj", obj)
         let modVal = []
         modVal.push(obj.data.moduleNm)
         var day=dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        let encryptPass = this.encrypt(obj.data.password);
         let finalParams: any = {
         TableName: this.userInfoTbl,
         Item: {
             'username' : obj.data.username,
-            'password' : obj.data.password,
+            'password' : encryptPass.encryptedData,
             'firstNm' : obj.data.firstnm,
             'lastNm' : obj.data.lastname,
             'middleNm' : obj.data.middlename,

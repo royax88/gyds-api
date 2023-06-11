@@ -1,5 +1,3 @@
-
-
 export class noSqlParams {
 
     public userInfoTbl: string;
@@ -21,6 +19,23 @@ export class noSqlParams {
             ExpressionAttributeValues: {
                 ':username': username,
                 ':password': password
+            },
+        ScanIndexForward: false 
+     }
+     return params;
+    }
+
+    public checkUserLoginByUserName(username: any) {
+    
+        let params = {
+        TableName: this.userInfoTbl,
+        IndexName: 'username-index',
+        KeyConditionExpression: '#username =:username',
+            ExpressionAttributeNames: {
+                '#username' : 'username'
+            },
+            ExpressionAttributeValues: {
+                ':username': username
             },
         ScanIndexForward: false 
      }
