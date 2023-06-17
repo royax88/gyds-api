@@ -292,7 +292,7 @@ export class LoanReportNoSQLParams {
             'addtlCollectionGroupValue': obj.addtlCollectionGroupValue,
             'addtlCollectionAgent': obj.addtlCollectionAgent,
             'addtlCollectionAgentValue': obj.addtlCollectionAgentValue,
-            'amountVal': obj.amountVal,
+            'amountVal': newAmount,
             'remarksVal': remarks,
             'promissoryInterestRate': obj.promissoryInterestRate,
             'promissoryScheme': obj.promissoryScheme,
@@ -363,24 +363,78 @@ export class LoanReportNoSQLParams {
     public updateLoanReceivableForPostPayments(objData: any, paymentDocNumber)
     {
         let newAmount : any = "";
-        
-
-        if(objData.paymentStatus == "Fully paid")
+        let origAmount: any = "";
+        if(objData.isWithChange)
         {
-            if((objData.remarks == "Previous outstanding balance" || objData.remarks  == "Interest Paid"))
+            if(objData.paymentStatus == "Fully paid")
             {
-                let originalAmount =  objData.amount.split("-");
-                originalAmount = originalAmount[1];
-                newAmount = originalAmount;
+                if((objData.remarks == "Previous outstanding balance" || objData.remarks  == "Interest Paid"))
+                {
+                    let originalAmount =  objData.amount.split("-");
+                    originalAmount = originalAmount[1];
+                    newAmount = originalAmount;
+                    origAmount = originalAmount;
+                    objData.paymentStatus = "Cleared"
+                }
+                else {
+                    newAmount = objData.amount;
+                    origAmount = objData.amount;
+                }
+            
             }
             else {
-                newAmount = objData.amount;
+                if((objData.remarks == "Previous outstanding balance" || objData.remarks  == "Interest Paid"))
+                {
+                    let originalAmount =  objData.amount.split("-");
+                    originalAmount = originalAmount[1];
+                    origAmount = originalAmount;
+
+                    if(objData.amountPaid2 != "")
+                    {
+                        let origAmountPaid2 =  objData.amountPaid2.split("-");
+                        origAmountPaid2 = origAmountPaid2[1];
+                        newAmount = origAmountPaid2
+                    }
+                    else {
+                        newAmount = objData.amountPaid2
+                    }
+
+                }
+                else {
+                    origAmount = objData.amount; 
+                    newAmount = objData.amountPaid2;
+                }
+                
+                
             }
-          
         }
         else {
-            newAmount = objData.amountPaid2 == "" || objData.amountPaid2 == undefined ? "" : objData.amountPaid2;
+            if((objData.remarks == "Previous outstanding balance" || objData.remarks  == "Interest Paid"))
+                {
+                    let originalAmount =  objData.amount.split("-");
+                    originalAmount = originalAmount[1];
+                    origAmount = originalAmount;
+
+                    if(objData.amountPaid2 != "")
+                    {
+                        let origAmountPaid2 =  objData.amountPaid2.split("-");
+                        origAmountPaid2 = origAmountPaid2[1];
+                        newAmount = origAmountPaid2
+                    }
+                    else {
+                        newAmount = objData.amountPaid2
+                    }
+
+                }
+            else {
+                origAmount = objData.amountPaid2 != "" && objData.amountPaid2 != undefined && objData.amountPaid2 != "0.00" ? objData.amountPaid2 : objData.amount;
+                newAmount = objData.amountPaid2 != "" && objData.amountPaid2 != undefined && objData.amountPaid2 != "0.00" ? objData.amountPaid2 : "";
+            }
+
+            
+            
         }
+        newAmount = newAmount == undefined ? "" : newAmount;
         // else {
         //     if(objData.isWithChange)
         //     {
@@ -407,20 +461,46 @@ export class LoanReportNoSQLParams {
            
         // }
 
+        let remarks: any;
+        if(objData.isWithChange)
+        {
+            if((objData.remarks == "Loan Receivable"))
+            {
+                remarks = "Loan Repayment";
+            }
+            else if((objData.remarks == "Interest Receivable"))
+            {
+                remarks = "Interest Paid";
+            }
+            else if((objData.remarks == "Pro-rated Interest"))
+            {
+                remarks = "Pro-rated Interest Paid";
+            }
+            else {
+                remarks = objData.remarks;
+            }
+        }
+        else {
+            remarks = objData.remarks;
+        }
+       
+        
         var day=dateFormat(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }), "yyyy-mm-dd h:MM:ss TT");
         let finalParams: any = {
         TableName: this.loanReceivable,
         Key: {
             id: objData.id
         },
-        UpdateExpression: "set amountPaid = :amountPaid, statusVal = :statusVal,  updatedDate = :updatedDate, paymentReference = :paymentReference, paymentDoc = :paymentDoc, paymentDate = :paymentDate",
+        UpdateExpression: "set amountPaid = :amountPaid, statusVal = :statusVal,  updatedDate = :updatedDate, paymentReference = :paymentReference, paymentDoc = :paymentDoc, paymentDate = :paymentDate,amountVal = :amountVal,remarksVal = :remarksVal",
             ExpressionAttributeValues:{
                 ":amountPaid" : newAmount.toString(),
                 ":statusVal" : objData.paymentStatus,
                 ":updatedDate" : day,
-                ":paymentReference" : objData.paymentStatus == "Fully paid" || objData.paymentStatus == "Partially paid" ? objData.paymentReference : "",
-                ":paymentDoc" : objData.paymentStatus == "Fully paid" || objData.paymentStatus == "Partially paid" ?  paymentDocNumber : "",
-                ":paymentDate" : objData.paymentStatus == "Fully paid" || objData.paymentStatus == "Partially paid" ? dateFormat(objData.paymentDate, "yyyy-mm-dd") : ""
+                ":paymentReference" : objData.paymentStatus == "Fully paid" || objData.paymentStatus == "Partially paid" || objData.paymentStatus == "Cleared" ? objData.paymentReference : "",
+                ":paymentDoc" : objData.paymentStatus == "Fully paid" || objData.paymentStatus == "Partially paid"  || objData.paymentStatus == "Cleared"  ?  paymentDocNumber : "",
+                ":paymentDate" : objData.paymentStatus == "Fully paid" || objData.paymentStatus == "Partially paid"  || objData.paymentStatus == "Cleared" ? dateFormat(objData.paymentDate, "yyyy-mm-dd") : "",
+                ':amountVal': origAmount.toString(),
+                ':remarksVal': remarks
             }, 
             ReturnValues:"UPDATED_NEW"
         };

@@ -152,13 +152,15 @@ export class LoanPaymentReceiptBusinessService {
                 allObj.amountPaid = "-" + allObj.amountPaid
             }
         }
+
+        let newAmount = Number(allObj.amountVal).toFixed(2);
         let retObject = {
             id: allObj.id,
             loankey: allObj.loankey,
             applicantCode: allObj.applicantFirstNm,
             applicantName: allObj.applicantLastNm,
             loanForm: allObj.docNumber,
-            amount: allObj.remarksVal == "Previous outstanding balance" || allObj.remarksVal == "Interest Paid" ? "-" + allObj.amountVal : allObj.amountVal,
+            amount: allObj.remarksVal == "Previous outstanding balance" || allObj.remarksVal == "Interest Paid" ? "-" + newAmount.toString() : newAmount.toString(),
             currency: allObj.promissoryCurrency,
             remarks: allObj.remarksVal,
             paymentDate: uiObject.data.paymentDate,
@@ -175,7 +177,8 @@ export class LoanPaymentReceiptBusinessService {
             isWithChange: false,
             displayMessage: "",
             paymentDoc: allObj.paymentDoc,
-            dummy: false
+            dummy: false,
+            disabledCheckbox: false
         }
 
         return retObject;
@@ -205,7 +208,8 @@ export class LoanPaymentReceiptBusinessService {
             isWithChange: "",
             displayMessage: "",
             paymentDoc: "",
-            dummy: true
+            dummy: true,
+            disabledCheckbox: true
         }
 
         return retObject;
@@ -261,6 +265,7 @@ export class LoanPaymentReceiptBusinessService {
                     {
                        
                         let newParams = this.reportParams.updateLoanReceivableForPostPayments(objData.data.object[item], paymentDocNUmber);
+
                         await this.loanApplicationDataService.executequeryUpdateServicePromise(newParams).then(
                             (data) => {
                             },
@@ -278,7 +283,7 @@ export class LoanPaymentReceiptBusinessService {
                                     {
                                         let remarks: any;
                                         let status: any;
-                                        if((objData.data.object[item].remarks == "Previous outstanding balance"))
+                                        if((objData.data.object[item].remarks == "Loan Receivable"))
                                         {
                                             remarks = "Loan Repayment";
                                         }
@@ -296,26 +301,30 @@ export class LoanPaymentReceiptBusinessService {
     
                                         if(objData.data.object[item].paymentStatus == "Fully paid")
                                         {
-                                            if((remarks == "Previous outstanding balance" || remarks == "Interest Paid"))
-                                            {
-                                                status = "Cleared"
-                                            }
-                                            else {
+                                            // if((remarks == "Previous outstanding balance" || remarks == "Interest Paid"))
+                                            // {
+                                            //     status = "Cleared"
+                                            // }
+                                            // else {
                                                 status = objData.data.object[item].paymentStatus;
-                                            }
+                                            // }
                                         }
                                         else {
                                             status = objData.data.object[item].paymentStatus;
                                         }
-    
-                                        let insertLoanReceivByPayment = this.reportParams.insertIntoReceivableReportTblByPostPayment(existingRec.Items[0],remarks,status,newParams,objData.data.object[item],paymentDocNUmber);
-                                        await this.loanApplicationDataService.executequeryInsertServicePromise(insertLoanReceivByPayment).then(
+                                        
+                                        if((objData.data.object[item].isWithChange) && (remarks != "Previous outstanding balance" && remarks != "Interest Paid"))
+                                        {
+                                            let insertLoanReceivByPayment = this.reportParams.insertIntoReceivableReportTblByPostPayment(existingRec.Items[0],remarks,status,newParams,objData.data.object[item],paymentDocNUmber);
+                                            await this.loanApplicationDataService.executequeryInsertServicePromise(insertLoanReceivByPayment).then(
                                             (data) => {
                                             },
                                             (error) => {
                                                 console.log("error insert - payment doc number table")
                                             }
                                         )
+                                        }
+                                        
                                     }
                                 })
                         }
@@ -323,7 +332,7 @@ export class LoanPaymentReceiptBusinessService {
                   
                     
                 }
-                //insert paymentDocNUmber
+                // insert paymentDocNUmber
                 let insertPaymentDoc = this.reportParams.insertIntoPaymentDocumentNbr(numberRange.companyCd, count);
                 await this.loanApplicationDataService.executequeryInsertServicePromise(insertPaymentDoc).then(
                     (data) => {
@@ -332,7 +341,7 @@ export class LoanPaymentReceiptBusinessService {
                         console.log("error insert - payment doc number table")
                     }
                     )
-                //update last indicator to 0
+                // update last indicator to 0
                 if(!isFirstTime)
                 {
                     let updateDocNumber = this.reportParams.updatePaymentDocumentNbr(idForUpdate);
