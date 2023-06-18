@@ -111,22 +111,25 @@ export class LoanPaymentReceiptBusinessService {
            {
                 for(let item in filterAllObj)
                 {
-                    if(filterAllObj[item].statusVal != "Fully paid" && filterAllObj[item].isForPayment != "1")
+                    if(filterAllObj[item].statusVal != "Fully paid" && filterAllObj[item].statusVal != "Cleared" && filterAllObj[item].isForPayment != "1")
                     {
                         let newObj = this.getReturnValue(filterAllObj[item], objData)
                         returnCalObj.push(newObj);
                     }
                    
                 }
-
-                let newObj1 = this.getReturnValueEmpty("Total amount selected for payment", true)
-                returnCalObj.push(newObj1);
-
-                let newObj2 = this.getReturnValueEmpty("Total amount received", false)
-                returnCalObj.push(newObj2);
-
-                let newObj3 = this.getReturnValueEmpty("Unapplied payment", true)
-                returnCalObj.push(newObj3);
+                if(returnCalObj.length > 0)
+                {
+                    let newObj1 = this.getReturnValueEmpty("Total amount selected for payment", true)
+                    returnCalObj.push(newObj1);
+    
+                    let newObj2 = this.getReturnValueEmpty("Total amount received", false)
+                    returnCalObj.push(newObj2);
+    
+                    let newObj3 = this.getReturnValueEmpty("Unapplied payment", true)
+                    returnCalObj.push(newObj3);
+                }
+           
                 
                 observer.next(returnCalObj);
                 observer.complete();

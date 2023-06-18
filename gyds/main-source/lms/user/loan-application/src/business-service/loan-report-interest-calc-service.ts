@@ -324,6 +324,7 @@ export class LoanInterestCalculationBusinessService {
         var monthVal = uiCalculationInterestToString.substring(4, 6);
         var yearVal = uiCalculationInterestToString.substring(0, 4);
 
+        console.log("LRloanReleaseDt", LRloanReleaseDt)
         var loanReleaseDtInterestToString = dateFormat(LRloanReleaseDt, "yyyymmdd").toString();
         var monthValRelease = loanReleaseDtInterestToString.substring(6, 8);
 
@@ -856,8 +857,8 @@ export class LoanInterestCalculationBusinessService {
              ))
            )
 
-
-           
+        
+            
            for (let item in allObj)
            {
             let firstInterestReceivable: any;
@@ -1076,12 +1077,14 @@ export class LoanInterestCalculationBusinessService {
                             allObj[item].promisorryLoanPeriodYear,allObj[item].promisorryLoanPeriodMonth,allObj[item].promisorryLoanPeriodDay);
                         let calInterestVal = this.calculateInterestIfLapsed(basedAmount, allObj[item].promissoryInterestRate, currencyObj, allObj[item].promissoryCurrency)
                         lastInterestDueDate = interestDueSchemeObj.interestDueDate;
-
+                        // console.log("lastInterestDueDate", lastInterestDueDate)
+                        // hasExpired = this.hasExpired(lastInterestDueDate, objData.data.calcDate)
                         let proRatedValIfElapsed = this.getReturnValue(allObj[item],interestCalculationDate,lastInterestDueDate, calInterestVal,newRemarks, interestCalcTableObj, isOverYearAnnualIndicator, calInterestVal, "true")
                         returnCalObj.push(proRatedValIfElapsed);
                         
                     }
 
+                    
                     if(hasExpired == false && interestDueSchemeObj.isProRata == true)
                     {
                             newRemarks = "Pro-rated Interest";
@@ -1125,7 +1128,7 @@ export class LoanInterestCalculationBusinessService {
                             }
                            
                         }
-
+                        
                         if(differenceVal > 0)
                         {
                             let newIntDueDate: any = lastInterestDueDate;
@@ -1145,7 +1148,6 @@ export class LoanInterestCalculationBusinessService {
                                         allObj[item].promisorryLoanPeriodDay,newIntDueDate,objData.data.calcDate);
                                     if((objData.data.loanDueIndVal == "no" && isLoanDueindicator!=true) || objData.data.loanDueIndVal == "yes")
                                     {
-    
                                         let calInterestVal = this.calculateInterestIfLapsed(basedAmount, allObj[item].promissoryInterestRate, currencyObj, allObj[item].promissoryCurrency)
                                         let proRatedValIfElapsed = this.getReturnValue(allObj[item],interestCalculationDate,interestDueSchemeObj.interestDueDate, calInterestVal,newRemarks, interestCalcTableObj, isOverYearAnnualIndicator, calInterestVal, "true")
                                         returnCalObj.push(proRatedValIfElapsed);
@@ -1203,13 +1205,12 @@ export class LoanInterestCalculationBusinessService {
                                         let interestDueSchemeObj = this.calculateInterestDueDate(lastInterestDueDate, interestSchemeObj, allObj[item].promissoryScheme, 
                                             allObj[item].promisorryLoanPeriodYear,allObj[item].promisorryLoanPeriodMonth,allObj[item].promisorryLoanPeriodDay);
                                         newIntDueDateForProRate = interestDueSchemeObj.interestDueDate;
-                                        
                                         let checkForExpired = this.withProRatedInterest(newIntDueDateForProRate,objData.data.calcDate);
+                                        
                                         if(checkForExpired)
                                         {
                                             isLoanDueindicator = this.isLoanDueDatePeriod(allObj[item].promisorryLoanPeriodYear,allObj[item].promisorryLoanPeriodMonth,
                                                 allObj[item].promisorryLoanPeriodDay,lastInterestDueDate,objData.data.calcDate);
-                                                
                                             if((objData.data.loanDueIndVal == "no" && isLoanDueindicator!=true) || objData.data.loanDueIndVal == "yes")
                                             {
                                                 // let monthNo: any;
@@ -1220,7 +1221,6 @@ export class LoanInterestCalculationBusinessService {
                                                 // else { monthNo = 31; }
                                                 let proRatedVal = this.calculateProRateInterest(interestDueSchemeObj.schemeVal, interestDueSchemeObj.periodDetermination, interestDueSchemeObj.periodDeterminationDay, lastInterestDueDate,objData.data.calcDate,
                                                     basedAmount, allObj[item].promissoryInterestRate, currencyObj, allObj[item].promissoryCurrency, lastInterestDueDate)
-
                                                 // let proRatedVal = this.calculateProrateIfLapsed(basedAmount, allObj[item].promissoryInterestRate, currencyObj, allObj[item].promissoryCurrency, lastInterestDueDate,interestCalculationDate, Number(monthNo))
                                                 if(proRatedVal != "0.00" && Number(proRatedVal) > 0)
                                                 {

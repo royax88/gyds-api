@@ -935,8 +935,17 @@ export class LoanReportBusinessService {
 
                 if(allObj[item].remarksVal == "Previous outstanding balance")
                 {
-                    totalVal = totalVal - Number(allObj[item].amountVal);
-                    newObj1.amount = "-" + allObj[item].amountVal;
+                    
+                    if((allObj[item].isForPayment == "" ||  allObj[item].isForPayment == "0") && allObj[item].statusVal != "Released")
+                    {
+                        newObj1.amount = allObj[item].amountVal;
+                        totalVal = totalVal + Number(allObj[item].amountVal);
+                    }
+                    else {
+                        newObj1.amount = "-" + allObj[item].amountVal;
+                        totalVal = totalVal - Number(allObj[item].amountVal);
+                    }
+                    
                     newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Loan Receivable")
@@ -947,14 +956,32 @@ export class LoanReportBusinessService {
                 }
                 else if(allObj[item].remarksVal == "Interest Paid")
                 {
-                    totalVal = totalVal - Number(allObj[item].amountVal);
-                    newObj1.amount = "-" + allObj[item].amountVal;
+                    
+                    if((allObj[item].isForPayment == "" ||  allObj[item].isForPayment == "0") && allObj[item].statusVal != "Released")
+                    {
+                        newObj1.amount = allObj[item].amountVal;
+                        totalVal = totalVal + Number(allObj[item].amountVal);
+                    }
+                    else {
+                        newObj1.amount = "-" + allObj[item].amountVal;
+                        totalVal = totalVal - Number(allObj[item].amountVal);
+                    }
+                    // newObj1.amount = "-" + allObj[item].amountVal;
                     newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Loan Repayment")
                 {
-                    totalVal = totalVal - Number(allObj[item].amountVal);
-                    newObj1.amount = "-" + allObj[item].amountVal;
+                    
+                    if((allObj[item].isForPayment == "" ||  allObj[item].isForPayment == "0") && allObj[item].statusVal != "Released")
+                    {
+                        newObj1.amount = allObj[item].amountVal;
+                        totalVal = totalVal + Number(allObj[item].amountVal);
+                    }
+                    else {
+                        newObj1.amount = "-" + allObj[item].amountVal;
+                        totalVal = totalVal - Number(allObj[item].amountVal);
+                    }
+                    // newObj1.amount = "-" + allObj[item].amountVal;
                     newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
                 else if(allObj[item].remarksVal == "Interest Receivable")
@@ -982,9 +1009,8 @@ export class LoanReportBusinessService {
                     newObj1.paidAmount = allObj[item].amountPaid == "" || allObj[item].amountPaid == undefined ? "" : "-" + allObj[item].amountPaid;
                 }
 
-                if(allObj[item].remarksVal == "Previous outstanding balance" || allObj[item].remarksVal == "Loan Receivable" || allObj[item].remarksVal == "Interest Paid" && allObj[item].isForPayment != "1")
+                if(allObj[item].remarksVal == "Previous outstanding balance" || allObj[item].remarksVal == "Loan Receivable" || allObj[item].remarksVal == "Loan Repayment" || allObj[item].remarksVal == "Interest Paid" && allObj[item].isForPayment != "1")
                 {
-                    console.log("here")
                     // let newReleastDt = dateFormat(allObj[item].LRloanReleaseDt, "yyyy-mm-dd");
                     if(objData.data.reportDate != "" && allObj[item].LRloanReleaseDt != "")
                     {
@@ -999,7 +1025,6 @@ export class LoanReportBusinessService {
                 }
                 else if(allObj[item].remarksVal == "Interest Receivable" || allObj[item].remarksVal == "Pro-rated Interest" || allObj[item].remarksVal == "Reversed Pro-rated Interest")
                 {
-                    console.log("here 2")
                     if(objData.data.reportDate != "" && allObj[item].interestCalculationDate != "")
                     {
                         if(this.filterReportDate2(objData.data.reportDate,allObj[item].interestCalculationDate))
@@ -1013,8 +1038,6 @@ export class LoanReportBusinessService {
                 }
                 else if(allObj[item].remarksVal == "Pro-rated Interest Paid" || allObj[item].remarksVal == "Interest Paid" && allObj[item].isForPayment == "1")
                 {
-                    console.log("here 3", objData.data.reportDate)
-                    console.log("here 4", allObj[item].paymentDate)
                     if(objData.data.reportDate != "" && allObj[item].paymentDate != "")
                     {
                         if(this.filterReportDate3(objData.data.reportDate,allObj[item].paymentDate))
