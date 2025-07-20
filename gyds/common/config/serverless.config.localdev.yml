@@ -1,6 +1,7 @@
 localenv: "true"
 envvalue: kmsenryp  
 deploymentBucket: deploymentbucket
+deploymentBkt: deploymentbucket
 region: ap-southeast-1
 weburl: "https://cbh-featured-photo-stg.s3.amazonaws.com/"
 lambdaIamRole: arn:aws:iam::093584548873:role/lambda_dynamo

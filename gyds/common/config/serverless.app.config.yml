@@ -1,7 +1,8 @@
-  region: us-east-1
-  AIRID : ""
-  APIName: deca-homes-tisa
-  FunctionName: deca-homes-tisa
-  ServiceName: codepipeline-deca-homes-tisa
-  description: Serverless deployment
-  eso_alg : "RS256"
+region: us-east-1
+AIRID: ""
+APIName: deca-homes-tisa
+FunctionName: deca-homes-tisa
+ServiceName: codepipeline-deca-homes-tisa
+description: Serverless deployment
+eso_alg: "RS256"
+disabledInfoLogging: "false"

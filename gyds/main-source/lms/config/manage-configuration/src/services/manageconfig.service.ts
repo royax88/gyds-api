@@ -24,121 +24,69 @@ export class ManageConfigService {
     public executeActions(event: any): Observable<any> {
         let object: any;
         
-        if(process.env['localenv']==="true")
-        {
-            this.actioncd = event.body.actioncd;
+        // Validate event and body
+        if (!event || !event.body) {
+            return Observable.create((observer) => {
+                observer.error({
+                    message: "Invalid event or missing body",
+                    statusCode: 400
+                });
+            });
         }
-        else
-        {
-            this.actioncd = JSON.parse(event.body).actioncd;
-          
+
+        try {
+            // Always parse the JSON body since event.body is always a string
+            const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+            this.actioncd = body.actioncd;
+            this.objData = body;
+        } catch (error) {
+            return Observable.create((observer) => {
+                observer.error({
+                    message: "Invalid JSON in request body",
+                    statusCode: 400
+                });
+            });
         }
 
         if(this.actioncd=='getConfig')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.name = event.body.name;
-            }
-            else
-            {
-                this.name = JSON.parse(event.body).name;
-            
-            }
+            this.name = this.objData.name;
             return this.manageConfigBusinessService.getConfigValules(this.name);
         }
         else if(this.actioncd=='getConfigByName')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.name = event.body.name;
-            }
-            else
-            {
-                this.name = JSON.parse(event.body).name;
-            
-            }
+            this.name = this.objData.name;
             return this.manageConfigBusinessService.getConfigByName(this.name);
         }
         else if(this.actioncd=='insertIntoConfigTbl')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body)
-            
-            }
-            return this.manageConfigBusinessService.insertConfig(this.objData, this.objData.data.name);
+            // Extract name from nested data structure if available, fallback to direct access
+            const configName = this.objData.data?.name || this.objData.name;
+            return this.manageConfigBusinessService.insertConfig(this.objData, configName);
         }
         else if(this.actioncd=='updateConfigTbl')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body)
-            
-            }
-            return this.manageConfigBusinessService.updateConfig(this.objData, this.objData.data.name);
+            // Extract name from nested data structure if available, fallback to direct access
+            const configName = this.objData.data?.name || this.objData.name;
+            return this.manageConfigBusinessService.updateConfig(this.objData, configName);
         }
         else if(this.actioncd=='getAllConfigurationByName')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.name = event.body.name;
-            }
-            else
-            {
-                this.name = JSON.parse(event.body).name;
-            
-            }
+            this.name = this.objData.name;
             return this.manageConfigBusinessService.getAllConfigurationByName(this.name);
         }
 
         else if(this.actioncd=='getAllDataViaScan')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.name = event.body.name;
-            }
-            else
-            {
-                this.name = JSON.parse(event.body).name;
-            
-            }
+            this.name = this.objData.name;
             return this.manageConfigBusinessService.getAllData(this.name);
-
         }
         else if(this.actioncd=='insertIntoBusinessPartner')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.businssPartnerBusinessService.insertBusinessPartner(this.objData);
         }
-
         else if(this.actioncd=='updateIntoBusinessPartner')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.businssPartnerBusinessService.updateBusinessPartner(this.objData);
         }
 
@@ -163,28 +111,10 @@ export class ManageConfigService {
         }
         else if(this.actioncd == "updateMatrixTbl")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.approvalMatrixBusinessService.updateMatrixTbl(this.objData);
         }
         else if(this.actioncd =="insertRoleTbl")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.roleBusinessService.insertRoleTbl(this.objData);
         }
 
@@ -195,29 +125,11 @@ export class ManageConfigService {
 
         else if(this.actioncd =="getCodeValByName")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.name = event.body.name;
-            }
-            else
-            {
-                this.name = JSON.parse(event.body).name;
-            
-            }
+            this.name = this.objData.name;
             return this.manageConfigBusinessService.getCodeValByName(this.name);
         }
-
         else if(this.actioncd =="insertFormTbl")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.insertIntoFormTbl(this.objData);
         }
 
@@ -233,57 +145,18 @@ export class ManageConfigService {
 
         else if(this.actioncd =="updateFormTbl")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.updateFormTbl(this.objData);
         }
-
         else if(this.actioncd =="updateFormMatrixTbl")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.updateFormMatrixTbl(this.objData);
         }
-
         else if(this.actioncd =="insertMatrixTbl")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.insertApprovalMatrix(this.objData);
         }
-
         else if(this.actioncd =="insertIntoRangeTable")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.insertIntoNumberRngTbl(this.objData);
         }
 
@@ -294,99 +167,41 @@ export class ManageConfigService {
 
         else if(this.actioncd =="getDocumentRangeByid")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.getDocumentRangeByid(this.objData);
         }
-
         else if(this.actioncd =="getLoanReportFields")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.getLoanReportFields(this.objData);
         }
-
         else if(this.actioncd =="getBusinessPartnerReport")
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.bpReport.getBusinessPartnerReport(this.objData);
         }
-
         else if(this.actioncd=='getInterestCalculation')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.name = event.body;
-            }
-            else
-            {
-                this.name = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.getInterestCalculation();
         }
-
         else if(this.actioncd=='updateInterestCalculation')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.updateInterestCalculation(this.objData);
         }
-
         else if(this.actioncd=='insertIntoPaymentConfigTbl')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.insertIntoPaymentConfigTbl(this.objData);
         }
         else if(this.actioncd=='getPaymentConfig')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.manageConfigBusinessService.getPaymentConfig();
+        }
+        else 
+        {
+            // Return an Observable with error for unsupported actions
+            return Observable.create((observer) => {
+                observer.error({
+                    message: "Unsupported action code: " + this.actioncd,
+                    statusCode: 400
+                });
+            });
         }
     }
 

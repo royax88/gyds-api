@@ -27,43 +27,47 @@ export class LoanApplicationService {
 
     public executeActions(event: any): Observable<any> {
         let object: any;
-        
-        if(process.env['localenv']==="true")
-        {
-            this.actioncd = event.body.actioncd;
-        }
-        else
-        {
-            this.actioncd = JSON.parse(event.body).actioncd;
-          
+        console.log("event", event)
+        // Validate event and body
+        if (!event || !event.body) {
+            return Observable.create((observer) => {
+                observer.error({
+                    message: "Invalid event or missing body",
+                    statusCode: 400
+                });
+            });
         }
 
+        try {
+            // Always parse the JSON body since event.body is always a string
+            const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+            this.actioncd = body.actioncd;
+            this.objData = body;
+        } catch (error) {
+            return Observable.create((observer) => {
+                observer.error({
+                    message: "Invalid JSON in request body",
+                    statusCode: 400
+                });
+            });
+        }
+
+        console.log("this.objData.userRole", this.objData.userRole)
         if(this.actioncd=='insertIntoLoanTbl')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.loanApplicationBusinessService.insertIntoLoanTable(this.objData);
         }
         
-
         else if(this.actioncd=='getLoanRequest')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.username = event.body.username;
-            }
-            else
-            {
-                this.username = JSON.parse(event.body).username;
-               
-            
+            this.username = this.objData.username;
+            if (!this.username) {
+                return Observable.create((observer) => {
+                    observer.error({
+                        message: "username is required for getLoanRequest action",
+                        statusCode: 400
+                    });
+                });
             }
             console.log("username", this.username)
             return this.loanApplicationBusinessService.getLoanRequest(this.username);
@@ -71,69 +75,59 @@ export class LoanApplicationService {
 
         else if(this.actioncd=='searchDocNumber')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
+            if (!this.objData.data) {
+                return Observable.create((observer) => {
+                    observer.error({
+                        message: "data object is required for searchDocNumber action",
+                        statusCode: 400
+                    });
+                });
             }
             return this.loanApplicationBusinessService.searchDocNumber(this.objData.data);
         }
 
         else if(this.actioncd=='getLoanRequestByMatrix')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.username = event.body.username;
-                this.objData = event.body.data;
+            this.username = this.objData.username;
+            if (!this.username) {
+                return Observable.create((observer) => {
+                    observer.error({
+                        message: "username is required for getLoanRequestByMatrix action",
+                        statusCode: 400
+                    });
+                });
             }
-            else
-            {
-                this.username = JSON.parse(event.body).username;
-                this.objData = JSON.parse(event.body).data;
+            if (!this.objData.data) {
+                return Observable.create((observer) => {
+                    observer.error({
+                        message: "data object is required for getLoanRequestByMatrix action",
+                        statusCode: 400
+                    });
+                });
             }
-            if(this.objData.userRole == "releaseOfficer")
+            // Extract the data object which contains userRole and other filters
+            const dataObj = this.objData.data;
+            if(dataObj.userRole == "releaseOfficer")
             {
-                return this.loanApplicationBusinessService.getReleaseLoan(this.username, this.objData)
+                return this.loanApplicationBusinessService.getReleaseLoan(this.username, dataObj)
             }
             else {
-                return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username, this.objData);
+                return this.loanApplicationBusinessService.getLoanByMatrixByProcessorV2(this.username, dataObj);
             }
-           
         }
 
         else if(this.actioncd=='getRequestForReview')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.username = event.body.username;
-                this.identifier = event.body.identifier;
-            }
-            else
-            {
-                this.username = JSON.parse(event.body).username;
-                this.identifier = JSON.parse(event.body).identifier;
-            }   
+            this.username = this.objData.username;
+            this.identifier = this.objData.identifier;
             return this.loanApplicationBusinessService.getLoanByMatrixByReviewer(this.username, this.identifier);
         }
 
         else if(this.actioncd=='getLoanRequestById')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.loankey = event.body.loankey;
-                this.username = event.body.usernm;
-                this.roleAccess = event.body.roleaccess;
-            }
-            else
-            {
-                this.loankey = JSON.parse(event.body).loankey;
-                this.username = JSON.parse(event.body).usernm;
-                this.roleAccess = JSON.parse(event.body).roleaccess;
-            }
+            this.loankey = this.objData.loankey;
+            this.username = this.objData.usernm;
+            this.roleAccess = this.objData.roleaccess;
             return this.loanApplicationBusinessService.getLoanRequestById(this.loankey, this.username, this.roleAccess);
         }
 
@@ -144,174 +138,78 @@ export class LoanApplicationService {
 
         else if(this.actioncd=='updateLoantransaction')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-                this.roleAccess = event.body
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-                this.roleAccess = JSON.parse(event.body);
-            }
+            this.roleAccess = this.objData;
             return this.loanApplicationBusinessService.updateLoanTransaction(this.objData, this.roleAccess.role);
         }
 
         else if(this.actioncd=='updateLoantransByProcessor')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            
-            }
             return this.loanApplicationBusinessService.updateLoantransByProcessor(this.objData);
         }
 
         else if(this.actioncd=='getCommentsHistory')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.loankey = event.body.loankey;
-            }
-            else
-            {
-                this.loankey = JSON.parse(event.body).loankey;
-            }
+            this.loankey = this.objData.loankey;
             return this.loanApplicationBusinessService.getCommentsHistory(this.loankey);
         }
         else if(this.actioncd=='calculateNetProceeds')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }
             return this.loanApplicationBusinessService.calculateNetProceeds(this.objData);
         }
 
         else if(this.actioncd=='updateLoanByRelease')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }
             return this.loanApplicationBusinessService.updateLoanByRelease(this.objData);
         }
 
         else if(this.actioncd=='updateReleaseForm')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }
             return this.loanApplicationBusinessService.updateReleaseForm(this.objData);
         }
 
         else if(this.actioncd=='generateLoanAppReport')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.loanReport.generateLoanAppReport(this.objData);
         }
 
         else if(this.actioncd=='generateLoanReceivableReport')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.loanReport.generateLoanReceivableReport(this.objData);
         }
 
         else if(this.actioncd=='generateLoanChargesReport')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.loanReport.generateLoanChargesReport(this.objData);
         }
 
         else if(this.actioncd=='generateInterestCalculationReport')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.interestCal.generateInterestCalcReport(this.objData);
         }
 
         else if(this.actioncd=='postInterestCalculationReport')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.interestCal.postInterestCalculationReport(this.objData);
         }
 
         else if(this.actioncd=='generatePaymentReceipt')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.paymentReceipt.generatePaymentReceipt(this.objData);
         }
-
         
         else if(this.actioncd=='postPayments')
         {
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = JSON.parse(event.body);
-            }   
             return this.paymentReceipt.postPayments(this.objData);
+        }
+        else 
+        {
+            // Return an Observable with error for unsupported actions
+            return Observable.create((observer) => {
+                observer.error({
+                    message: "Unsupported action code: " + this.actioncd,
+                    statusCode: 400
+                });
+            });
         }
     }
     

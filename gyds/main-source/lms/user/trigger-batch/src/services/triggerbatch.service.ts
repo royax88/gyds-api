@@ -17,24 +17,37 @@ export class TriggerBatchService {
     public executeActions(event: any): Observable<any> {
         let object: any;
         try {
-            console.log("event",event)
-            if(process.env['localenv']==="true")
-            {
-                this.objData = event.body;
-            }
-            else
-            {
-                this.objData = event;
+            console.log("event", event)
             
+            // Handle different event structures for local vs production
+            if(process.env['localenv']==="true" && event.body) {
+                this.objData = event.body;
+            } else {
+                this.objData = event;
             }
-            let eventNm = this.objData.Records[0].eventName;
-            let eventSrc = this.objData.Records[0].eventSource;
-            let eventStatus = this.objData.Records[0].dynamodb.NewImage.statusVal;
-            let eventObj = this.objData.Records[0].dynamodb.NewImage;
+
+            // Validate that we have a DynamoDB event structure
+            if (!this.objData || !this.objData.Records || !Array.isArray(this.objData.Records) || this.objData.Records.length === 0) {
+                console.error("Invalid DynamoDB event structure", this.objData);
+                return this.triggerBatchBusinessService.returnError();
+            }
+
+            let record = this.objData.Records[0];
+            
+            // Validate record structure
+            if (!record.eventName || !record.eventSource || !record.dynamodb || !record.dynamodb.NewImage) {
+                console.error("Invalid DynamoDB record structure", record);
+                return this.triggerBatchBusinessService.returnError();
+            }
+
+            let eventNm = record.eventName;
+            let eventSrc = record.eventSource;
+            let eventStatus = record.dynamodb.NewImage.statusVal;
+            let eventObj = record.dynamodb.NewImage;
 
             if(eventNm == "INSERT" || eventNm == "MODIFY")
             {
-                if(eventSrc == "aws:dynamodb" && eventStatus.S == "Released")
+                if(eventSrc == "aws:dynamodb" && eventStatus && eventStatus.S == "Released")
                 {
                     return this.triggerBatchBusinessService.processLoanReleaestransaction(eventObj);
                 }
@@ -48,6 +61,7 @@ export class TriggerBatchService {
         }
         catch(error)
         {
+            console.error("Error processing DynamoDB event:", error);
             return this.triggerBatchBusinessService.returnError();
         }
         

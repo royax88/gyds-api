@@ -1,0 +1,2730 @@
+{
+  "/Users/roy/Project/gyds/ap-southeast-1/gyds-api/gyds/serverless.yml": {
+    "versionFramework": "4.17.1",
+    "servicePath": "/Users/roy/Project/gyds/ap-southeast-1/gyds-api/gyds/serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "deca-homes-tisa-api",
+      "build": {
+        "esbuild": false
+      },
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs18.x",
+        "deploymentBucket": "deploymentbucket",
+        "timeout": 900,
+        "environment": {
+          "disabledInfoLogging": "false",
+          "environment_tag": "dev",
+          "localenv": "false",
+          "region": "us-east-2",
+          "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+          "apikey": "<REDACTED>"
+        },
+        "stackTags": {
+          "AIRID": "",
+          "Environment": "dev",
+          "Description": "Serverless deployment"
+        },
+        "vpc": {
+          "securityGroupIds": [
+            "sg-xyz"
+          ],
+          "subnetIds": [
+            "subnet-xyz"
+          ]
+        },
+        "stage": "dev",
+        "region": "us-east-1",
+        "versionFunctions": true,
+        "deploymentBucketObject": {
+          "name": "deploymentbucket"
+        },
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "SecurityAPILogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/deca-homes-tisa_security_dev"
+              }
+            },
+            "AddUserAPILogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/deca-homes-tisa_adduser_dev"
+              }
+            },
+            "ManageConfigLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/deca-homes-tisa_config_dev"
+              }
+            },
+            "LoanApplicationLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/deca-homes-tisa_loan_dev"
+              }
+            },
+            "TriggerBatchProcessLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/deca-homes-tisa_batch_dev"
+              }
+            },
+            "SecurityAPILambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "deploymentbucket",
+                  "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/securityAPI.zip"
+                },
+                "Handler": "main-source/security/src/index.handler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "deca-homes-tisa_security_dev",
+                "MemorySize": 1024,
+                "Timeout": 900,
+                "Description": "Security API function for authentication",
+                "Tags": [
+                  {
+                    "Key": "AIRID",
+                    "Value": ""
+                  },
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ],
+                "Environment": {
+                  "Variables": {
+                    "disabledInfoLogging": "false",
+                    "environment_tag": "dev",
+                    "localenv": "false",
+                    "region": "us-east-2",
+                    "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                    "apikey": "<REDACTED>"
+                  }
+                },
+                "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+                "VpcConfig": {
+                  "SecurityGroupIds": [
+                    "sg-xyz"
+                  ],
+                  "SubnetIds": [
+                    "subnet-xyz"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "SecurityAPILogGroup"
+              ]
+            },
+            "AddUserAPILambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "deploymentbucket",
+                  "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/addUserAPI.zip"
+                },
+                "Handler": "main-source/lms/admin/add-new-user/src/index.handler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "deca-homes-tisa_adduser_dev",
+                "MemorySize": 1024,
+                "Timeout": 900,
+                "Description": "Add User API function",
+                "Tags": [
+                  {
+                    "Key": "AIRID",
+                    "Value": ""
+                  },
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ],
+                "Environment": {
+                  "Variables": {
+                    "disabledInfoLogging": "false",
+                    "environment_tag": "dev",
+                    "localenv": "false",
+                    "region": "us-east-2",
+                    "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                    "apikey": "<REDACTED>"
+                  }
+                },
+                "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+                "VpcConfig": {
+                  "SecurityGroupIds": [
+                    "sg-xyz"
+                  ],
+                  "SubnetIds": [
+                    "subnet-xyz"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "AddUserAPILogGroup"
+              ]
+            },
+            "ManageConfigLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "deploymentbucket",
+                  "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/manageConfig.zip"
+                },
+                "Handler": "main-source/lms/config/manage-configuration/src/index.handler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "deca-homes-tisa_config_dev",
+                "MemorySize": 1024,
+                "Timeout": 900,
+                "Description": "Manage Configuration API function",
+                "Tags": [
+                  {
+                    "Key": "AIRID",
+                    "Value": ""
+                  },
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ],
+                "Environment": {
+                  "Variables": {
+                    "disabledInfoLogging": "false",
+                    "environment_tag": "dev",
+                    "localenv": "false",
+                    "region": "us-east-2",
+                    "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                    "apikey": "<REDACTED>"
+                  }
+                },
+                "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+                "VpcConfig": {
+                  "SecurityGroupIds": [
+                    "sg-xyz"
+                  ],
+                  "SubnetIds": [
+                    "subnet-xyz"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "ManageConfigLogGroup"
+              ]
+            },
+            "LoanApplicationLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "deploymentbucket",
+                  "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/loanApplication.zip"
+                },
+                "Handler": "main-source/lms/user/loan-application/src/index.handler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "deca-homes-tisa_loan_dev",
+                "MemorySize": 1024,
+                "Timeout": 900,
+                "Description": "Loan Application API function",
+                "Tags": [
+                  {
+                    "Key": "AIRID",
+                    "Value": ""
+                  },
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ],
+                "Environment": {
+                  "Variables": {
+                    "disabledInfoLogging": "false",
+                    "environment_tag": "dev",
+                    "localenv": "false",
+                    "region": "us-east-2",
+                    "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                    "apikey": "<REDACTED>"
+                  }
+                },
+                "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+                "VpcConfig": {
+                  "SecurityGroupIds": [
+                    "sg-xyz"
+                  ],
+                  "SubnetIds": [
+                    "subnet-xyz"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "LoanApplicationLogGroup"
+              ]
+            },
+            "TriggerBatchProcessLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "deploymentbucket",
+                  "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/triggerBatchProcess.zip"
+                },
+                "Handler": "main-source/lms/user/trigger-batch/src/index.handler",
+                "Runtime": "nodejs18.x",
+                "FunctionName": "deca-homes-tisa_batch_dev",
+                "MemorySize": 1024,
+                "Timeout": 900,
+                "Description": "Trigger Batch Process API function",
+                "Tags": [
+                  {
+                    "Key": "AIRID",
+                    "Value": ""
+                  },
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ],
+                "Environment": {
+                  "Variables": {
+                    "disabledInfoLogging": "false",
+                    "environment_tag": "dev",
+                    "localenv": "false",
+                    "region": "us-east-2",
+                    "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                    "apikey": "<REDACTED>"
+                  }
+                },
+                "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+                "VpcConfig": {
+                  "SecurityGroupIds": [
+                    "sg-xyz"
+                  ],
+                  "SubnetIds": [
+                    "subnet-xyz"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "TriggerBatchProcessLogGroup"
+              ]
+            },
+            "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "SecurityAPILambdaFunction"
+                },
+                "CodeSha256": "aOiHuHnP//QSED+4MxfWihXjpcFoedZo7wUk3aM4BMc=",
+                "Description": "Security API function for authentication"
+              }
+            },
+            "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "AddUserAPILambdaFunction"
+                },
+                "CodeSha256": "uYl1vOYREf2IJVGguSoK0/nJVlkBN60jLso+EPQFiEM=",
+                "Description": "Add User API function"
+              }
+            },
+            "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "ManageConfigLambdaFunction"
+                },
+                "CodeSha256": "5WPBInA1E4A2hPmMm0kQK1uwEO/nRbmK9uL19lUBg5U=",
+                "Description": "Manage Configuration API function"
+              }
+            },
+            "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "LoanApplicationLambdaFunction"
+                },
+                "CodeSha256": "4ad/5cvi/kQY7JTyJ74hamTUMAeXhDVlrvZaoCJv3E8=",
+                "Description": "Loan Application API function"
+              }
+            },
+            "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "TriggerBatchProcessLambdaFunction"
+                },
+                "CodeSha256": "rm2gLcXt75MR6G4kzSs2FsY9CAtALJ0XL9+GZ5z0taY=",
+                "Description": "Trigger Batch Process API function"
+              }
+            },
+            "HttpApi": {
+              "Type": "AWS::ApiGatewayV2::Api",
+              "Properties": {
+                "Name": "dev-deca-homes-tisa-api",
+                "ProtocolType": "HTTP"
+              }
+            },
+            "HttpApiStage": {
+              "Type": "AWS::ApiGatewayV2::Stage",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "StageName": "$default",
+                "AutoDeploy": true,
+                "DefaultRouteSettings": {
+                  "DetailedMetricsEnabled": false
+                }
+              }
+            },
+            "SecurityAPILambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "SecurityAPILambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationSecurityAPI": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "SecurityAPILambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostLogin": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /login",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationSecurityAPI"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationSecurityAPI"
+            },
+            "AddUserAPILambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "AddUserAPILambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationAddUserAPI": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "AddUserAPILambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostAdduser": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /addUser",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationAddUserAPI"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationAddUserAPI"
+            },
+            "ManageConfigLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "ManageConfigLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationManageConfig": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "ManageConfigLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostManageconfig": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /manageConfig",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationManageConfig"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationManageConfig"
+            },
+            "LoanApplicationLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "LoanApplicationLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationLoanApplication": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "LoanApplicationLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostLoanapplication": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /loanApplication",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationLoanApplication"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationLoanApplication"
+            },
+            "TriggerBatchProcessLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "TriggerBatchProcessLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationTriggerBatchProcess": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "TriggerBatchProcessLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostTriggerbatch": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /triggerBatch",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationTriggerBatchProcess"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationTriggerBatchProcess"
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "deploymentbucket",
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-ServerlessDeploymentBucketName"
+              }
+            },
+            "SecurityAPILambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw"
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-SecurityAPILambdaFunctionQualifiedArn"
+              }
+            },
+            "AddUserAPILambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM"
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-AddUserAPILambdaFunctionQualifiedArn"
+              }
+            },
+            "ManageConfigLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA"
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-ManageConfigLambdaFunctionQualifiedArn"
+              }
+            },
+            "LoanApplicationLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E"
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-LoanApplicationLambdaFunctionQualifiedArn"
+              }
+            },
+            "TriggerBatchProcessLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4"
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-TriggerBatchProcessLambdaFunctionQualifiedArn"
+              }
+            },
+            "HttpApiId": {
+              "Description": "Id of the HTTP API",
+              "Value": {
+                "Ref": "HttpApi"
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-HttpApiId"
+              }
+            },
+            "HttpApiUrl": {
+              "Description": "URL of the HTTP API",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-deca-homes-tisa-api-dev-HttpApiUrl"
+              }
+            }
+          }
+        }
+      },
+      "package": {
+        "individually": true,
+        "artifactsS3KeyDirname": "serverless/deca-homes-tisa-api/dev/code-artifacts",
+        "deploymentBucket": "deploymentbucket",
+        "artifactDirectoryName": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z"
+      },
+      "functions": {
+        "securityAPI": {
+          "name": "deca-homes-tisa_security_dev",
+          "role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+          "description": "Security API function for authentication",
+          "tags": {
+            "AIRID": "",
+            "Environment": "dev"
+          },
+          "handler": "main-source/security/src/index.handler",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/login",
+                "method": "post",
+                "cors": true
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/login"
+            }
+          ],
+          "package": {
+            "artifact": ".serverless/securityAPI.zip"
+          },
+          "memory": 1024,
+          "timeout": 900,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw"
+        },
+        "addUserAPI": {
+          "name": "deca-homes-tisa_adduser_dev",
+          "role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+          "description": "Add User API function",
+          "tags": {
+            "AIRID": "",
+            "Environment": "dev"
+          },
+          "handler": "main-source/lms/admin/add-new-user/src/index.handler",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/addUser",
+                "method": "post",
+                "cors": true
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/addUser"
+            }
+          ],
+          "package": {
+            "artifact": ".serverless/addUserAPI.zip"
+          },
+          "memory": 1024,
+          "timeout": 900,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM"
+        },
+        "manageConfig": {
+          "name": "deca-homes-tisa_config_dev",
+          "role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+          "description": "Manage Configuration API function",
+          "tags": {
+            "AIRID": "",
+            "Environment": "dev"
+          },
+          "handler": "main-source/lms/config/manage-configuration/src/index.handler",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/manageConfig",
+                "method": "post",
+                "cors": true
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/manageConfig"
+            }
+          ],
+          "package": {
+            "artifact": ".serverless/manageConfig.zip"
+          },
+          "memory": 1024,
+          "timeout": 900,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA"
+        },
+        "loanApplication": {
+          "name": "deca-homes-tisa_loan_dev",
+          "role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+          "description": "Loan Application API function",
+          "tags": {
+            "AIRID": "",
+            "Environment": "dev"
+          },
+          "handler": "main-source/lms/user/loan-application/src/index.handler",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/loanApplication",
+                "method": "post",
+                "cors": true
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/loanApplication"
+            }
+          ],
+          "package": {
+            "artifact": ".serverless/loanApplication.zip"
+          },
+          "memory": 1024,
+          "timeout": 900,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E"
+        },
+        "triggerBatchProcess": {
+          "name": "deca-homes-tisa_batch_dev",
+          "role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+          "description": "Trigger Batch Process API function",
+          "tags": {
+            "AIRID": "",
+            "Environment": "dev"
+          },
+          "handler": "main-source/lms/user/trigger-batch/src/index.handler",
+          "events": [
+            {
+              "httpApi": {
+                "path": "/triggerBatch",
+                "method": "post",
+                "cors": true
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/triggerBatch"
+            }
+          ],
+          "package": {
+            "artifact": ".serverless/triggerBatchProcess.zip"
+          },
+          "memory": 1024,
+          "timeout": 900,
+          "runtime": "nodejs18.x",
+          "vpc": {},
+          "versionLogicalId": "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4"
+        }
+      },
+      "plugins": [
+        "serverless-webpack",
+        "serverless-offline",
+        "serverless-stack-output",
+        "serverless-plugin-simulate"
+      ],
+      "custom": {
+        "defaultStage": "dev",
+        "serverless-offline": {
+          "httpPort": 5050,
+          "lambdaPort": 3002
+        },
+        "output": {
+          "handler": "sls/slsServiceRegister.env.dev.processOutput"
+        },
+        "configFile": {
+          "localenv": "false",
+          "envvalue": "kmsenryp",
+          "deploymentBucket": "deploymentbucket",
+          "deploymentBkt": "deploymentbucket",
+          "region": "us-east-2",
+          "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+          "lambdaIamRole": "arn:aws:iam::093584548873:role/lambda_dynamo",
+          "environment_tag": "dev",
+          "apikey": "<REDACTED>",
+          "disabledInfoLogging": "true",
+          "restApiId": "ylv4zuzgvj",
+          "restApiRootResourceId": "rdxzac",
+          "vpc_subnet_ids": [
+            "subnet-xyz"
+          ],
+          "vpc_securitygroup_ids": [
+            "sg-xyz"
+          ],
+          "kmskeyarn": "arn:aws:kms:us-east-1:735723053299:key/1234-234-1234-1234-123456789123"
+        },
+        "appConfigFile": {
+          "region": "us-east-1",
+          "AIRID": "",
+          "APIName": "deca-homes-tisa",
+          "FunctionName": "deca-homes-tisa",
+          "ServiceName": "codepipeline-deca-homes-tisa",
+          "description": "Serverless deployment",
+          "eso_alg": "RS256",
+          "disabledInfoLogging": false
+        }
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs18.x",
+      "deploymentBucket": "deploymentbucket",
+      "timeout": 900,
+      "environment": {
+        "disabledInfoLogging": "false",
+        "environment_tag": "dev",
+        "localenv": "false",
+        "region": "us-east-2",
+        "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+        "apikey": "<REDACTED>"
+      },
+      "stackTags": {
+        "AIRID": "",
+        "Environment": "dev",
+        "Description": "Serverless deployment"
+      },
+      "vpc": {
+        "securityGroupIds": [
+          "sg-xyz"
+        ],
+        "subnetIds": [
+          "subnet-xyz"
+        ]
+      },
+      "stage": "dev",
+      "region": "us-east-1",
+      "versionFunctions": true,
+      "deploymentBucketObject": {
+        "name": "deploymentbucket"
+      },
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "SecurityAPILogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/deca-homes-tisa_security_dev"
+            }
+          },
+          "AddUserAPILogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/deca-homes-tisa_adduser_dev"
+            }
+          },
+          "ManageConfigLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/deca-homes-tisa_config_dev"
+            }
+          },
+          "LoanApplicationLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/deca-homes-tisa_loan_dev"
+            }
+          },
+          "TriggerBatchProcessLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/deca-homes-tisa_batch_dev"
+            }
+          },
+          "SecurityAPILambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "deploymentbucket",
+                "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/securityAPI.zip"
+              },
+              "Handler": "main-source/security/src/index.handler",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "deca-homes-tisa_security_dev",
+              "MemorySize": 1024,
+              "Timeout": 900,
+              "Description": "Security API function for authentication",
+              "Tags": [
+                {
+                  "Key": "AIRID",
+                  "Value": ""
+                },
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ],
+              "Environment": {
+                "Variables": {
+                  "disabledInfoLogging": "false",
+                  "environment_tag": "dev",
+                  "localenv": "false",
+                  "region": "us-east-2",
+                  "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                  "apikey": "<REDACTED>"
+                }
+              },
+              "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+              "VpcConfig": {
+                "SecurityGroupIds": [
+                  "sg-xyz"
+                ],
+                "SubnetIds": [
+                  "subnet-xyz"
+                ]
+              }
+            },
+            "DependsOn": [
+              "SecurityAPILogGroup"
+            ]
+          },
+          "AddUserAPILambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "deploymentbucket",
+                "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/addUserAPI.zip"
+              },
+              "Handler": "main-source/lms/admin/add-new-user/src/index.handler",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "deca-homes-tisa_adduser_dev",
+              "MemorySize": 1024,
+              "Timeout": 900,
+              "Description": "Add User API function",
+              "Tags": [
+                {
+                  "Key": "AIRID",
+                  "Value": ""
+                },
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ],
+              "Environment": {
+                "Variables": {
+                  "disabledInfoLogging": "false",
+                  "environment_tag": "dev",
+                  "localenv": "false",
+                  "region": "us-east-2",
+                  "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                  "apikey": "<REDACTED>"
+                }
+              },
+              "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+              "VpcConfig": {
+                "SecurityGroupIds": [
+                  "sg-xyz"
+                ],
+                "SubnetIds": [
+                  "subnet-xyz"
+                ]
+              }
+            },
+            "DependsOn": [
+              "AddUserAPILogGroup"
+            ]
+          },
+          "ManageConfigLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "deploymentbucket",
+                "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/manageConfig.zip"
+              },
+              "Handler": "main-source/lms/config/manage-configuration/src/index.handler",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "deca-homes-tisa_config_dev",
+              "MemorySize": 1024,
+              "Timeout": 900,
+              "Description": "Manage Configuration API function",
+              "Tags": [
+                {
+                  "Key": "AIRID",
+                  "Value": ""
+                },
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ],
+              "Environment": {
+                "Variables": {
+                  "disabledInfoLogging": "false",
+                  "environment_tag": "dev",
+                  "localenv": "false",
+                  "region": "us-east-2",
+                  "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                  "apikey": "<REDACTED>"
+                }
+              },
+              "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+              "VpcConfig": {
+                "SecurityGroupIds": [
+                  "sg-xyz"
+                ],
+                "SubnetIds": [
+                  "subnet-xyz"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ManageConfigLogGroup"
+            ]
+          },
+          "LoanApplicationLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "deploymentbucket",
+                "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/loanApplication.zip"
+              },
+              "Handler": "main-source/lms/user/loan-application/src/index.handler",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "deca-homes-tisa_loan_dev",
+              "MemorySize": 1024,
+              "Timeout": 900,
+              "Description": "Loan Application API function",
+              "Tags": [
+                {
+                  "Key": "AIRID",
+                  "Value": ""
+                },
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ],
+              "Environment": {
+                "Variables": {
+                  "disabledInfoLogging": "false",
+                  "environment_tag": "dev",
+                  "localenv": "false",
+                  "region": "us-east-2",
+                  "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                  "apikey": "<REDACTED>"
+                }
+              },
+              "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+              "VpcConfig": {
+                "SecurityGroupIds": [
+                  "sg-xyz"
+                ],
+                "SubnetIds": [
+                  "subnet-xyz"
+                ]
+              }
+            },
+            "DependsOn": [
+              "LoanApplicationLogGroup"
+            ]
+          },
+          "TriggerBatchProcessLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "deploymentbucket",
+                "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/triggerBatchProcess.zip"
+              },
+              "Handler": "main-source/lms/user/trigger-batch/src/index.handler",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "deca-homes-tisa_batch_dev",
+              "MemorySize": 1024,
+              "Timeout": 900,
+              "Description": "Trigger Batch Process API function",
+              "Tags": [
+                {
+                  "Key": "AIRID",
+                  "Value": ""
+                },
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ],
+              "Environment": {
+                "Variables": {
+                  "disabledInfoLogging": "false",
+                  "environment_tag": "dev",
+                  "localenv": "false",
+                  "region": "us-east-2",
+                  "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                  "apikey": "<REDACTED>"
+                }
+              },
+              "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+              "VpcConfig": {
+                "SecurityGroupIds": [
+                  "sg-xyz"
+                ],
+                "SubnetIds": [
+                  "subnet-xyz"
+                ]
+              }
+            },
+            "DependsOn": [
+              "TriggerBatchProcessLogGroup"
+            ]
+          },
+          "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "SecurityAPILambdaFunction"
+              },
+              "CodeSha256": "aOiHuHnP//QSED+4MxfWihXjpcFoedZo7wUk3aM4BMc=",
+              "Description": "Security API function for authentication"
+            }
+          },
+          "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AddUserAPILambdaFunction"
+              },
+              "CodeSha256": "uYl1vOYREf2IJVGguSoK0/nJVlkBN60jLso+EPQFiEM=",
+              "Description": "Add User API function"
+            }
+          },
+          "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ManageConfigLambdaFunction"
+              },
+              "CodeSha256": "5WPBInA1E4A2hPmMm0kQK1uwEO/nRbmK9uL19lUBg5U=",
+              "Description": "Manage Configuration API function"
+            }
+          },
+          "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "LoanApplicationLambdaFunction"
+              },
+              "CodeSha256": "4ad/5cvi/kQY7JTyJ74hamTUMAeXhDVlrvZaoCJv3E8=",
+              "Description": "Loan Application API function"
+            }
+          },
+          "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "TriggerBatchProcessLambdaFunction"
+              },
+              "CodeSha256": "rm2gLcXt75MR6G4kzSs2FsY9CAtALJ0XL9+GZ5z0taY=",
+              "Description": "Trigger Batch Process API function"
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-deca-homes-tisa-api",
+              "ProtocolType": "HTTP"
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": false
+              }
+            }
+          },
+          "SecurityAPILambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "SecurityAPILambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationSecurityAPI": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "SecurityAPILambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostLogin": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /login",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationSecurityAPI"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationSecurityAPI"
+          },
+          "AddUserAPILambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AddUserAPILambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationAddUserAPI": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "AddUserAPILambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostAdduser": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /addUser",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationAddUserAPI"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationAddUserAPI"
+          },
+          "ManageConfigLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ManageConfigLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationManageConfig": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "ManageConfigLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostManageconfig": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /manageConfig",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationManageConfig"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationManageConfig"
+          },
+          "LoanApplicationLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "LoanApplicationLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationLoanApplication": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "LoanApplicationLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostLoanapplication": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /loanApplication",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationLoanApplication"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationLoanApplication"
+          },
+          "TriggerBatchProcessLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "TriggerBatchProcessLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationTriggerBatchProcess": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "TriggerBatchProcessLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostTriggerbatch": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /triggerBatch",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationTriggerBatchProcess"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationTriggerBatchProcess"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "deploymentbucket",
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "SecurityAPILambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw"
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-SecurityAPILambdaFunctionQualifiedArn"
+            }
+          },
+          "AddUserAPILambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM"
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-AddUserAPILambdaFunctionQualifiedArn"
+            }
+          },
+          "ManageConfigLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA"
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-ManageConfigLambdaFunctionQualifiedArn"
+            }
+          },
+          "LoanApplicationLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E"
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-LoanApplicationLambdaFunctionQualifiedArn"
+            }
+          },
+          "TriggerBatchProcessLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4"
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-TriggerBatchProcessLambdaFunctionQualifiedArn"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-deca-homes-tisa-api-dev-HttpApiUrl"
+            }
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "service: deca-homes-tisa-api\r\n\r\nbuild:\r\n  esbuild: false\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs18.x\r\n  deploymentBucket:\r\n     name: ${self:custom.configFile.deploymentBkt} # Deployment bucket name. Default is generated by the framework\r\n  #  serverSideEncryption: AES256 # when using server-side encryption\r\n  timeout: 900\r\n  environment:\r\n    disabledInfoLogging: ${file(./common/config/serverless.app.config.yml):disabledInfoLogging}\r\n    environment_tag: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):environment_tag}\r\n    localenv: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):localenv}\r\n    region: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):region}\r\n    weburl: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):weburl}\r\n    apikey: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):apikey}\r\n  stackTags:\r\n    AIRID: ${file(./common/config/serverless.app.config.yml):AIRID}\r\n    Environment: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):environment_tag}\r\n    Description: ${file(./common/config/serverless.app.config.yml):description}\r\n  vpc:\r\n    securityGroupIds: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):vpc_securitygroup_ids}\r\n    subnetIds: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml):vpc_subnet_ids}\r\n\r\npackage:\r\n  individually: true\r\n\r\nfunctions:\r\n  securityAPI:\r\n    name: ${self:custom.appConfigFile.FunctionName}_security_${opt:stage, self:custom.defaultStage}\r\n    role: ${self:custom.configFile.lambdaIamRole}\r\n    description: Security API function for authentication\r\n    tags:\r\n      AIRID: ${self:custom.appConfigFile.AIRID}\r\n      Environment: ${self:custom.configFile.environment_tag}\r\n    handler: main-source/security/src/index.handler\r\n    events:\r\n      - httpApi:\r\n          path: /login\r\n          method: post\r\n          cors: true\r\n\r\n  addUserAPI:\r\n    name: ${self:custom.appConfigFile.FunctionName}_adduser_${opt:stage, self:custom.defaultStage}\r\n    role: ${self:custom.configFile.lambdaIamRole}\r\n    description: Add User API function\r\n    tags:\r\n      AIRID: ${self:custom.appConfigFile.AIRID}\r\n      Environment: ${self:custom.configFile.environment_tag}\r\n    handler: main-source/lms/admin/add-new-user/src/index.handler\r\n    events:\r\n      - httpApi:\r\n          path: /addUser\r\n          method: post\r\n          cors: true\r\n\r\n  manageConfig:\r\n    name: ${self:custom.appConfigFile.FunctionName}_config_${opt:stage, self:custom.defaultStage}\r\n    role: ${self:custom.configFile.lambdaIamRole}\r\n    description: Manage Configuration API function\r\n    tags:\r\n      AIRID: ${self:custom.appConfigFile.AIRID}\r\n      Environment: ${self:custom.configFile.environment_tag}\r\n    handler: main-source/lms/config/manage-configuration/src/index.handler\r\n    events:\r\n      - httpApi:\r\n          path: /manageConfig\r\n          method: post\r\n          cors: true\r\n\r\n  loanApplication:\r\n    name: ${self:custom.appConfigFile.FunctionName}_loan_${opt:stage, self:custom.defaultStage}\r\n    role: ${self:custom.configFile.lambdaIamRole}\r\n    description: Loan Application API function\r\n    tags:\r\n      AIRID: ${self:custom.appConfigFile.AIRID}\r\n      Environment: ${self:custom.configFile.environment_tag}\r\n    handler: main-source/lms/user/loan-application/src/index.handler\r\n    events:\r\n      - httpApi:\r\n          path: /loanApplication\r\n          method: post\r\n          cors: true\r\n\r\n  triggerBatchProcess:\r\n    name: ${self:custom.appConfigFile.FunctionName}_batch_${opt:stage, self:custom.defaultStage}\r\n    role: ${self:custom.configFile.lambdaIamRole}\r\n    description: Trigger Batch Process API function\r\n    tags:\r\n      AIRID: ${self:custom.appConfigFile.AIRID}\r\n      Environment: ${self:custom.configFile.environment_tag}\r\n    handler: main-source/lms/user/trigger-batch/src/index.handler\r\n    events:\r\n      - httpApi:\r\n          path: /triggerBatch\r\n          method: post\r\n          cors: true\r\n\r\nplugins:\r\n  - serverless-webpack\r\n  - serverless-offline\r\n  - serverless-stack-output\r\n  - serverless-plugin-simulate\r\n\r\ncustom:\r\n  defaultStage: dev\r\n  serverless-offline:\r\n    httpPort: 5050\r\n    lambdaPort: 3002\r\n  output:\r\n    handler: sls/slsServiceRegister.env.${opt:stage, self:custom.defaultStage}.processOutput\r\n  configFile: ${file(./common/config/serverless.config.${opt:stage, self:custom.defaultStage}.yml)}\r\n  appConfigFile: ${file(./common/config/serverless.app.config.yml)}\r\n",
+    "command": [
+      "package"
+    ],
+    "options": {
+      "stage": "dev",
+      "package": "pkg-out"
+    },
+    "orgId": "57966160-761a-4f74-9e66-5e14b2c2c116",
+    "orgName": "borax",
+    "userId": "4Hv3KZ1PFPrLNDsQ4s",
+    "userName": "borax",
+    "serviceProviderAwsAccountId": "774347598418",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null,
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "SecurityAPILogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/deca-homes-tisa_security_dev"
+          }
+        },
+        "AddUserAPILogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/deca-homes-tisa_adduser_dev"
+          }
+        },
+        "ManageConfigLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/deca-homes-tisa_config_dev"
+          }
+        },
+        "LoanApplicationLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/deca-homes-tisa_loan_dev"
+          }
+        },
+        "TriggerBatchProcessLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/deca-homes-tisa_batch_dev"
+          }
+        },
+        "SecurityAPILambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "deploymentbucket",
+              "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/securityAPI.zip"
+            },
+            "Handler": "main-source/security/src/index.handler",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "deca-homes-tisa_security_dev",
+            "MemorySize": 1024,
+            "Timeout": 900,
+            "Description": "Security API function for authentication",
+            "Tags": [
+              {
+                "Key": "AIRID",
+                "Value": ""
+              },
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ],
+            "Environment": {
+              "Variables": {
+                "disabledInfoLogging": "false",
+                "environment_tag": "dev",
+                "localenv": "false",
+                "region": "us-east-2",
+                "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                "apikey": "<REDACTED>"
+              }
+            },
+            "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+            "VpcConfig": {
+              "SecurityGroupIds": [
+                "sg-xyz"
+              ],
+              "SubnetIds": [
+                "subnet-xyz"
+              ]
+            }
+          },
+          "DependsOn": [
+            "SecurityAPILogGroup"
+          ]
+        },
+        "AddUserAPILambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "deploymentbucket",
+              "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/addUserAPI.zip"
+            },
+            "Handler": "main-source/lms/admin/add-new-user/src/index.handler",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "deca-homes-tisa_adduser_dev",
+            "MemorySize": 1024,
+            "Timeout": 900,
+            "Description": "Add User API function",
+            "Tags": [
+              {
+                "Key": "AIRID",
+                "Value": ""
+              },
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ],
+            "Environment": {
+              "Variables": {
+                "disabledInfoLogging": "false",
+                "environment_tag": "dev",
+                "localenv": "false",
+                "region": "us-east-2",
+                "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                "apikey": "<REDACTED>"
+              }
+            },
+            "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+            "VpcConfig": {
+              "SecurityGroupIds": [
+                "sg-xyz"
+              ],
+              "SubnetIds": [
+                "subnet-xyz"
+              ]
+            }
+          },
+          "DependsOn": [
+            "AddUserAPILogGroup"
+          ]
+        },
+        "ManageConfigLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "deploymentbucket",
+              "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/manageConfig.zip"
+            },
+            "Handler": "main-source/lms/config/manage-configuration/src/index.handler",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "deca-homes-tisa_config_dev",
+            "MemorySize": 1024,
+            "Timeout": 900,
+            "Description": "Manage Configuration API function",
+            "Tags": [
+              {
+                "Key": "AIRID",
+                "Value": ""
+              },
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ],
+            "Environment": {
+              "Variables": {
+                "disabledInfoLogging": "false",
+                "environment_tag": "dev",
+                "localenv": "false",
+                "region": "us-east-2",
+                "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                "apikey": "<REDACTED>"
+              }
+            },
+            "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+            "VpcConfig": {
+              "SecurityGroupIds": [
+                "sg-xyz"
+              ],
+              "SubnetIds": [
+                "subnet-xyz"
+              ]
+            }
+          },
+          "DependsOn": [
+            "ManageConfigLogGroup"
+          ]
+        },
+        "LoanApplicationLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "deploymentbucket",
+              "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/loanApplication.zip"
+            },
+            "Handler": "main-source/lms/user/loan-application/src/index.handler",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "deca-homes-tisa_loan_dev",
+            "MemorySize": 1024,
+            "Timeout": 900,
+            "Description": "Loan Application API function",
+            "Tags": [
+              {
+                "Key": "AIRID",
+                "Value": ""
+              },
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ],
+            "Environment": {
+              "Variables": {
+                "disabledInfoLogging": "false",
+                "environment_tag": "dev",
+                "localenv": "false",
+                "region": "us-east-2",
+                "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                "apikey": "<REDACTED>"
+              }
+            },
+            "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+            "VpcConfig": {
+              "SecurityGroupIds": [
+                "sg-xyz"
+              ],
+              "SubnetIds": [
+                "subnet-xyz"
+              ]
+            }
+          },
+          "DependsOn": [
+            "LoanApplicationLogGroup"
+          ]
+        },
+        "TriggerBatchProcessLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "deploymentbucket",
+              "S3Key": "serverless/deca-homes-tisa-api/dev/1752908180650-2025-07-19T06:56:20.650Z/triggerBatchProcess.zip"
+            },
+            "Handler": "main-source/lms/user/trigger-batch/src/index.handler",
+            "Runtime": "nodejs18.x",
+            "FunctionName": "deca-homes-tisa_batch_dev",
+            "MemorySize": 1024,
+            "Timeout": 900,
+            "Description": "Trigger Batch Process API function",
+            "Tags": [
+              {
+                "Key": "AIRID",
+                "Value": ""
+              },
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ],
+            "Environment": {
+              "Variables": {
+                "disabledInfoLogging": "false",
+                "environment_tag": "dev",
+                "localenv": "false",
+                "region": "us-east-2",
+                "weburl": "https://cbh-featured-photo-dev.s3.amazonaws.com/",
+                "apikey": "<REDACTED>"
+              }
+            },
+            "Role": "arn:aws:iam::093584548873:role/lambda_dynamo",
+            "VpcConfig": {
+              "SecurityGroupIds": [
+                "sg-xyz"
+              ],
+              "SubnetIds": [
+                "subnet-xyz"
+              ]
+            }
+          },
+          "DependsOn": [
+            "TriggerBatchProcessLogGroup"
+          ]
+        },
+        "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "SecurityAPILambdaFunction"
+            },
+            "CodeSha256": "aOiHuHnP//QSED+4MxfWihXjpcFoedZo7wUk3aM4BMc=",
+            "Description": "Security API function for authentication"
+          }
+        },
+        "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "AddUserAPILambdaFunction"
+            },
+            "CodeSha256": "uYl1vOYREf2IJVGguSoK0/nJVlkBN60jLso+EPQFiEM=",
+            "Description": "Add User API function"
+          }
+        },
+        "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "ManageConfigLambdaFunction"
+            },
+            "CodeSha256": "5WPBInA1E4A2hPmMm0kQK1uwEO/nRbmK9uL19lUBg5U=",
+            "Description": "Manage Configuration API function"
+          }
+        },
+        "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "LoanApplicationLambdaFunction"
+            },
+            "CodeSha256": "4ad/5cvi/kQY7JTyJ74hamTUMAeXhDVlrvZaoCJv3E8=",
+            "Description": "Loan Application API function"
+          }
+        },
+        "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "TriggerBatchProcessLambdaFunction"
+            },
+            "CodeSha256": "rm2gLcXt75MR6G4kzSs2FsY9CAtALJ0XL9+GZ5z0taY=",
+            "Description": "Trigger Batch Process API function"
+          }
+        },
+        "HttpApi": {
+          "Type": "AWS::ApiGatewayV2::Api",
+          "Properties": {
+            "Name": "dev-deca-homes-tisa-api",
+            "ProtocolType": "HTTP"
+          }
+        },
+        "HttpApiStage": {
+          "Type": "AWS::ApiGatewayV2::Stage",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "StageName": "$default",
+            "AutoDeploy": true,
+            "DefaultRouteSettings": {
+              "DetailedMetricsEnabled": false
+            }
+          }
+        },
+        "SecurityAPILambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "SecurityAPILambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationSecurityAPI": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "SecurityAPILambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostLogin": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /login",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationSecurityAPI"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationSecurityAPI"
+        },
+        "AddUserAPILambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "AddUserAPILambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationAddUserAPI": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "AddUserAPILambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostAdduser": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /addUser",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationAddUserAPI"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationAddUserAPI"
+        },
+        "ManageConfigLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "ManageConfigLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationManageConfig": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "ManageConfigLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostManageconfig": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /manageConfig",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationManageConfig"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationManageConfig"
+        },
+        "LoanApplicationLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "LoanApplicationLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationLoanApplication": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "LoanApplicationLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostLoanapplication": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /loanApplication",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationLoanApplication"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationLoanApplication"
+        },
+        "TriggerBatchProcessLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "TriggerBatchProcessLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationTriggerBatchProcess": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "TriggerBatchProcessLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostTriggerbatch": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /triggerBatch",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationTriggerBatchProcess"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationTriggerBatchProcess"
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "deploymentbucket",
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-ServerlessDeploymentBucketName"
+          }
+        },
+        "SecurityAPILambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "SecurityAPILambdaVersionCmNI6IsG90P1ie3V3wunOa17bJXWhUVfElDiYyJ5Rzw"
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-SecurityAPILambdaFunctionQualifiedArn"
+          }
+        },
+        "AddUserAPILambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "AddUserAPILambdaVersion49UMAnwkaByDr4KXUdG0bxIbej4QguhyIJhGfa6eM"
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-AddUserAPILambdaFunctionQualifiedArn"
+          }
+        },
+        "ManageConfigLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "ManageConfigLambdaVersionaVUdJWGQWNWCOnFXuSmfiugBra6bwN7peXeVss6GA"
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-ManageConfigLambdaFunctionQualifiedArn"
+          }
+        },
+        "LoanApplicationLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "LoanApplicationLambdaVersion2HQwWPlNMUhiLDBH2DakRor9FmsfyOjjJyq8HyLH6E"
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-LoanApplicationLambdaFunctionQualifiedArn"
+          }
+        },
+        "TriggerBatchProcessLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "TriggerBatchProcessLambdaVersionYSUjgwHiggDmdaD30OqzUClyjYClZDoQkHOobDhf4"
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-TriggerBatchProcessLambdaFunctionQualifiedArn"
+          }
+        },
+        "HttpApiId": {
+          "Description": "Id of the HTTP API",
+          "Value": {
+            "Ref": "HttpApi"
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-HttpApiId"
+          }
+        },
+        "HttpApiUrl": {
+          "Description": "URL of the HTTP API",
+          "Value": {
+            "Fn::Join": [
+              "",
+              [
+                "https://",
+                {
+                  "Ref": "HttpApi"
+                },
+                ".execute-api.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix"
+                }
+              ]
+            ]
+          },
+          "Export": {
+            "Name": "sls-deca-homes-tisa-api-dev-HttpApiUrl"
+          }
+        }
+      }
+    }
+  }
+}

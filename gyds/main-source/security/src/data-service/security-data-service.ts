@@ -7,7 +7,7 @@ export class DynamoDBDataService {
     constructor() {
     }
  
-    public executequeryDataService = function (params: any): Observable<any> {
+    public executequeryDataService = (params: any): Observable<any> => {
         return Observable.create((observer) => {
             this.executequery(params, function (err, data) {
                 if (err) {
@@ -21,7 +21,7 @@ export class DynamoDBDataService {
         });
     }
 
-    public executequery = function (nosqlparam: any, callback) {
+    public executequery = (nosqlparam: any, callback) => {
 
         docClient.query(nosqlparam, function (err, data) {
             if (err) {
